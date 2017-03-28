@@ -106,7 +106,7 @@ Traverse the left subtree by recursively calling the p">
 <meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png">
 <meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/in-order.png">
 <meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/post-order.png">
-<meta property="og:updated_time" content="2017-03-27T15:36:52.000Z">
+<meta property="og:updated_time" content="2017-03-28T02:46:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tree Traversal">
 <meta name="twitter:description" content="pre order  
@@ -356,9 +356,12 @@ Traverse the left subtree by recursively calling the p">
 <li>Check if the current node is empty / null</li>
 <li>Display the data part of the root (or current node).</li>
 <li>Traverse the left subtree by recursively calling the pre-order function.</li>
-<li>Traverse the right subtree by recursively calling the pre-order function.</li>
+<li><p>Traverse the right subtree by recursively calling the pre-order function.</p>
+<a id="more"></a>
+</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">preorderTraversal</span><span class="params">(TreeNode root)</span> </span>&#123;</div><div class="line">        Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;TreeNode&gt;();</div><div class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</div><div class="line">        <span class="keyword">if</span>(root!=<span class="keyword">null</span>) s.push(root);</div><div class="line">        <span class="keyword">while</span>(!s.isEmpty())&#123;</div><div class="line">            TreeNode curr = s.pop();</div><div class="line">            res.add(curr.val);</div><div class="line">            <span class="keyword">if</span>(curr.right!=<span class="keyword">null</span>) s.push(curr.right);</div><div class="line">            <span class="keyword">if</span>(curr.left!=<span class="keyword">null</span>) s.push(curr.left);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<!--more-->
 <h3 id="in-order"><a href="#in-order" class="headerlink" title="in order"></a>in order</h3><p><img src="http://7xvy7h.com1.z0.glb.clouddn.com/in-order.png" alt="in order"></p>
 <p>In-order: A, B, C, D, E, F, G, H, I.</p>
 <ol>
@@ -421,6 +424,22 @@ Traverse the left subtree by recursively calling the p">
         
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2017/03/28/wow的岁月/" rel="prev" title="wow的岁月">
+                wow的岁月 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
 
       
@@ -489,7 +508,7 @@ Traverse the left subtree by recursively calling the p">
           
             <div class="site-state-item site-state-posts">
               <a href="/blog/archives">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -502,7 +521,7 @@ Traverse the left subtree by recursively calling the p">
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -670,25 +689,9 @@ Traverse the left subtree by recursively calling the p">
 
 
 
-	
 
 
 
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-  
 
 
 
