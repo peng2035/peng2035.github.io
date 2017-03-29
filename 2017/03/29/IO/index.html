@@ -71,7 +71,7 @@
 <link href="/blog/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="java," />
 
 
 
@@ -143,7 +143,9 @@ Selectors
 IO 阻塞IO
 标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
 Stream是阻塞的，当一个线程调用re">
-<meta property="og:updated_time" content="2017-03-29T15:01:11.000Z">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
+<meta property="og:updated_time" content="2017-03-29T16:20:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
 <meta name="twitter:description" content="NIO 和 IO的区别区别
@@ -172,6 +174,7 @@ Selectors
 IO 阻塞IO
 标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
 Stream是阻塞的，当一个线程调用re">
+<meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 
 
 
@@ -417,7 +420,7 @@ Stream是阻塞的，当一个线程调用re">
       
 
       
-        <h2 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h2><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><table>
+        <h1 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h1><h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><table>
 <thead>
 <tr>
 <th>IO</th>
@@ -439,7 +442,7 @@ Stream是阻塞的，当一个线程调用re">
 </tr>
 </tbody>
 </table>
-<h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><ul>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
 <li>IO 阻塞IO<ul>
 <li>标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。</li>
 <li>Stream是阻塞的，当一个线程调用read或write时，线程是阻塞的，只有等数据读取/写入完成，期间线程不能做任何事。</li>
@@ -448,11 +451,12 @@ Stream是阻塞的，当一个线程调用re">
 <li>NIO 非阻塞IO<ul>
 <li>NIO把数据读到一个待处理的Buffer中，也可以在buffer中来回移动，但是不保证Buffer中的数据是所需要的完整数据，需要去校验。</li>
 <li>NIO使用一个线程从某个通道中读取数据，但是仅能从Buffer中获得当前的部分数据，而数据变为完整之前，线程并不会被阻塞，而是可以去做其他的事情。写入也是这样，不需要等待它完全写入，就可以去做其他的事情。这里的“其他事情”大部分也是指在其它通道上执行IO操作，所以一个线程可以管理多个输入/输出通道，Selector就是跑在这个线程。</li>
-<li>好处：一个Selector能同时对多个Socket连接进行管理。而不会阻塞当前的Selector线程。如果是原有的IO模型，在一个read或者write出现网络问题的时候不能进行下一步的操作，要解决这个问题只能开辟新的线程。这样就会导致线程数太多。而线程池的方案也会有出现多个线程阻塞而拖慢整个系统的问题。详见<a href="https://www.zhihu.com/question/32163005/answer/55772739" target="_blank" rel="external">IO多路复用</a></li>
+<li>好处：一个Selector能同时对多个Socket连接进行管理。而不会阻塞当前的Selector线程。如果是原有的IO模型，在一个read或者write出现网络问题的时候不能进行下一步的操作，要解决这个问题只能开辟新的线程。这样就会导致线程数太多。而线程池的方案也会有出现多个线程阻塞而拖慢整个系统的问题。详见<a href="https://www.zhihu.com/question/32163005/answer/55772739" target="_blank" rel="external">IO多路复用</a><a id="more"></a>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><img src="http://onk9rv30p.bkt.clouddn.com/io&amp;nio%E7%B1%BB%E5%9B%BE.png" alt="io&amp;nio类图"></li>
 </ul>
 </li>
 </ul>
-<h4 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h4><h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Name: Anna</div><div class="line">Age: 25</div><div class="line">Email: anna@mailserver.com</div><div class="line">Phone: 1234567890</div></pre></td></tr></table></figure>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Name: Anna</div><div class="line">Age: 25</div><div class="line">Email: anna@mailserver.com</div><div class="line">Phone: 1234567890</div></pre></td></tr></table></figure>
 <ul>
 <li>IO</li>
 </ul>
@@ -460,7 +464,7 @@ Stream是阻塞的，当一个线程调用re">
 <ul>
 <li>NIO</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ByteBuffer buffer = ByteBuffer.allocate(48);</div><div class="line">int bytesRead = inChannel.read(buffer);</div><div class="line">while(! bufferFull(bytesRead) ) &#123;</div><div class="line">     bytesRead = inChannel.read(buffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ByteBuffer buffer = ByteBuffer.allocate(48);</div><div class="line">int bytesRead = channel.read(buffer);</div><div class="line">while(! bufferFull(bytesRead) ) &#123;</div><div class="line">     bytesRead = channel.read(buffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>  需要循环来读取buffer中的所有的值。</p>
 <h2 id="NIO实现相关"><a href="#NIO实现相关" class="headerlink" title="NIO实现相关"></a>NIO实现相关</h2><p>NIO主要的组件有Channel、Buffer、Selector</p>
 <h4 id="Channel和Buffer"><a href="#Channel和Buffer" class="headerlink" title="Channel和Buffer"></a>Channel和Buffer</h4><p>和Stream相比，你可以同时对一个Channel进行读和写操作，而Stream只能读或写。</p>
@@ -474,7 +478,56 @@ Stream是阻塞的，当一个线程调用re">
 <li>SocketChannel 通过TCP 向网络中读写数据</li>
 <li>ServerSocketChannel 允许监听即将到来的TCP连接</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">RandomAccessFile aFile = new RandomAccessFile(&quot;data/nio-data.txt&quot;, &quot;rw&quot;);</div><div class="line">    FileChannel inChannel = aFile.getChannel();</div><div class="line"></div><div class="line">    ByteBuffer buf = ByteBuffer.allocate(48);</div><div class="line"></div><div class="line">    int bytesRead = inChannel.read(buf);</div><div class="line">    while (bytesRead != -1) &#123;</div><div class="line"></div><div class="line">      System.out.println(&quot;Read &quot; + bytesRead);</div><div class="line">      buf.flip(); //之前在inChannel.read往Buffer中写，之后要读buffer了，flip一下</div><div class="line"></div><div class="line">      while(buf.hasRemaining())&#123;</div><div class="line">          System.out.print((char) buf.get());</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      buf.clear();</div><div class="line">      bytesRead = inChannel.read(buf);</div><div class="line">    &#125;</div><div class="line">    aFile.close();</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">RandomAccessFile aFile = new RandomAccessFile(&quot;data/nio-data.txt&quot;, &quot;rw&quot;);</div><div class="line">    FileChannel channel = aFile.getChannel();</div><div class="line"></div><div class="line">    ByteBuffer buf = ByteBuffer.allocate(48);</div><div class="line"></div><div class="line">    int bytesRead = channel.read(buf);</div><div class="line">    while (bytesRead != -1) &#123;</div><div class="line"></div><div class="line">      System.out.println(&quot;Read &quot; + bytesRead);</div><div class="line">      buf.flip();</div><div class="line"></div><div class="line">      while(buf.hasRemaining())&#123;</div><div class="line">          System.out.print((char) buf.get());</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      buf.clear();</div><div class="line">      bytesRead = channel.read(buf);</div><div class="line">    &#125;</div><div class="line">    aFile.close();</div></pre></td></tr></table></figure>
+<h5 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h5><ul>
+<li>ByteBuffer</li>
+<li>CharBuffer</li>
+<li>IntBuffer</li>
+</ul>
+<h6 id="buffer-属性"><a href="#buffer-属性" class="headerlink" title="buffer 属性"></a>buffer 属性</h6><ul>
+<li>position</li>
+<li>limit</li>
+<li>capacity</li>
+</ul>
+<h6 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h6><p>使用Buffer读写数据一般遵循以下四个步骤：</p>
+<ul>
+<li>写入数据到Buffer</li>
+<li>调用flip()方法</li>
+<li>从Buffer中读取数据</li>
+<li>调用clear()方法或者compact()方法</li>
+</ul>
+<p>Buffer初始化时需要调用各个Buffer的allocate方法，比如<br>CharBuffer cb = CharBuffer.allocate(48); //分配48个char大小的buffer</p>
+<ul>
+<li>可以通过buffer.put(x)自己写入数据，也可以调用channel.read把channel中数据写入buffer</li>
+<li>可以通过buffer.read()读出数据，也可以channel.write(buf)把buffer中的数据读出来 写入到Channel中</li>
+</ul>
+<p>####### 源码分析<br>position和limit的意义在读模式和写模式下是不同的<br><img src="http://onk9rv30p.bkt.clouddn.com/buffer.png" alt="buffer"></p>
+<p>Invariants: mark &lt;= position &lt;= limit &lt;= capacity<br>（在切换模式和清空buffer的时候都需要重置mark标志位，保证上述关系）</p>
+<ul>
+<li>filp()</li>
+</ul>
+<p>flip方法将Buffer从写模式切换到读模式。调用flip()方法会将position设回0，并将limit设置成之前position的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public final Buffer flip() &#123;</div><div class="line">    limit = position;</div><div class="line">    position = 0;</div><div class="line">    mark = -1;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>rewind()</li>
+</ul>
+<p>Buffer.rewind()将position设回0，所以你可以重读Buffer中的所有数据。limit保持不变，仍然表示能从Buffer中读取多少个元素（byte、char等）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public final Buffer rewind() &#123;</div><div class="line">    position = 0;</div><div class="line">    mark = -1;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>clear()与compact()方法</li>
+</ul>
+<p>一旦读完Buffer中的数据，需要让Buffer准备好再次被写入。可以通过clear()或compact()方法来完成。</p>
+<p>如果调用的是clear()方法，position将被设回0，limit被设置成 capacity的值。换句话说，Buffer 被清空了。Buffer中的数据并未清除，只是这些标记告诉我们可以从哪里开始往Buffer里写数据。</p>
+<p>如果Buffer中有一些未读的数据，调用clear()方法，数据将“被遗忘”，意味着不再有任何标记会告诉你哪些数据被读过，哪些还没有。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">public final Buffer clear() &#123;</div><div class="line">    position = 0;</div><div class="line">    limit = capacity;</div><div class="line">    mark = -1;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果Buffer中仍有未读的数据，且后续还需要这些数据，但是此时想要先先写些数据，那么使用compact()方法。</p>
+<p>compact()方法将所有未读的数据拷贝到Buffer起始处。然后将position设到最后一个未读元素正后面。limit属性依然像clear()方法一样，设置成capacity。现在Buffer准备好写数据了，但是不会覆盖未读的数据。<br>（Buffer类中不存在，但是在ByteBuffer中有个抽象方法）</p>
+<p>选取DirectByteBuffer实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public ByteBuffer compact() &#123;</div><div class="line">    int pos = position();</div><div class="line">    int lim = limit();</div><div class="line">    assert (pos &lt;= lim);</div><div class="line">    int rem = (pos &lt;= lim ? lim - pos : 0);</div><div class="line"></div><div class="line">    unsafe.copyMemory(ix(pos), ix(0), (long)rem &lt;&lt; 0);</div><div class="line">    position(rem);</div><div class="line">    limit(capacity());</div><div class="line">    discardMark();</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>mark()与reset()方法</li>
+</ul>
+<p>通过调用Buffer.mark()方法，可以标记Buffer中的一个特定position。之后可以通过调用Buffer.reset()方法恢复到这个position。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public final Buffer mark() &#123;</div><div class="line">    mark = position;</div><div class="line">    return this;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public final Buffer reset() &#123;</div><div class="line">    int m = mark;</div><div class="line">    if (m &lt; 0)</div><div class="line">        throw new InvalidMarkException();</div><div class="line">    position = m;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>//todo</p>
 
       
     </div>
@@ -501,6 +554,12 @@ Stream是阻塞的，当一个线程调用re">
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/java/" rel="tag"># java</a>
+          
+        </div>
       
 
       
@@ -611,7 +670,7 @@ Stream是阻塞的，当一个线程调用re">
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -646,7 +705,7 @@ Stream是阻塞的，当一个线程调用re">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#区别"><span class="nav-number">1.0.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#概念"><span class="nav-number">1.0.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类图"><span class="nav-number">1.0.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子"><span class="nav-number">1.0.4.</span> <span class="nav-text">例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">2.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">2.0.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel子类"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">Channel子类</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">1.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.4.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">1.5.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">1.5.0.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel子类"><span class="nav-number">1.5.0.1.1.</span> <span class="nav-text">Channel子类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#buffer"><span class="nav-number">1.5.0.1.2.</span> <span class="nav-text">buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#buffer-属性"><span class="nav-number">1.5.0.1.2.1.</span> <span class="nav-text">buffer 属性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#基本用法"><span class="nav-number">1.5.0.1.2.2.</span> <span class="nav-text">基本用法</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
