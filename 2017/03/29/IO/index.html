@@ -145,7 +145,7 @@ IO 阻塞IO
 Stream是阻塞的，当一个线程调用re">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
-<meta property="og:updated_time" content="2017-03-29T16:20:23.000Z">
+<meta property="og:updated_time" content="2017-03-29T16:23:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
 <meta name="twitter:description" content="NIO 和 IO的区别区别
@@ -466,30 +466,30 @@ Stream是阻塞的，当一个线程调用re">
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ByteBuffer buffer = ByteBuffer.allocate(48);</div><div class="line">int bytesRead = channel.read(buffer);</div><div class="line">while(! bufferFull(bytesRead) ) &#123;</div><div class="line">     bytesRead = channel.read(buffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>  需要循环来读取buffer中的所有的值。</p>
-<h2 id="NIO实现相关"><a href="#NIO实现相关" class="headerlink" title="NIO实现相关"></a>NIO实现相关</h2><p>NIO主要的组件有Channel、Buffer、Selector</p>
-<h4 id="Channel和Buffer"><a href="#Channel和Buffer" class="headerlink" title="Channel和Buffer"></a>Channel和Buffer</h4><p>和Stream相比，你可以同时对一个Channel进行读和写操作，而Stream只能读或写。</p>
+<h1 id="NIO实现相关"><a href="#NIO实现相关" class="headerlink" title="NIO实现相关"></a>NIO实现相关</h1><p>NIO主要的组件有Channel、Buffer、Selector</p>
+<h2 id="Channel和Buffer"><a href="#Channel和Buffer" class="headerlink" title="Channel和Buffer"></a>Channel和Buffer</h2><p>和Stream相比，你可以同时对一个Channel进行读和写操作，而Stream只能读或写。</p>
 <ul>
 <li>Channel可以异步进行读写。</li>
 <li>Channel只和Buffer进行交互。</li>
 </ul>
-<h5 id="Channel子类"><a href="#Channel子类" class="headerlink" title="Channel子类"></a>Channel子类</h5><ul>
+<h3 id="Channel子类"><a href="#Channel子类" class="headerlink" title="Channel子类"></a>Channel子类</h3><ul>
 <li>FileChannel</li>
 <li>DatagramChannel 通过UDP 向网络中读写数据</li>
 <li>SocketChannel 通过TCP 向网络中读写数据</li>
 <li>ServerSocketChannel 允许监听即将到来的TCP连接</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">RandomAccessFile aFile = new RandomAccessFile(&quot;data/nio-data.txt&quot;, &quot;rw&quot;);</div><div class="line">    FileChannel channel = aFile.getChannel();</div><div class="line"></div><div class="line">    ByteBuffer buf = ByteBuffer.allocate(48);</div><div class="line"></div><div class="line">    int bytesRead = channel.read(buf);</div><div class="line">    while (bytesRead != -1) &#123;</div><div class="line"></div><div class="line">      System.out.println(&quot;Read &quot; + bytesRead);</div><div class="line">      buf.flip();</div><div class="line"></div><div class="line">      while(buf.hasRemaining())&#123;</div><div class="line">          System.out.print((char) buf.get());</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      buf.clear();</div><div class="line">      bytesRead = channel.read(buf);</div><div class="line">    &#125;</div><div class="line">    aFile.close();</div></pre></td></tr></table></figure>
-<h5 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h5><ul>
+<h2 id="buffer"><a href="#buffer" class="headerlink" title="buffer"></a>buffer</h2><ul>
 <li>ByteBuffer</li>
 <li>CharBuffer</li>
 <li>IntBuffer</li>
 </ul>
-<h6 id="buffer-属性"><a href="#buffer-属性" class="headerlink" title="buffer 属性"></a>buffer 属性</h6><ul>
+<h3 id="buffer-属性"><a href="#buffer-属性" class="headerlink" title="buffer 属性"></a>buffer 属性</h3><ul>
 <li>position</li>
 <li>limit</li>
 <li>capacity</li>
 </ul>
-<h6 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h6><p>使用Buffer读写数据一般遵循以下四个步骤：</p>
+<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>使用Buffer读写数据一般遵循以下四个步骤：</p>
 <ul>
 <li>写入数据到Buffer</li>
 <li>调用flip()方法</li>
@@ -501,7 +501,7 @@ Stream是阻塞的，当一个线程调用re">
 <li>可以通过buffer.put(x)自己写入数据，也可以调用channel.read把channel中数据写入buffer</li>
 <li>可以通过buffer.read()读出数据，也可以channel.write(buf)把buffer中的数据读出来 写入到Channel中</li>
 </ul>
-<p>####### 源码分析<br>position和limit的意义在读模式和写模式下是不同的<br><img src="http://onk9rv30p.bkt.clouddn.com/buffer.png" alt="buffer"></p>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><p>position和limit的意义在读模式和写模式下是不同的<br><img src="http://onk9rv30p.bkt.clouddn.com/buffer.png" alt="buffer"></p>
 <p>Invariants: mark &lt;= position &lt;= limit &lt;= capacity<br>（在切换模式和清空buffer的时候都需要重置mark标志位，保证上述关系）</p>
 <ul>
 <li>filp()</li>
@@ -705,7 +705,7 @@ Stream是阻塞的，当一个线程调用re">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">1.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.4.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">1.5.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">1.5.0.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel子类"><span class="nav-number">1.5.0.1.1.</span> <span class="nav-text">Channel子类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#buffer"><span class="nav-number">1.5.0.1.2.</span> <span class="nav-text">buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#buffer-属性"><span class="nav-number">1.5.0.1.2.1.</span> <span class="nav-text">buffer 属性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#基本用法"><span class="nav-number">1.5.0.1.2.2.</span> <span class="nav-text">基本用法</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">1.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">2.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">2.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel子类"><span class="nav-number">2.1.1.</span> <span class="nav-text">Channel子类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer"><span class="nav-number">2.2.</span> <span class="nav-text">buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-属性"><span class="nav-number">2.2.1.</span> <span class="nav-text">buffer 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">2.2.2.</span> <span class="nav-text">基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#源码分析"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">源码分析</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
