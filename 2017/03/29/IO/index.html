@@ -87,15 +87,91 @@
 
 
 
-<meta name="description" content="自娱自乐">
-<meta property="og:type" content="website">
-<meta property="og:title" content="peng2035's blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="NIO 和 IO的区别区别
+
+
+IO
+NIO
+
+
+
+
+Stream oriented
+Buffer oriented
+
+
+Blocking IO
+Non blocking IO
+
+
+
+Selectors
+
+
+
+概念
+IO 阻塞IO
+标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
+Stream是阻塞的，当一个线程调用re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IO">
+<meta property="og:url" content="http://yoursite.com/2017/03/29/IO/index.html">
 <meta property="og:site_name" content="peng2035's blog">
-<meta property="og:description" content="自娱自乐">
+<meta property="og:description" content="NIO 和 IO的区别区别
+
+
+IO
+NIO
+
+
+
+
+Stream oriented
+Buffer oriented
+
+
+Blocking IO
+Non blocking IO
+
+
+
+Selectors
+
+
+
+概念
+IO 阻塞IO
+标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
+Stream是阻塞的，当一个线程调用re">
+<meta property="og:updated_time" content="2017-03-29T15:01:11.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="peng2035's blog">
-<meta name="twitter:description" content="自娱自乐">
+<meta name="twitter:title" content="IO">
+<meta name="twitter:description" content="NIO 和 IO的区别区别
+
+
+IO
+NIO
+
+
+
+
+Stream oriented
+Buffer oriented
+
+
+Blocking IO
+Non blocking IO
+
+
+
+Selectors
+
+
+
+概念
+IO 阻塞IO
+标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
+Stream是阻塞的，当一个线程调用re">
 
 
 
@@ -123,13 +199,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/03/29/IO/"/>
 
 
 
 
 
-  <title> peng2035's blog </title>
+  <title> IO | peng2035's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -154,9 +230,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -249,9 +323,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -281,10 +355,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/blog/2017/03/29/IO/" itemprop="url">
-                  IO
-                </a>
+                IO
               
             
           </h1>
@@ -346,9 +417,7 @@
       
 
       
-        
-          
-            <h2 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h2><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><table>
+        <h2 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h2><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4><table>
 <thead>
 <tr>
 <th>IO</th>
@@ -407,20 +476,27 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">RandomAccessFile aFile = new RandomAccessFile(&quot;data/nio-data.txt&quot;, &quot;rw&quot;);</div><div class="line">    FileChannel inChannel = aFile.getChannel();</div><div class="line"></div><div class="line">    ByteBuffer buf = ByteBuffer.allocate(48);</div><div class="line"></div><div class="line">    int bytesRead = inChannel.read(buf);</div><div class="line">    while (bytesRead != -1) &#123;</div><div class="line"></div><div class="line">      System.out.println(&quot;Read &quot; + bytesRead);</div><div class="line">      buf.flip(); //之前在inChannel.read往Buffer中写，之后要读buffer了，flip一下</div><div class="line"></div><div class="line">      while(buf.hasRemaining())&#123;</div><div class="line">          System.out.print((char) buf.get());</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      buf.clear();</div><div class="line">      bytesRead = inChannel.read(buf);</div><div class="line">    &#125;</div><div class="line">    aFile.close();</div></pre></td></tr></table></figure>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <div>
+      
+        
+
       
     </div>
 
@@ -428,299 +504,38 @@
       
 
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/blog/2017/03/28/wow的岁月/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bobby peng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="peng2035's blog">
-    </span>
-
-    
-      <header class="post-header">
-
         
-        
-          <h1 class="post-title" itemprop="name headline">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
+              <a href="/blog/2017/03/28/wow的岁月/" rel="next" title="wow的岁月">
+                <i class="fa fa-chevron-left"></i> wow的岁月
+              </a>
             
-              
-                
-                <a class="post-title-link" href="/blog/2017/03/28/wow的岁月/" itemprop="url">
-                  wow的岁月
-                </a>
-              
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-28T10:40:07+08:00">
-                2017-03-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/28/wow的岁月/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/28/wow的岁月/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          感谢每一个带我走过艾泽拉斯的朋友，愿圣光庇护着你们。
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/blog/2017/03/28/wow的岁月/">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/blog/2017/03/27/Tree-Traversal/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="bobby peng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="peng2035's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/blog/2017/03/27/Tree-Traversal/" itemprop="url">
-                  Tree Traversal
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-27T22:27:57+08:00">
-                2017-03-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/blog/2017/03/27/Tree-Traversal/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/03/27/Tree-Traversal/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png" alt="pre order"></p>
-<p>Pre-order: F, B, A, D, C, E, G, I, H.</p>
-<ol>
-<li>Check if the current node is empty / null</li>
-<li>Display the data part of the root (or current node).</li>
-<li>Traverse the left subtree by recursively calling the pre-order function.</li>
-<li><p>Traverse the right subtree by recursively calling the pre-order function.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/blog/2017/03/27/Tree-Traversal/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
@@ -728,6 +543,17 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -747,8 +573,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG"
@@ -801,6 +636,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#区别"><span class="nav-number">1.0.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#概念"><span class="nav-number">1.0.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类图"><span class="nav-number">1.0.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子"><span class="nav-number">1.0.4.</span> <span class="nav-text">例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">2.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">2.0.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel子类"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">Channel子类</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -908,6 +759,10 @@
   
 
   
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
@@ -925,6 +780,18 @@
       <script id="dsq-count-scr" src="https://peng2035.disqus.com/count.js" async></script>
     
 
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/blog/2017/03/29/IO/';
+          this.page.identifier = '2017/03/29/IO/';
+          this.page.title = 'IO';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://peng2035.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
     
 
   
