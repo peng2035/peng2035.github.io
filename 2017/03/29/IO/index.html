@@ -71,7 +71,7 @@
 <link href="/blog/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="java io," />
 
 
 
@@ -87,94 +87,25 @@
 
 
 
-<meta name="description" content="NIO 和 IO的区别区别
-
-
-IO
-NIO
-
-
-
-
-Stream oriented
-Buffer oriented
-
-
-Blocking IO
-Non blocking IO
-
-
-
-Selectors
-
-
-
-概念
-IO 阻塞IO
-标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
-Stream是阻塞的，当一个线程调用re">
+<meta name="description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO">
 <meta property="og:url" content="http://yoursite.com/2017/03/29/IO/index.html">
 <meta property="og:site_name" content="peng2035's blog">
-<meta property="og:description" content="NIO 和 IO的区别区别
-
-
-IO
-NIO
-
-
-
-
-Stream oriented
-Buffer oriented
-
-
-Blocking IO
-Non blocking IO
-
-
-
-Selectors
-
-
-
-概念
-IO 阻塞IO
-标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
-Stream是阻塞的，当一个线程调用re">
+<meta property="og:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%98%BB%E5%A1%9EIO.png">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%9D%9E%E9%98%BB%E5%A1%9EIO.png">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8IO.png">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8%E5%BC%8FIO">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E5%BC%82%E6%AD%A5IO.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
-<meta property="og:updated_time" content="2017-03-29T16:27:55.000Z">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/selector.png">
+<meta property="og:updated_time" content="2017-03-31T06:12:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
-<meta name="twitter:description" content="NIO 和 IO的区别区别
-
-
-IO
-NIO
-
-
-
-
-Stream oriented
-Buffer oriented
-
-
-Blocking IO
-Non blocking IO
-
-
-
-Selectors
-
-
-
-概念
-IO 阻塞IO
-标准IO是面向Stream的，每次从Stream中读取出字节，它不能在流中的数据前后移动，不能说已经读到后面了，再跳到前面去。
-Stream是阻塞的，当一个线程调用re">
-<meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
+<meta name="twitter:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
+<meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%98%BB%E5%A1%9EIO.png">
 
 
 
@@ -420,7 +351,52 @@ Stream是阻塞的，当一个线程调用re">
       
 
       
-        <h1 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h1><h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><table>
+        <h1 id="Linux-IO-模型（详见netty权威指南IO-模型部分）"><a href="#Linux-IO-模型（详见netty权威指南IO-模型部分）" class="headerlink" title="Linux IO 模型（详见netty权威指南IO 模型部分）"></a>Linux IO 模型（详见netty权威指南IO 模型部分）</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+<h3 id="进程切换"><a href="#进程切换" class="headerlink" title="进程切换"></a>进程切换</h3><p>为了控制进程的执行，内核必须有能力挂起正在CPU上运行的进程，并恢复以前挂起的某个进程的执行。这种行为被称为进程切换。因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。<br><a href="http://guojing.me/linux-kernel-architecture/posts/process-switch/" target="_blank" rel="external">详解</a></p>
+<p>从一个进程的运行转到另一个进程上运行，这个过程中经过下面这些变化：</p>
+<ul>
+<li>保存处理机上下文，包括程序计数器和其他寄存器。</li>
+<li>更新PCB信息。</li>
+<li>把进程的PCB移入相应的队列，如就绪、在某事件阻塞等队列。</li>
+<li>选择另一个进程执行，并更新其PCB。</li>
+<li>更新内存管理的数据结构。</li>
+<li>恢复处理机上下文。</li>
+</ul>
+<h3 id="进程阻塞"><a href="#进程阻塞" class="headerlink" title="进程阻塞"></a>进程阻塞</h3><p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语(Block)，使自己由运行状态变为阻塞状态。可见，进程的阻塞是进程自身的一种主动行为，也因此只有处于运行态的进程（获得CPU），才可能将其转为阻塞状态。当进程进入阻塞状态，是不占用CPU资源的。（所以太多的cas会损耗cpu的太多性能？todo）</p>
+<h3 id="文件描述符（File-descriptor）"><a href="#文件描述符（File-descriptor）" class="headerlink" title="文件描述符（File descriptor）"></a>文件描述符（File descriptor）</h3><p>文件描述符是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。<br>文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
+<h3 id="缓存IO"><a href="#缓存IO" class="headerlink" title="缓存IO"></a>缓存IO</h3><p>缓存 IO 又被称作标准 IO，大多数文件系统的默认 IO 操作都是缓存 IO。在 Linux 的缓存 IO 机制中，操作系统会将 IO 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。<br>缺点：数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。<br><a id="more"></a></p>
+<h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><p>Linux内核将所有外部设备都看作一个文件来操作，对一个文件的读写会调用 内核 提供的系统命令，返回一个文件描述符(file descriptor)，对一个socket读写也有对应的描述符，叫做socketfd，描述符就是一个数字，指向内核中的一个结构体(内核为各个进程维护的打开文件的记录表)</p>
+<p>一次IO操作会将数据先写入内核缓冲区 再将数据转移至进程缓冲区<br>ex: 发生一次read操作后，会发生两件事</p>
+<ul>
+<li>等待数据包到达就绪</li>
+<li>数据被复制到应用进程的缓冲区</li>
+</ul>
+<p>网络应用需要处理的无非就是两大类问题，网络IO，数据计算。相对于后者，网络IO的延迟，给应用带来的性能瓶颈大于后者。<br><a href="https://www.zhihu.com/question/19732473/answer/23434554" target="_blank" rel="external">关于同步非同步 异步非异步的简单理解</a></p>
+<h3 id="同步模型"><a href="#同步模型" class="headerlink" title="同步模型"></a>同步模型</h3><h4 id="阻塞IO-blocking-io"><a href="#阻塞IO-blocking-io" class="headerlink" title="阻塞IO(blocking io)"></a>阻塞IO(blocking io)</h4><p>在这个IO模型中，用户空间的应用程序执行一个系统调用（recvform），这会导致应用程序阻塞，什么也不干，直到数据准备好，并且将数据从内核复制到用户进程，最后进程再处理数据，在等待数据到处理数据的两个阶段，整个进程都被阻塞。不能处理别的网络IO。调用应用程序处于一种不再消费 CPU 而只是简单等待响应的状态，因此从处理的角度来看，这是非常有效的。在调用recv()/recvfrom()函数时，发生在内核中等待数据和复制数据的过程，大致如下图：<br>  <img src="http://onk9rv30p.bkt.clouddn.com/%E9%98%BB%E5%A1%9EIO.png" alt="阻塞IO"></p>
+<h4 id="非阻塞IO-non-blocking-io"><a href="#非阻塞IO-non-blocking-io" class="headerlink" title="非阻塞IO(non-blocking io)"></a>非阻塞IO(non-blocking io)</h4><p>  在网络IO时候，非阻塞IO会进行recvform系统调用，检查数据是否准备好，与阻塞IO不一样，可以重复调用recvfrom进行轮训。<br>  <img src="http://onk9rv30p.bkt.clouddn.com/%E9%9D%9E%E9%98%BB%E5%A1%9EIO.png" alt="非阻塞IO"><br>  优点：多个任务可以同时执行。<br>  缺点：数据在轮训期间准备完毕，会拉长整个流程的时间，降低吞吐量。</p>
+<h4 id="多路复用IO-multiplexing-io"><a href="#多路复用IO-multiplexing-io" class="headerlink" title="多路复用IO(multiplexing io)"></a>多路复用IO(multiplexing io)</h4><p>  IO多路复用有两个特别的系统调用select、poll、epoll（效率更高）函数。select调用是内核级别的，select轮询相对非阻塞的轮询的区别在于—前者可以等待多个socket，能实现同时对多个IO端口进行监听，当其中任何一个socket的数据准好了，就能返回进行可读，然后进程再进行recvform系统调用，将数据由内核拷贝到用户进程，当然这个过程是阻塞的。select或poll调用之后，会阻塞进程，与blocking IO阻塞不同在于，<strong> 此时的select不是等到socket数据全部到达再处理, 而是有了一部分数据就会调用用户进程来处理。（单任务全部完成之后才会复制到用户进程，可以同时对多个任务进行操作）</strong></p>
+<p>  I/O复用模型会用到select、poll、epoll函数，这几个函数也会使进程阻塞，但是和阻塞I/O所不同的的，这两个函数可以同时阻塞多个I/O操作。而且可以同时对多个读操作，多个写操作的I/O函数进行检测，直到有数据可读或可写时（注意不是全部数据可读或可写），才真正调用I/O操作函数。</p>
+<p>  对于多路复用，也就是轮询多个socket。多路复用既然可以处理多个IO，也就带来了新的问题，多个IO之间的顺序变得不确定了，当然也可以针对不同的编号。具体流程，如下图所示：<br>  <img src="http://onk9rv30p.bkt.clouddn.com/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8IO.png" alt="多路复用IO"><br>  IO multiplexing就是我们说的select，poll，epoll，有些地方也称这种IO方式为event driven IO。select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select，poll，epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程。</p>
+<p>  当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。</p>
+<p>  上面的图和blocking IO的图其实并没有太大的不同，事实上，还更差一些。因为这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection。</p>
+<p>  所以，如果处理的连接数不是很高的话，使用select/epoll的web server不一定比使用multi-threading + blocking IO的web server性能更好，可能延迟还更大。（select/epoll的优势并不是对于单个连接能处理得更快，而是在于能处理更多的连接。）</p>
+<p>  在IO multiplexing Model中，实际中，对于每一个socket，一般都设置成为non-blocking，但是，如上图所示，整个用户的process其实是一直被block的。只不过process是被select这个函数block，而不是被socket IO给block。所以IO多路复用是阻塞在select，epoll这样的系统调用之上，而没有阻塞在真正的I/O系统调用如recvfrom之上。</p>
+<p>  在I/O编程过程中，当需要同时处理多个客户端接入请求时，可以利用多线程或者I/O多路复用技术进行处理。I/O多路复用技术通过把多个I/O的阻塞复用到同一个select的阻塞上，从而使得系统在单线程的情况下可以同时处理多个客户端请求。与传统的多线程/多进程模型比，I/O多路复用的最大优势是系统开销小，系统不需要创建新的额外进程或者线程，也不需要维护这些进程和线程的运行，降底了系统的维护工作量，节省了系统资源，I/O多路复用的主要应用场景如下：</p>
+<p>  详见 <a href="https://www.zhihu.com/question/32163005/answer/55772739" target="_blank" rel="external">IO多路复用</a></p>
+<h4 id="信号驱动式IO-signal-driven-io-同步？revfrom是用户进程调用"><a href="#信号驱动式IO-signal-driven-io-同步？revfrom是用户进程调用" class="headerlink" title="信号驱动式IO(signal-driven io)(同步？revfrom是用户进程调用)"></a>信号驱动式IO(signal-driven io)(同步？revfrom是用户进程调用)</h4><p>  首先我们允许Socket进行信号驱动IO,并安装一个信号处理函数，进程继续运行并不阻塞。当数据准备好时，进程会收到一个SIGIO信号，可以在信号处理函数中调用I/O操作函数处理数据。过程如下图所示：</p>
+<p>  <img src="http://onk9rv30p.bkt.clouddn.com/%E4%BF%A1%E5%8F%B7%E9%A9%B1%E5%8A%A8%E5%BC%8FIO" alt="信号驱动IO"></p>
+<h3 id="异步模型"><a href="#异步模型" class="headerlink" title="异步模型"></a>异步模型</h3><h4 id="异步非阻塞"><a href="#异步非阻塞" class="headerlink" title="异步非阻塞"></a>异步非阻塞</h4><p>相对于同步IO，异步IO不是顺序执行。用户进程进行aio_read系统调用之后，无论内核数据是否准备好，都会直接返回给用户进程，然后用户态进程可以去做别的事情。等到socket数据准备好了，内核直接复制数据给进程，然后从内核向进程发送通知。IO两个阶段，进程都是非阻塞的。</p>
+<p>Linux提供了AIO库函数实现异步，但是用的很少。目前有很多开源的异步IO库，例如libevent、libev、libuv。异步过程如下图所示：</p>
+<p><img src="http://onk9rv30p.bkt.clouddn.com/%E5%BC%82%E6%AD%A5IO.png" alt="异步非阻塞IO"></p>
+<p>用户进程发起aio_read操作之后，立刻就可以开始去做其它的事。而另一方面，从kernel的角度，当它受到一个asynchronous read之后，首先它会立刻返回，所以不会对用户进程产生任何block。然后，kernel会等待数据准备完成，然后将数据拷贝到用户内存，当这一切都完成之后，kernel会给用户进程发送一个signal或执行一个基于线程的回调函数来完成这次 IO 处理过程，告诉它read操作完成了。</p>
+<h4 id="异步阻塞"><a href="#异步阻塞" class="headerlink" title="异步阻塞"></a>异步阻塞</h4><ul>
+<li>有时我们的 API 只提供异步通知方式，例如在 node.js 里，但业务逻辑需要的是做完一件事后做另一件事，例如数据库连接初始化后才能开始接受用户的 HTTP 请求。这样的业务逻辑就需要调用者是以阻塞方式来工作。</li>
+</ul>
+<p>为了在异步环境里模拟 “顺序执行” 的效果，就需要把同步代码转换成异步形式，这称为 CPS（Continuation Passing Style）变换。BYVoid 大神的 continuation.js 库就是一个 CPS 变换的工具。用户只需用比较符合人类常理的同步方式书写代码，CPS 变换器会把它转换成层层嵌套的异步回调形式。<br>(callback的时候执行剩余逻辑？ 主线程卡死？ 使用回调来返回？)<br><a href="https://www.zhihu.com/question/20259086" target="_blank" rel="external">cps相关</a></p>
+<ul>
+<li>另外一种使用阻塞方式的理由是降低响应延迟。如果采用非阻塞方式，一个任务 A 被提交到后台，就开始做另一件事 B，但 B 还没做完，A 就完成了，这时要想让 A 的完成事件被尽快处理（比如 A 是个紧急事务），要么丢弃做到一半的 B，要么保存 B 的中间状态并切换回 A，任务的切换是需要时间的（不管是从磁盘载入到内存，还是从内存载入到高速缓存），这势必降低 A 的响应速度。因此，对实时系统或者延迟敏感的事务，有时采用阻塞方式比非阻塞方式更好。</li>
+</ul>
+<h1 id="NIO-和-IO的区别"><a href="#NIO-和-IO的区别" class="headerlink" title="NIO 和 IO的区别"></a>NIO 和 IO的区别</h1><h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><table>
 <thead>
 <tr>
 <th>IO</th>
@@ -451,8 +427,7 @@ Stream是阻塞的，当一个线程调用re">
 <li>NIO 非阻塞IO<ul>
 <li>NIO把数据读到一个待处理的Buffer中，也可以在buffer中来回移动，但是不保证Buffer中的数据是所需要的完整数据，需要去校验。</li>
 <li>NIO使用一个线程从某个通道中读取数据，但是仅能从Buffer中获得当前的部分数据，而数据变为完整之前，线程并不会被阻塞，而是可以去做其他的事情。写入也是这样，不需要等待它完全写入，就可以去做其他的事情。这里的“其他事情”大部分也是指在其它通道上执行IO操作，所以一个线程可以管理多个输入/输出通道，Selector就是跑在这个线程。</li>
-<li>好处：一个Selector能同时对多个Socket连接进行管理。而不会阻塞当前的Selector线程。如果是原有的IO模型，在一个read或者write出现网络问题的时候不能进行下一步的操作，要解决这个问题只能开辟新的线程。这样就会导致线程数太多。而线程池的方案也会有出现多个线程阻塞而拖慢整个系统的问题。详见<a href="https://www.zhihu.com/question/32163005/answer/55772739" target="_blank" rel="external">IO多路复用</a><a id="more"></a>
-<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><img src="http://onk9rv30p.bkt.clouddn.com/io&amp;nio%E7%B1%BB%E5%9B%BE.png" alt="io&amp;nio类图"></li>
+<li>好处：一个Selector能同时对多个Socket连接进行管理。而不会阻塞当前的Selector线程。如果是原有的IO模型，在一个read或者write出现网络问题的时候不能进行下一步的操作，要解决这个问题只能开辟新的线程。这样就会导致线程数太多。而线程池的方案也会有出现多个线程阻塞而拖慢整个系统的问题。<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><img src="http://onk9rv30p.bkt.clouddn.com/io&amp;nio%E7%B1%BB%E5%9B%BE.png" alt="io&amp;nio类图"></li>
 </ul>
 </li>
 </ul>
@@ -472,8 +447,8 @@ Stream是阻塞的，当一个线程调用re">
 <li>Channel可以异步进行读写。</li>
 <li>Channel只和Buffer进行交互。</li>
 </ul>
-<h3 id="Channel子类"><a href="#Channel子类" class="headerlink" title="Channel子类"></a>Channel子类</h3><ul>
-<li>FileChannel</li>
+<h3 id="Channel子类（todo-实现）"><a href="#Channel子类（todo-实现）" class="headerlink" title="Channel子类（todo 实现）"></a>Channel子类（todo 实现）</h3><ul>
+<li>FileChannel 只能阻塞 <a href="http://stackoverflow.com/questions/3955250/why-filechannel-in-java-is-not-non-blocking" target="_blank" rel="external">详细原因</a></li>
 <li>DatagramChannel 通过UDP 向网络中读写数据</li>
 <li>SocketChannel 通过TCP 向网络中读写数据</li>
 <li>ServerSocketChannel 允许监听即将到来的TCP连接</li>
@@ -515,7 +490,57 @@ Stream是阻塞的，当一个线程调用re">
 <p>选取DirectByteBuffer实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public ByteBuffer compact() &#123;</div><div class="line">    int pos = position();</div><div class="line">    int lim = limit();</div><div class="line">    assert (pos &lt;= lim);</div><div class="line">    int rem = (pos &lt;= lim ? lim - pos : 0);</div><div class="line"></div><div class="line">    unsafe.copyMemory(ix(pos), ix(0), (long)rem &lt;&lt; 0);</div><div class="line">    position(rem);</div><div class="line">    limit(capacity());</div><div class="line">    discardMark();</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h4 id="mark-与reset-方法"><a href="#mark-与reset-方法" class="headerlink" title="mark()与reset()方法"></a>mark()与reset()方法</h4><p>通过调用Buffer.mark()方法，可以标记Buffer中的一个特定position。之后可以通过调用Buffer.reset()方法恢复到这个position。例如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public final Buffer mark() &#123;</div><div class="line">    mark = position;</div><div class="line">    return this;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public final Buffer reset() &#123;</div><div class="line">    int m = mark;</div><div class="line">    if (m &lt; 0)</div><div class="line">        throw new InvalidMarkException();</div><div class="line">    position = m;</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>//todo</p>
+<h2 id="Scatter-Gather"><a href="#Scatter-Gather" class="headerlink" title="Scatter/Gather"></a>Scatter/Gather</h2><h3 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>分散（scatter）从Channel中读取是指在读操作时将读取的数据写入多个buffer中。因此，Channel将从Channel中读取的数据“分散（scatter）”到多个Buffer中。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ByteBuffer header = ByteBuffer.allocate(128);</div><div class="line">ByteBuffer body = ByteBuffer.allocate(1024);</div><div class="line">ByteBuffer[] byteArray = &#123;header, body&#125;;</div><div class="line">channel.read(byteArray);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>注意buffer首先被插入到数组，然后再将数组作为channel.read() 的输入参数。read()方法按照buffer在数组中的顺序将从channel中读取的数据写入到buffer，当一个buffer被写满后，channel紧接着向另一个buffer中写。</p>
+<p>Scattering Reads在移动下一个buffer前，必须填满当前的buffer，这也意味着它不适用于动态消息(消息大小不固定)。换句话说，如果存在消息头和消息体，消息头必须完成填充（例如 128byte），Scattering Reads才能正常工作。</p>
+<ul>
+<li>聚集（gather）写入Channel是指在写操作时将多个buffer的数据写入同一个Channel，因此，Channel 将多个Buffer中的数据“聚集（gather）”后发送到Channel。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ByteBuffer header = ByteBuffer.allocate(128);</div><div class="line">ByteBuffer body = ByteBuffer.allocate(1024);</div><div class="line">ByteBuffer[] byteArray = &#123;header, body&#125;;</div><div class="line">channel.write(byteArray);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>buffers数组是write()方法的入参，write()方法会按照buffer在数组中的顺序，将数据写入到channel，注意只有position和limit之间的数据才会被写入。因此，如果一个buffer的容量为128byte，但是仅仅包含58byte的数据，那么这58byte的数据将被写入到channel中。因此与Scattering Reads相反，Gathering Writes能较好的处理动态消息。</p>
+<h2 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h2><h3 id="基本概念-2"><a href="#基本概念-2" class="headerlink" title="基本概念"></a>基本概念</h3><ul>
+<li>一个线程来操作多个channel，减少上下文开销。<br><img src="http://onk9rv30p.bkt.clouddn.com/selector.png" alt="selector"><h3 id="Selector的创建"><a href="#Selector的创建" class="headerlink" title="Selector的创建"></a>Selector的创建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Selector selector = Selector.open();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="向Selector注册通道"><a href="#向Selector注册通道" class="headerlink" title="向Selector注册通道"></a>向Selector注册通道</h3><p>为了将Channel和Selector配合使用，必须将channel注册到selector上。通过SelectableChannel.register()方法来实现，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">channel.configureBlocking(false);</div><div class="line">SelectionKey key = channel.register(selector,Selectionkey.OP_READ);</div></pre></td></tr></table></figure></p>
+<p>与Selector一起使用时，Channel必须处于非阻塞模式下。这意味着不能将FileChannel（上文有讲）与Selector一起使用，因为FileChannel不能切换到非阻塞模式。而套接字通道都可以。</p>
+<p>事件类型有Connect、Accept、Read、Write，都是说这个事件已经ready的时候才触发。<br>如果不止对一种事件感兴趣，可以用“位或”操作符将常量连接起来.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">int interestSet = SelectionKey.OP_READ | SelectionKey.OP_WRITE;</div></pre></td></tr></table></figure></p>
+<h3 id="SelectionKey"><a href="#SelectionKey" class="headerlink" title="SelectionKey"></a>SelectionKey</h3><h4 id="interest集合"><a href="#interest集合" class="headerlink" title="interest集合"></a>interest集合</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public static final int OP_READ = 1;</div><div class="line">public static final int OP_WRITE = 4;</div><div class="line">public static final int OP_CONNECT = 8;</div><div class="line">public static final int OP_ACCEPT = 16;</div></pre></td></tr></table></figure>
+<p>与操作就能判断监听了什么事件类型。</p>
+<h4 id="ready集合"><a href="#ready集合" class="headerlink" title="ready集合"></a>ready集合</h4><p>判断哪些事件已经完成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">int readySet = selectionKey.readyOps();</div><div class="line">selectionKey.isAcceptable();</div><div class="line">selectionKey.isConnectable();</div><div class="line">selectionKey.isReadable();</div><div class="line">selectionKey.isWritable();</div></pre></td></tr></table></figure></p>
+<h4 id="selector-channel"><a href="#selector-channel" class="headerlink" title="selector + channel"></a>selector + channel</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Channel  channel  = selectionKey.channel();</div><div class="line">Selector selector = selectionKey.selector();</div></pre></td></tr></table></figure>
+<h4 id="attachment-附加对象"><a href="#attachment-附加对象" class="headerlink" title="attachment(附加对象)"></a>attachment(附加对象)</h4><p>可以在注册时附加对象，在selectionKey中获取对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">selectionKey.attach(theObject);</div><div class="line">Object attachedObj = selectionKey.attachment();</div><div class="line"></div><div class="line">SelectionKey key = channel.register(selector, SelectionKey.OP_READ, theObject);</div></pre></td></tr></table></figure></p>
+<h4 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">Selector selector = Selector.open();</div><div class="line">channel.configureBlocking(false);</div><div class="line">SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</div><div class="line">while(true) &#123;</div><div class="line">  int readyChannels = selector.select();</div><div class="line">  if(readyChannels == 0) continue;</div><div class="line">  Set selectedKeys = selector.selectedKeys();</div><div class="line">  Iterator keyIterator = selectedKeys.iterator();</div><div class="line">  while(keyIterator.hasNext()) &#123;</div><div class="line">    SelectionKey key = keyIterator.next();</div><div class="line">    if(key.isAcceptable()) &#123;</div><div class="line">        // a connection was accepted by a ServerSocketChannel.</div><div class="line">    &#125; else if (key.isConnectable()) &#123;</div><div class="line">        // a connection was established with a remote server.</div><div class="line">    &#125; else if (key.isReadable()) &#123;</div><div class="line">        // a channel is ready for reading</div><div class="line">    &#125; else if (key.isWritable()) &#123;</div><div class="line">        // a channel is ready for writing</div><div class="line">    &#125;</div><div class="line">    keyIterator.remove();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">Set&lt;SelectionKey&gt; selectKeys = selector.selectedKeys();</div><div class="line">Selector selector = Selector.open();</div><div class="line"></div><div class="line">channel.configureBlocking(false);</div><div class="line"></div><div class="line">SelectionKey key = channel.register(selector, SelectionKey.OP_READ);</div><div class="line"></div><div class="line"></div><div class="line">while(true) &#123;</div><div class="line"></div><div class="line">int readyChannels = selector.select();</div><div class="line"></div><div class="line">if(readyChannels == 0) continue;</div><div class="line"></div><div class="line"></div><div class="line">Set&lt;SelectionKey&gt; selectedKeys = selector.selectedKeys();</div><div class="line"></div><div class="line">Iterator&lt;SelectionKey&gt; keyIterator = selectedKeys.iterator();</div><div class="line"></div><div class="line">while(keyIterator.hasNext()) &#123;</div><div class="line"></div><div class="line">  SelectionKey key = keyIterator.next();</div><div class="line"></div><div class="line">  if(key.isAcceptable()) &#123;</div><div class="line">      // a connection was accepted by a ServerSocketChannel.</div><div class="line"></div><div class="line">  &#125; else if (key.isConnectable()) &#123;</div><div class="line">      // a connection was established with a remote server.</div><div class="line"></div><div class="line">  &#125; else if (key.isReadable()) &#123;</div><div class="line">      // a channel is ready for reading</div><div class="line"></div><div class="line">  &#125; else if (key.isWritable()) &#123;</div><div class="line">      // a channel is ready for writing</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  keyIterator.remove();</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><a href="https://github.com/wuyinxian124/nettybook2/tree/master/src/com/phei/netty/nio" target="_blank" rel="external">nio相关服务端客户端代码</a></p>
+<h1 id="Java-I-O模型的演进"><a href="#Java-I-O模型的演进" class="headerlink" title="Java I/O模型的演进"></a>Java I/O模型的演进</h1><h2 id="BIO通信模型"><a href="#BIO通信模型" class="headerlink" title="BIO通信模型"></a>BIO通信模型</h2><p>当新建一个Socket连接时，由于读/写都是阻塞的，那么就需要一条线程来完成读写操作，即一条线程对应一个Socket连接，如果Socket连接数过多时，线程数过多会导致系统性能下降，栈溢出、创建新线程失败等问题。尝试使用线程池来控制线程资源的数量的方法，但是底层本质上还是阻塞通信，<br>Socket读写在操作完全完成之前，线程会阻塞在I/O操作上，如果 对方发送请求 或者 应答消息 缓慢，或者 网络传输较慢，读写操作所在的线程就会长时间被阻塞，在此期间，其它线程只能在消息队列中排队。<br>比如OutputStream的write操作，线程会被阻塞直到 所有要发送的字节 全部写入完毕，在TCP中，当消息方接受缓慢的时候，不能及时从TCP缓冲区中读出数据，那么发送端就会调整减小window size，写入速度也会越来越慢，此时使用的是阻塞IO，线程就会被阻塞很长时间，如果线程池中所有的线程都被长时间阻塞了，新来的任务就会排队进入任务队列，而任务队列满了之后，再继续提交任务就会导致提交任务的线程阻塞，新的请求会被拒绝，客户端大量超时。（所以适合的超时机制很重要。）</p>
+<p>我们无法保证 生产环境的网络状况，对方应用处理速度，如果我们的系统依赖于对方的处理速度，可靠性就无法保证。</p>
+<h2 id="NIO通信模型"><a href="#NIO通信模型" class="headerlink" title="NIO通信模型"></a>NIO通信模型</h2><p>在面向Stream的IO中数据直接写入或读到Steram中，而NIO中，引入了Buffer缓冲区的概念，让Buffer和Channel进行交互。<br>SocketChannel和ServerSocketChannel可以被设置为unblocking的模式，connect/read/write操作不会阻塞当前线程，这样使用selector一个线程管理多个网络IO操作成为可能。<br>Java的NIO使用epoll实现，性能也不会随着客户端增加而下降。</p>
+<h1 id="java-io"><a href="#java-io" class="headerlink" title="java io"></a>java io</h1><p>操作类包含在java.io包下，将近80个类，大概分为4组：</p>
+<ul>
+<li>基于字节操作的I/O接口，如InputStream、OutputStream</li>
+<li>基于字符操作的I/O接口，如Reader、Write</li>
+<li>基于磁盘操作的I/O接口，File</li>
+<li>基于网络操作的I/O接口，如Socket<br>前两种是根据传输数据的格式(字节流/字符流，只要是处理纯文本数据，就优先考虑使用字符流。 除此之外都使用字节流。)，后两种是传输数据的方式(磁盘/网络)</li>
+</ul>
+<p>Java 传统IO主要包括字节流和字符流两种<br>Java NIO 和 Netty<br>作为一个NIO服务端，需要能够处理 网络的闪断、客户端的重复接入、客户端的安全认证、消息编解码、半包读写等情况，难度是比较大的。<br>1.Java NIO的API使用起来比较复杂，而netty的api简单，大部分只用关注业务逻辑，灵活扩展。<br>2.必须对多线程和网络编程非常熟悉，才能写出高质量的NIO程序。<br>3.实现上述的诸多功能工作量和难度较大，而netty做好了封装也很成熟</p>
+<hr>
+<p>java io操作类包含在java.io包下，将近80个类，大概分为4组：<br>1.基于字节操作的I/O接口，如InputStream、OutputStream<br>2.基于字符操作的I/O接口，如Reader、Write<br>3.基于磁盘操作的I/O接口，File<br>4.基于网络操作的I/O接口，如Socket<br>前两种是根据传输数据的格式(字节流/字符流)，后两种是传输数据的方式(磁盘/网络)</p>
+<p>Java 传统IO主要包括字节流和字符流两种</p>
+<ul>
+<li><p>ByteArrayInputStream</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ByteArrayInputStream &#123;</div><div class="line">     byte[] buf; //inputStream的内容</div><div class="line">     int pos;  //当前读到的位置</div><div class="line">     int mark;  //调用mark标记当前pos，调用reset后可以把pos置回标记的mark处</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>FileInputStream 对文件的读取，其中大部分的实现调用native完成</p>
+</li>
+<li>FilterInputStream 本身只是把请求委派给内部的InputStream，做一个Decorator，其子类做了各种包装</li>
+<li>BufferedInputStream 把内部包装的InputStream读取一些存在一个byte[] buf中，读的时候可以直接中自己的buf中读</li>
+<li>DataInputStream 可以读取若干个字节，转换成int、byte、short、UTF字符等类型返回</li>
+<li>ObjectInputStream把字节流反序列化为对象，包装内部的一个DataInputStream的数据源，也是一个Decorator<br><a href="https://juejin.im/post/58d27284ac502e0058b4e136" target="_blank" rel="external">IO流详解</a></li>
+</ul>
 
       
     </div>
@@ -545,7 +570,7 @@ Stream是阻塞的，当一个线程调用re">
       
         <div class="post-tags">
           
-            <a href="/blog/tags/java/" rel="tag"># java</a>
+            <a href="/blog/tags/java-io/" rel="tag"># java io</a>
           
         </div>
       
@@ -658,7 +683,7 @@ Stream是阻塞的，当一个线程调用re">
             
             <div class="site-state-item site-state-tags">
               <a href="/blog/tags/index.html">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -693,7 +718,7 @@ Stream是阻塞的，当一个线程调用re">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">1.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">1.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">2.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">2.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel子类"><span class="nav-number">2.1.1.</span> <span class="nav-text">Channel子类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer"><span class="nav-number">2.2.</span> <span class="nav-text">buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-属性"><span class="nav-number">2.2.1.</span> <span class="nav-text">buffer 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">2.2.2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.2.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#filp"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">filp()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rewind"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">rewind()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#clear-与compact-方法"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">clear()与compact()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mark-与reset-方法"><span class="nav-number">2.2.3.4.</span> <span class="nav-text">mark()与reset()方法</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-IO-模型（详见netty权威指南IO-模型部分）"><span class="nav-number">1.</span> <span class="nav-text">Linux IO 模型（详见netty权威指南IO 模型部分）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用户空间和内核空间"><span class="nav-number">1.1.1.</span> <span class="nav-text">用户空间和内核空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程切换"><span class="nav-number">1.1.2.</span> <span class="nav-text">进程切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程阻塞"><span class="nav-number">1.1.3.</span> <span class="nav-text">进程阻塞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件描述符（File-descriptor）"><span class="nav-number">1.1.4.</span> <span class="nav-text">文件描述符（File descriptor）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存IO"><span class="nav-number">1.1.5.</span> <span class="nav-text">缓存IO</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO模型"><span class="nav-number">1.2.</span> <span class="nav-text">IO模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同步模型"><span class="nav-number">1.2.1.</span> <span class="nav-text">同步模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞IO-blocking-io"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">阻塞IO(blocking io)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#非阻塞IO-non-blocking-io"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">非阻塞IO(non-blocking io)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多路复用IO-multiplexing-io"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">多路复用IO(multiplexing io)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#信号驱动式IO-signal-driven-io-同步？revfrom是用户进程调用"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">信号驱动式IO(signal-driven io)(同步？revfrom是用户进程调用)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步模型"><span class="nav-number">1.2.2.</span> <span class="nav-text">异步模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#异步非阻塞"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">异步非阻塞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异步阻塞"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">异步阻塞</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-和-IO的区别"><span class="nav-number">2.</span> <span class="nav-text">NIO 和 IO的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#区别"><span class="nav-number">2.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">2.3.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">2.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO实现相关"><span class="nav-number">3.</span> <span class="nav-text">NIO实现相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel和Buffer"><span class="nav-number">3.1.</span> <span class="nav-text">Channel和Buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel子类（todo-实现）"><span class="nav-number">3.1.1.</span> <span class="nav-text">Channel子类（todo 实现）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buffer"><span class="nav-number">3.2.</span> <span class="nav-text">buffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#buffer-属性"><span class="nav-number">3.2.1.</span> <span class="nav-text">buffer 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本用法"><span class="nav-number">3.2.2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">3.2.3.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#filp"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">filp()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rewind"><span class="nav-number">3.2.3.2.</span> <span class="nav-text">rewind()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#clear-与compact-方法"><span class="nav-number">3.2.3.3.</span> <span class="nav-text">clear()与compact()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mark-与reset-方法"><span class="nav-number">3.2.3.4.</span> <span class="nav-text">mark()与reset()方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scatter-Gather"><span class="nav-number">3.3.</span> <span class="nav-text">Scatter/Gather</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">基本概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Selector"><span class="nav-number">3.4.</span> <span class="nav-text">Selector</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Selector的创建"><span class="nav-number">3.4.2.</span> <span class="nav-text">Selector的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向Selector注册通道"><span class="nav-number">3.4.3.</span> <span class="nav-text">向Selector注册通道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SelectionKey"><span class="nav-number">3.4.4.</span> <span class="nav-text">SelectionKey</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#interest集合"><span class="nav-number">3.4.4.1.</span> <span class="nav-text">interest集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ready集合"><span class="nav-number">3.4.4.2.</span> <span class="nav-text">ready集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#selector-channel"><span class="nav-number">3.4.4.3.</span> <span class="nav-text">selector + channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attachment-附加对象"><span class="nav-number">3.4.4.4.</span> <span class="nav-text">attachment(附加对象)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例子-1"><span class="nav-number">3.4.4.5.</span> <span class="nav-text">例子</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-I-O模型的演进"><span class="nav-number">4.</span> <span class="nav-text">Java I/O模型的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO通信模型"><span class="nav-number">4.1.</span> <span class="nav-text">BIO通信模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO通信模型"><span class="nav-number">4.2.</span> <span class="nav-text">NIO通信模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java-io"><span class="nav-number">5.</span> <span class="nav-text">java io</span></a></li></ol></div>
             
 
           </div>
