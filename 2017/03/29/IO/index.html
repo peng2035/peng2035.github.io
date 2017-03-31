@@ -101,7 +101,7 @@
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/selector.png">
-<meta property="og:updated_time" content="2017-03-31T08:15:09.000Z">
+<meta property="og:updated_time" content="2017-03-31T09:00:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
 <meta name="twitter:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
@@ -516,16 +516,9 @@
 <h1 id="Java-I-O模型的演进"><a href="#Java-I-O模型的演进" class="headerlink" title="Java I/O模型的演进"></a>Java I/O模型的演进</h1><h2 id="BIO通信模型"><a href="#BIO通信模型" class="headerlink" title="BIO通信模型"></a>BIO通信模型</h2><p>当新建一个Socket连接时，由于读/写都是阻塞的，那么就需要一条线程来完成读写操作，即一条线程对应一个Socket连接，如果Socket连接数过多时，线程数过多会导致系统性能下降，栈溢出、创建新线程失败等问题。尝试使用线程池来控制线程资源的数量的方法，但是底层本质上还是阻塞通信，<br>Socket读写在操作完全完成之前，线程会阻塞在I/O操作上，如果 对方发送请求 或者 应答消息 缓慢，或者 网络传输较慢，读写操作所在的线程就会长时间被阻塞，在此期间，其它线程只能在消息队列中排队。<br>比如OutputStream的write操作，线程会被阻塞直到 所有要发送的字节 全部写入完毕，在TCP中，当消息方接受缓慢的时候，不能及时从TCP缓冲区中读出数据，那么发送端就会调整减小window size，写入速度也会越来越慢，此时使用的是阻塞IO，线程就会被阻塞很长时间，如果线程池中所有的线程都被长时间阻塞了，新来的任务就会排队进入任务队列，而任务队列满了之后，再继续提交任务就会导致提交任务的线程阻塞，新的请求会被拒绝，客户端大量超时。（所以适合的超时机制很重要。）</p>
 <p>我们无法保证 生产环境的网络状况，对方应用处理速度，如果我们的系统依赖于对方的处理速度，可靠性就无法保证。</p>
 <h2 id="NIO通信模型"><a href="#NIO通信模型" class="headerlink" title="NIO通信模型"></a>NIO通信模型</h2><p>在面向Stream的IO中数据直接写入或读到Steram中，而NIO中，引入了Buffer缓冲区的概念，让Buffer和Channel进行交互。<br>SocketChannel和ServerSocketChannel可以被设置为unblocking的模式，connect/read/write操作不会阻塞当前线程，这样使用selector一个线程管理多个网络IO操作成为可能。<br>Java的NIO使用epoll实现，性能也不会随着客户端增加而下降。</p>
-<h1 id="java-io"><a href="#java-io" class="headerlink" title="java io"></a>java io</h1><p>操作类包含在java.io包下，将近80个类，大概分为4组：</p>
-<ul>
-<li>基于字节操作的I/O接口，如InputStream、OutputStream</li>
-<li>基于字符操作的I/O接口，如Reader、Write</li>
-<li>基于磁盘操作的I/O接口，File</li>
-<li>基于网络操作的I/O接口，如Socket<br>前两种是根据传输数据的格式(字节流/字符流，只要是处理纯文本数据，就优先考虑使用字符流。 除此之外都使用字节流。)，后两种是传输数据的方式(磁盘/网络)</li>
-</ul>
 <p>Java 传统IO主要包括字节流和字符流两种<br>Java NIO 和 Netty<br>作为一个NIO服务端，需要能够处理 网络的闪断、客户端的重复接入、客户端的安全认证、消息编解码、半包读写等情况，难度是比较大的。<br>1.Java NIO的API使用起来比较复杂，而netty的api简单，大部分只用关注业务逻辑，灵活扩展。<br>2.必须对多线程和网络编程非常熟悉，才能写出高质量的NIO程序。<br>3.实现上述的诸多功能工作量和难度较大，而netty做好了封装也很成熟</p>
 <hr>
-<p>java io操作类包含在java.io包下，将近80个类，大概分为4组：<br>1.基于字节操作的I/O接口，如InputStream、OutputStream<br>2.基于字符操作的I/O接口，如Reader、Write<br>3.基于磁盘操作的I/O接口，File<br>4.基于网络操作的I/O接口，如Socket<br>前两种是根据传输数据的格式(字节流/字符流)，后两种是传输数据的方式(磁盘/网络)</p>
+<h1 id="java-io"><a href="#java-io" class="headerlink" title="java io"></a>java io</h1><p>java io操作类包含在java.io包下，将近80个类，大概分为4组：<br>1.基于字节操作的I/O接口，如InputStream、OutputStream<br>2.基于字符操作的I/O接口，如Reader、Write<br>3.基于磁盘操作的I/O接口，File<br>4.基于网络操作的I/O接口，如Socket<br>前两种是根据传输数据的格式(字节流/字符流)，后两种是传输数据的方式(磁盘/网络)</p>
 <p>Java 传统IO主要包括字节流和字符流两种</p>
 <ul>
 <li><p>ByteArrayInputStream</p>
