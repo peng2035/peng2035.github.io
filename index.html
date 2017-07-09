@@ -260,6 +260,149 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://peng2035.me/2017/03/31/concurrent-常用类/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobby peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="peng2035's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/03/31/concurrent-常用类/" itemprop="url">
+                  concurrent 常用类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-31T17:41:08+08:00">
+                2017-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/31/concurrent-常用类/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/31/concurrent-常用类/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Concurrent-常用类-未完待续-（基于java-1-8）"><a href="#Concurrent-常用类-未完待续-（基于java-1-8）" class="headerlink" title="Concurrent 常用类(未完待续) （基于java 1.8）"></a>Concurrent 常用类(未完待续) （基于java 1.8）</h1><h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2> <table BORDER CELLPADDING=3 CELLSPACING=1><br> <caption>Summary of BlockingQueue methods</caption><br>  <tr><br>    <td></td><br>    <td ALIGN=CENTER><em>Throws exception</em></td><br>    <td ALIGN=CENTER><em>Special value</em></td><br>    <td ALIGN=CENTER><em>Blocks</em></td><br>    <td ALIGN=CENTER><em>Times out</em></td><br>  </tr><br>  <tr><br>    <td><b>Insert</b></td><br>    <td>add(e)</td><br>    <td>offer(e)</td><br>    <td>put(e)</td><br>    <td>offer(e, time, unit)</td><br>  </tr><br>  <tr><br>    <td><b>Remove</b></td><br>    <td>remove()</td><br>    <td>poll()</td><br>    <td>take()</td><br>    <td>poll(time, unit)</td><br>  </tr><br>  <tr><br>    <td><b>Examine</b></td><br>    <td>element()</td><br>    <td>peek()</td><br>    <td></td><br>    <td></td><br>  </tr><br> </table>
+
+<p> 四种形式</p>
+<ul>
+<li>抛出异常</li>
+<li>返回一个特殊值(可能是null或者是false，取决于具体的操作)</li>
+<li>阻塞当前执行直到其可以继续</li>
+<li><p>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/03/31/concurrent-常用类/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://peng2035.me/2017/03/29/IO/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -723,7 +866,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -736,7 +879,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

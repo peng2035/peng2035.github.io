@@ -1,0 +1,772 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java,concurrent,复习," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/druid2.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Concurrent 常用类(未完待续) （基于java 1.8）BlockQueue  Summary of BlockingQueue methods          Throws exception    Special value    Blocks    Times out        Insert    add(e)    offer(e)    put(e)    offer(e">
+<meta property="og:type" content="article">
+<meta property="og:title" content="concurrent 常用类">
+<meta property="og:url" content="http://peng2035.me/2017/03/31/concurrent-常用类/index.html">
+<meta property="og:site_name" content="peng2035's blog">
+<meta property="og:description" content="Concurrent 常用类(未完待续) （基于java 1.8）BlockQueue  Summary of BlockingQueue methods          Throws exception    Special value    Blocks    Times out        Insert    add(e)    offer(e)    put(e)    offer(e">
+<meta property="og:updated_time" content="2017-07-09T05:21:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="concurrent 常用类">
+<meta name="twitter:description" content="Concurrent 常用类(未完待续) （基于java 1.8）BlockQueue  Summary of BlockingQueue methods          Throws exception    Special value    Blocks    Times out        Insert    add(e)    offer(e)    put(e)    offer(e">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://peng2035.me/2017/03/31/concurrent-常用类/"/>
+
+
+
+
+
+  <title> concurrent 常用类 | peng2035's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">peng2035's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://peng2035.me/2017/03/31/concurrent-常用类/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobby peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="peng2035's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                concurrent 常用类
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-31T17:41:08+08:00">
+                2017-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/31/concurrent-常用类/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/03/31/concurrent-常用类/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Concurrent-常用类-未完待续-（基于java-1-8）"><a href="#Concurrent-常用类-未完待续-（基于java-1-8）" class="headerlink" title="Concurrent 常用类(未完待续) （基于java 1.8）"></a>Concurrent 常用类(未完待续) （基于java 1.8）</h1><h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2> <table border="" cellpadding="3" cellspacing="1"><br> <caption>Summary of BlockingQueue methods</caption><br>  <tr><br>    <td></td><br>    <td align="CENTER"><em>Throws exception</em></td><br>    <td align="CENTER"><em>Special value</em></td><br>    <td align="CENTER"><em>Blocks</em></td><br>    <td align="CENTER"><em>Times out</em></td><br>  </tr><br>  <tr><br>    <td><b>Insert</b></td><br>    <td>add(e)</td><br>    <td>offer(e)</td><br>    <td>put(e)</td><br>    <td>offer(e, time, unit)</td><br>  </tr><br>  <tr><br>    <td><b>Remove</b></td><br>    <td>remove()</td><br>    <td>poll()</td><br>    <td>take()</td><br>    <td>poll(time, unit)</td><br>  </tr><br>  <tr><br>    <td><b>Examine</b></td><br>    <td>element()</td><br>    <td>peek()</td><br>    <td></td><br>    <td></td><br>  </tr><br> </table>
+
+<p> 四种形式</p>
+<ul>
+<li>抛出异常</li>
+<li>返回一个特殊值(可能是null或者是false，取决于具体的操作)</li>
+<li>阻塞当前执行直到其可以继续</li>
+<li><p>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</p>
+<a id="more"></a>
+<p>注意：</p>
+</li>
+<li><p>BlockingQueue中是不允许添加null的，该接受在声明的时候就要求所有的实现类在接收到一个null的时候，都应该抛出NullPointerException。(poll在没有数据的时候会返回null)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> public E poll() &#123;</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lock();</div><div class="line">    try &#123;</div><div class="line">        return (count == 0) ? null : dequeue();//当count==0时，返回null</div><div class="line">    &#125; finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>BlockingQueue是线程安全的，因此它的所有和队列相关的方法都具有原子性。但是对于那么从Collection接口中继承而来的批量操作方法，比如addAll(Collection e)等方法，BlockingQueue的实现通常没有保证其具有原子性，因此我们在使用的BlockingQueue，应该尽可能地不去使用这些方法。</p>
+</li>
+<li><p>BlockingQueue主要应用于生产者与消费者的模型中，其元素的添加和获取都是极具规律性的。但是对于remove(Object o)这样的方法，虽然BlockingQueue可以保证元素正确的删除，但是这样的操作会非常响应性能，因此我们在没有特殊的情况下，也应该避免使用这类方法。</p>
+</li>
+</ul>
+<h3 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h3><p>基于数组的并发阻塞队列</p>
+<ul>
+<li>构造方法<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public ArrayBlockingQueue(int capacity, boolean fair) &#123;</div><div class="line">    if (capacity &lt;= 0)</div><div class="line">        throw new IllegalArgumentException();</div><div class="line">    this.items = new Object[capacity];</div><div class="line">    lock = new ReentrantLock(fair);</div><div class="line">    notEmpty = lock.newCondition();</div><div class="line">    notFull =  lock.newCondition();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>由ReentrantLock实现，公正锁实现，为了保证List的先进先出。<br>除了在内部array未满的时候需要满足先进先出，还需要保证await的线程在signal的时候保证是顺序的<br>（todo condition 源码解析，大致理解是condition内部也是维护一个队列，在signal的时候唤醒的是firstWaiter，这样就能保证线程是顺序唤醒的）。</p>
+<p>插入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void put(E e) throws InterruptedException &#123;</div><div class="line">    checkNotNull(e);</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lockInterruptibly();</div><div class="line">    try &#123;</div><div class="line">        while (count == items.length)</div><div class="line">            notFull.await();</div><div class="line">        enqueue(e);</div><div class="line">    &#125; finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">private void enqueue(E x) &#123;</div><div class="line">    // assert lock.getHoldCount() == 1;</div><div class="line">    // assert items[putIndex] == null;</div><div class="line">    final Object[] items = this.items;</div><div class="line">    items[putIndex] = x;</div><div class="line">    if (++putIndex == items.length)</div><div class="line">        putIndex = 0;</div><div class="line">    count++;</div><div class="line">    notEmpty.signal();//为了保证先进先出的效果，需要保证signal是顺序的</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>移除<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">public E poll() &#123;</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lock();</div><div class="line">    try &#123;</div><div class="line">        return (count == 0) ? null : dequeue();</div><div class="line">    &#125; finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private E dequeue() &#123;</div><div class="line">    // assert lock.getHoldCount() == 1;</div><div class="line">    // assert items[takeIndex] != null;</div><div class="line">    final Object[] items = this.items;</div><div class="line">    @SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">    E x = (E) items[takeIndex];</div><div class="line">    items[takeIndex] = null;</div><div class="line">    if (++takeIndex == items.length)</div><div class="line">        takeIndex = 0;</div><div class="line">    count--;</div><div class="line">    if (itrs != null)</div><div class="line">        itrs.elementDequeued();//删除迭代器中的数据</div><div class="line">    notFull.signal();</div><div class="line">    return x;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="DelayQueue"><a href="#DelayQueue" class="headerlink" title="DelayQueue"></a>DelayQueue</h3><p>DelayQueue主要用于放置实现了Delay接口的对象，其中的对象只能在其时刻到期时才能从队列中取走。这种队列是有序的，即队头的延迟到期时间最短。如果没有任何延迟到期，那么久不会有任何头元素。</p>
+<h4 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h4><ul>
+<li>无界的BlockingQueue</li>
+<li>poll方法立即返回，如果没有头结点则返回null。take方法会阻塞直到有头结点才返回。<h4 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h4></li>
+<li>成员变量<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">private final transient ReentrantLock lock = new ReentrantLock();</div><div class="line">private final PriorityQueue&lt;E&gt; q = new PriorityQueue&lt;E&gt;();</div><div class="line">private Thread leader = null;</div><div class="line">private final Condition available = lock.newCondition();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>内部由优先队列实现，available来控制他的阻塞和通知。<br>lock，还有用于优化阻塞通知的线程元素leader。</p>
+<ul>
+<li>offer(E e)<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public boolean offer(E e) &#123;</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lock();</div><div class="line">    try &#123;</div><div class="line">        q.offer(e);</div><div class="line">        if (q.peek() == e) &#123;</div><div class="line">            leader = null;</div><div class="line">            available.signal();</div><div class="line">        &#125;</div><div class="line">        return true;</div><div class="line">    &#125; finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在头元素为空的情况下，插入头元素将会唤醒线程。</p>
+<ul>
+<li>take()<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public E take() throws InterruptedException &#123;</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lockInterruptibly();</div><div class="line">    try &#123;</div><div class="line">        for (;;) &#123;</div><div class="line">            E first = q.peek();</div><div class="line">            if (first == null)</div><div class="line">                available.await();//队列中没有元素的时候，进入等待</div><div class="line">            else &#123;</div><div class="line">                long delay = first.getDelay(NANOSECONDS);</div><div class="line">                if (delay &lt;= 0)</div><div class="line">                    return q.poll();</div><div class="line">                first = null; // don&apos;t retain ref while waiting</div><div class="line">                if (leader != null)</div><div class="line">                    available.await();</div><div class="line">                else &#123;</div><div class="line">                    Thread thisThread = Thread.currentThread();</div><div class="line">                    leader = thisThread; //用于判断是否有线程在获取</div><div class="line">                    try &#123;</div><div class="line">                        available.awaitNanos(delay);</div><div class="line">                    &#125; finally &#123;</div><div class="line">                        if (leader == thisThread)</div><div class="line">                            leader = null;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; finally &#123;</div><div class="line">        if (leader == null &amp;&amp; q.peek() != null)</div><div class="line">            available.signal();</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">first = null; // don&apos;t retain ref while waiting</div></pre></td></tr></table></figure>
+<p>想想假设现在延迟队列里面有三个对象。</p>
+<ul>
+<li>线程A进来获取first,然后进入 else 的else ,设置了leader为当前线程A</li>
+<li>线程B进来获取first,进入else的阻塞操作,然后无限期等待</li>
+<li>如果线程A阻塞完毕,获取对象成功,出队,这个对象理应被GC回收,但是他还被线程B持有着,GC链可达,所以不能回收这个first.</li>
+<li>假设还有线程C 、D、E.. 持有对象1引用,那么无限期的不能回收该对象1引用了,那么就会造成内存泄露.</li>
+</ul>
+<p>//todo 实现一个带超时的缓存，实现一下delayedQueue</p>
+<h3 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h3><p>适合实现一个消费者生产者队列</p>
+<h4 id="代码分析-1"><a href="#代码分析-1" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">private final AtomicInteger count = new AtomicInteger();</div><div class="line"></div><div class="line">/** Lock held by take, poll, etc */</div><div class="line">private final ReentrantLock takeLock = new ReentrantLock();</div><div class="line"></div><div class="line">/** Wait queue for waiting takes */</div><div class="line">private final Condition notEmpty = takeLock.newCondition();</div><div class="line"></div><div class="line">/** Lock held by put, offer, etc */</div><div class="line">private final ReentrantLock putLock = new ReentrantLock();</div><div class="line"></div><div class="line">/** Wait queue for waiting puts */</div><div class="line">private final Condition notFull = putLock.newCondition();</div></pre></td></tr></table></figure>
+<p>读写分离，take 和 put 不互斥。<br>ArrayBlockingQueue 为什么只用了一把锁。<br>猜想：ArrayBlockingQueue 是一个环形数组，如果用两把锁，对capacity的判断可能是失效，会导致put的时候插入了存在的数据。<br>而LinkedBlockingQueue 是基于链表的，添加和删除的时候是对于head和last的操作，互不相关，所以可以用两把锁来实现。<br>因为使用了两把锁，所以count使用了AtomicInteger来实现，保证其并发。</p>
+<ul>
+<li><p>offer(E e)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">public boolean offer(E e) &#123;</div><div class="line">    if (e == null) throw new NullPointerException();</div><div class="line">    final AtomicInteger count = this.count;</div><div class="line">    if (count.get() == capacity)</div><div class="line">        return false; //</div><div class="line">    int c = -1;</div><div class="line">    Node&lt;E&gt; node = new Node&lt;E&gt;(e);</div><div class="line">    final ReentrantLock putLock = this.putLock;</div><div class="line">    putLock.lock();</div><div class="line">    try &#123;</div><div class="line">        if (count.get() &lt; capacity) &#123;</div><div class="line">            enqueue(node);</div><div class="line">            c = count.getAndIncrement();</div><div class="line">            if (c + 1 &lt; capacity)</div><div class="line">                notFull.signal();</div><div class="line">        &#125;</div><div class="line">    &#125; finally &#123;</div><div class="line">        putLock.unlock();</div><div class="line">    &#125;</div><div class="line">    if (c == 0)</div><div class="line">        signalNotEmpty();</div><div class="line">    return c &gt;= 0;</div><div class="line">&#125;</div><div class="line">private void enqueue(Node&lt;E&gt; node) &#123;</div><div class="line">    // assert putLock.isHeldByCurrentThread();</div><div class="line">    // assert last.next == null;</div><div class="line">    last = last.next = node;//last = head = new Node&lt;E&gt;(null); 初始化的时候head=last，所以在第一个节点插入的时候，head会被赋值</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>poll</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public E poll() &#123;</div><div class="line">    final AtomicInteger count = this.count;</div><div class="line">    if (count.get() == 0)</div><div class="line">        return null;</div><div class="line">    E x = null;</div><div class="line">    int c = -1;</div><div class="line">    final ReentrantLock takeLock = this.takeLock;</div><div class="line">    takeLock.lock();</div><div class="line">    try &#123;</div><div class="line">        if (count.get() &gt; 0) &#123;</div><div class="line">            x = dequeue();</div><div class="line">            c = count.getAndDecrement();</div><div class="line">            if (c &gt; 1)</div><div class="line">                notEmpty.signal();</div><div class="line">        &#125;</div><div class="line">    &#125; finally &#123;</div><div class="line">        takeLock.unlock();</div><div class="line">    &#125;</div><div class="line">    if (c == capacity)</div><div class="line">        signalNotFull();</div><div class="line">    return x;</div><div class="line">&#125;</div><div class="line">private E dequeue() &#123;</div><div class="line">    // assert takeLock.isHeldByCurrentThread();</div><div class="line">    // assert head.item == null;</div><div class="line">    Node&lt;E&gt; h = head;</div><div class="line">    Node&lt;E&gt; first = h.next;</div><div class="line">    h.next = h; // help GC</div><div class="line">    head = first;</div><div class="line">    E x = first.item;</div><div class="line">    first.item = null;</div><div class="line">    return x;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="LinkedTransferQueue"><a href="#LinkedTransferQueue" class="headerlink" title="LinkedTransferQueue"></a>LinkedTransferQueue</h3><p>//todo</p>
+<h3 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h3><p>//todo</p>
+<h3 id="SynchronousQueue"><a href="#SynchronousQueue" class="headerlink" title="SynchronousQueue"></a>SynchronousQueue</h3><p>//todo</p>
+<h3 id="ConcurrentQueue"><a href="#ConcurrentQueue" class="headerlink" title="ConcurrentQueue"></a>ConcurrentQueue</h3><p>//todo</p>
+<h3 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h3><p>//todo</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/concurrent/" rel="tag"># concurrent</a>
+          
+            <a href="/tags/复习/" rel="tag"># 复习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/29/IO/" rel="next" title="IO">
+                <i class="fa fa-chevron-left"></i> IO
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG"
+               alt="bobby peng" />
+          <p class="site-author-name" itemprop="name">bobby peng</p>
+           
+              <p class="site-description motion-element" itemprop="description">自娱自乐</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Concurrent-常用类-未完待续-（基于java-1-8）"><span class="nav-number">1.</span> <span class="nav-text">Concurrent 常用类(未完待续) （基于java 1.8）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BlockQueue"><span class="nav-number">1.1.</span> <span class="nav-text">BlockQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">1.1.1.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DelayQueue"><span class="nav-number">1.1.2.</span> <span class="nav-text">DelayQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重点"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">重点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码分析"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">代码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">1.1.3.</span> <span class="nav-text">LinkedBlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码分析-1"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">代码分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedTransferQueue"><span class="nav-number">1.1.4.</span> <span class="nav-text">LinkedTransferQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PriorityBlockingQueue"><span class="nav-number">1.1.5.</span> <span class="nav-text">PriorityBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SynchronousQueue"><span class="nav-number">1.1.6.</span> <span class="nav-text">SynchronousQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentQueue"><span class="nav-number">1.1.7.</span> <span class="nav-text">ConcurrentQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentLinkedQueue"><span class="nav-number">1.1.8.</span> <span class="nav-text">ConcurrentLinkedQueue</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bobby peng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://peng2035.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://peng2035.me/2017/03/31/concurrent-常用类/';
+          this.page.identifier = '2017/03/31/concurrent-常用类/';
+          this.page.title = 'concurrent 常用类';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://peng2035.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
