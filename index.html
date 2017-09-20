@@ -370,8 +370,7 @@
 
       
         
-          
-            <h3 id="关于mysql的一些建议"><a href="#关于mysql的一些建议" class="headerlink" title="关于mysql的一些建议"></a>关于mysql的一些建议</h3><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><ul>
+          <h3 id="关于mysql的一些建议"><a href="#关于mysql的一些建议" class="headerlink" title="关于mysql的一些建议"></a>关于mysql的一些建议</h3><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><ul>
 <li>更小的通常更好。<ul>
 <li>更小的数据类型通常更快，因为他们占用更少的磁盘，内存和CPU缓存，并且处理时需要的CPU周期也更少。</li>
 <li>确保没有低估需要存储的值的范围，因为在schema中的多个地方增加数据类型的范围是一个非常耗时和痛苦的操作。</li>
@@ -395,72 +394,13 @@
 </ul>
 </li>
 </ul>
-<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><ul>
-<li>最左匹配原则，mysql会一直向右匹配直到遇到范围查询（&gt;,&lt;,between,like）就停止匹配。<ul>
-<li>例：a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整</li>
-<li>线上遇到过同时建立(a,b,c)和（a,b）索引的，根据最左匹配原则，(a,b,c)已经能满足（a,b）的查询需求，所以(a,b)是有些多余的。如果之前是(a,b)的索引，仅需扩充成(a,b,c)即可，不需要新建索引。</li>
-<li>范围查找的字段尽量放在索引的最后，详见第一条，c放在最后可以被有效的利用到，且不会阻塞被精确匹配的列。</li>
-<li>严禁左模糊或者全模糊</li>
-</ul>
-</li>
-<li>= 和 in 可以乱序。<ul>
-<li>a = 1 and b = 2 and c = 3 建立(a,b,c)索引可以任意顺序，mysql的查询优化器会帮你优化成索引可以识别的形式。</li>
-</ul>
-</li>
-<li>尽可能的选择区分度高的列作为索引。<ul>
-<li>区分度越高，扫描的记录越少，原理见B-Tree</li>
-<li>区分度公式：count(distinct col)/count(*)详见下文  越接近1区分度越高。尽量高于0.1。</li>
-<li>关于status 如果查询的频度很高，建议将status这类的枚举字段作为前缀。即使查询用不到，可以穷举，类似status in (1,2,3,4) &amp; a = 1 &amp; b = 2，上述前提是status覆盖度很高，且查询量很大，如果status大部分时候仅作为状态记录，则不建议用此方式。</li>
-</ul>
-</li>
-<li>索引列不能参与计算<ul>
-<li>比如from_unixtime(create_time) = ’2014-05-29’就不能使用到索引，原因很简单，b+树中存的都是数据表中的字段值，但进行检索时，需要把所有元素都应用函数才能比较，显然成本太大。所以语句应该写成create_time = unix_timestamp(’2014-05-29’)</li>
-</ul>
-</li>
-<li>业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。<ul>
-<li>唯一索引的查找效率非常高，且能防止脏数据的产生。</li>
-</ul>
-</li>
-<li>超过三个表禁止 join。需要 join 的字段，数据类型必须绝对一致;多表关联查询 时，保证被关联的字段需要有索引。<ul>
-<li>即使双表 join 也要注意表索引、SQL 性能。</li>
-</ul>
-</li>
-<li>在 varchar 字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据 实际文本区分度决定索引长度即可。<ul>
-<li>索引的长度与区分度是一对矛盾体，一般对字符串类型数据，长度为 20 的索引，区分度会高达90%以上。</li>
-<li>就是再加一列，作为Varchar的指纹列，可以用hash或者MD5，然后在指纹列上加索引，查询的时候可以用 where hash = ? and string = ?，同样可以适用于text。（针对前N个字段区分度不是很高的列可以使用这种方式，但是有一定的侵入性）</li>
-</ul>
-</li>
-<li>如果有 order by 的场景，请注意利用索引的有序性。order by 最后的字段是组合 索引的一部分，并且放在索引组合顺序的最后，避免出现 file_sort 的情况，影响查询性能。<ul>
-<li>正例：where a=? and b=? order by c; 索引:a_b_c</li>
-<li>反例：索引中有范围查找，那么索引有序性无法利用，如:WHERE a&gt;10 ORDER BY b; 索引 a_b 无法排序。</li>
-</ul>
-</li>
-<li>利用覆盖索引来进行查询操作，避免回表。<ul>
-<li>覆盖索引（covering index）指一个查询语句的执行只需要从辅助索引中就可以得到查询记录，而不需要查询聚集索引中的记录。也可以称之为实现了索引覆盖。</li>
-<li>聚簇索引 的数据是放置在叶子节点的，如果要走到叶子节点还需要硬盘的io操作，效率低。</li>
-<li>说明 如果一本书需要知道第 11 章是什么标题，会翻开第 11 章对应的那一页吗?目录浏览一下就好，这个目录就是起到覆盖索引的作用。</li>
-</ul>
-</li>
-<li>利用延迟关联或者子查询优化超多分页场景。<ul>
-<li>MySQL 并不是跳过 offset 行，而是取 offset+N 行，然后返回放弃前 offset 行，返回 N 行，那当 offset 特别大的时候，效率就非常的低下，要么控制返回的总页数，要么对超过 特定阈值的页数进行 SQL 改写。</li>
-<li>优化方案：SELECT a.* FROM 表 1 a, (select id from 表 1 where 条件 LIMIT 100000,20 ) b where a.id=b.id</li>
-<li>最好给分页加个限制，例如超过500页就不能查询了，数据量大的话建议走搜索引擎。</li>
-</ul>
-</li>
-</ul>
-<h4 id="sql相关"><a href="#sql相关" class="headerlink" title="sql相关"></a>sql相关</h4><ul>
-<li>不要使用 count(列名)或 count(常量)来替代 count(*)，count(*)是 SQL92 定义的 标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关。<ul>
-<li>count(*)会统计值为 NULL 的行，而 count(列名)不会统计此列为 NULL 值的行。</li>
-</ul>
-</li>
-<li>count(distinct col) 计算该列除 NULL 之外的不重复行数，注意 count(distinct col1, col2) 如果其中一列全为NULL，那么即使另一列有不同的值，也返回为0。</li>
-<li>当某一列的值全是 NULL 时，count(col)的返回结果为 0，但 sum(col)的返回结果为 NULL，因此使用 sum()时需注意 NPE 问题。<ul>
-<li>可以使用如下方式来避免sum的NPE问题:SELECT IF(ISNULL(SUM(g)),0,SUM(g)) FROM table;</li>
-</ul>
-</li>
-</ul>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/20/SQL一些使用技巧与总结/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

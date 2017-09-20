@@ -107,7 +107,7 @@
 
 
 选择更加合">
-<meta property="og:updated_time" content="2017-09-20T02:21:13.000Z">
+<meta property="og:updated_time" content="2017-09-20T02:22:45.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SQL一些使用技巧与总结">
 <meta name="twitter:description" content="关于mysql的一些建议数据类型
@@ -410,6 +410,7 @@
 </ul>
 </li>
 </ul>
+<a id="more"></a>
 <h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><ul>
 <li>最左匹配原则，mysql会一直向右匹配直到遇到范围查询（&gt;,&lt;,between,like）就停止匹配。<ul>
 <li>例：a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整</li>
