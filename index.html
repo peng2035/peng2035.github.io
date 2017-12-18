@@ -294,6 +294,212 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://peng2035.me/2017/12/18/单例的N种写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobby peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="peng2035's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/12/18/单例的N种写法/" itemprop="url">
+                  单例的N种写法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-18T13:59:47+08:00">
+                2017-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Singleton1 &#123;</div><div class="line">    private static Singleton1 singleton = null;</div><div class="line"></div><div class="line">    private Singleton1() &#123;&#125;</div><div class="line"></div><div class="line">    public static Singleton1 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            singleton = new Singleton1();</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：惰性加载<br>缺点：多线程有问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Singleton2 &#123;</div><div class="line">    private static Singleton2 singleton = null;</div><div class="line"></div><div class="line">    private Singleton2() &#123;&#125;</div><div class="line"></div><div class="line">    public synchonized static Singleton2 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            return new Singleton2();</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：多线程问题解决<br>缺点：newInstance 阻塞</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public class Singleton3 &#123;</div><div class="line">    private static Singleton3 singleton = null;</div><div class="line"></div><div class="line">    privte Singleton3() &#123;&#125;</div><div class="line"></div><div class="line">    public static Singleton3 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            synchonized(this.class) &#123;</div><div class="line">                if(singleton == null) &#123;</div><div class="line">                    return new Singleton3();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：性能提升，不会再newInstance阻塞。<br>缺点：线程安全有问题，new Singleton3()在指令重排序的情况下，可能只生成了半个对象。<br><a href="https://monkeysayhi.github.io/2016/11/29/volatile%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E4%BD%9C%E7%94%A8%E3%80%81%E5%8E%9F%E7%90%86/" target="_blank" rel="external">详解</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public class Singleton4 &#123;</div><div class="line">    private static volatile Singleton4 singleton = null;</div><div class="line"></div><div class="line">    private Singleton4() &#123;&#125;</div><div class="line"></div><div class="line">    public Singleton4 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            sychonized(this.class) &#123;</div><div class="line">                if(singleton == null) &#123;</div><div class="line">                    return new Singleton4();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：线程安全解决，性能可行，推荐<br>缺点：写起来麻烦。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton5 &#123;</div><div class="line">    private static Singleton5 singleton = new Singleton5();</div><div class="line"></div><div class="line">    private Singleton5() &#123;&#125;</div><div class="line"></div><div class="line">    public static newInstance() &#123;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：写起来简单，线程安全（classload）机制保证。<br>缺点：在Singleton5被加载时 实例就已经被初始化了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">private static Singleton5 singleton = null;</div><div class="line">static &#123;</div><div class="line">    singleton = new Singleton5():</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>同理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public enum Singleton6 &#123;</div><div class="line">    SINGLETON;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：写法简单清晰，线程安全，effective java隆重推荐，不会因为序列化和反序列话新增对象<br>缺点：不能实现懒加载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">public class Singleton7 &#123;</div><div class="line">    private static class SingletonHolder() &#123;</div><div class="line">        private static final Singleton7 singleton = new Singleton7();</div><div class="line"></div><div class="line">        private SingletonHolder() &#123;&#125;</div><div class="line">    &#125;</div><div class="line">    private Singleton7() &#123;&#125;</div><div class="line"></div><div class="line">    public Singleton7 newInstance() &#123;</div><div class="line">        return SingletonHolder.singleton;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>优点：间接实现了懒加载，因为在singleton加载的时候，SingletonHolder并不会被实例化。</p>
+<table>
+<thead>
+<tr>
+<th>实现方式</th>
+<th>关键点</th>
+<th>资源浪费</th>
+<th>线程安全</th>
+<th>多线程环境的性能足够优化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基础饱汉</td>
+<td>懒加载</td>
+<td>否</td>
+<td>否</td>
+<td>-</td>
+</tr>
+<tr>
+<td>饱汉变种1</td>
+<td>懒加载、同步</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>饱汉变种2</td>
+<td>懒加载、DCL</td>
+<td>否</td>
+<td>否</td>
+<td>-</td>
+</tr>
+<tr>
+<td>饱汉变种3</td>
+<td>懒加载、DCL、volatile</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>饿汉</td>
+<td>静态变量初始化</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Holder</td>
+<td>静态变量初始化、holder</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>枚举</td>
+<td>枚举本质、静态变量初始化</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://juejin.im/post/5a162f6d5188253edc7f9457" target="_blank" rel="external">单例模式有几种写法</a></p>
+<ul>
+<li>如果单例由不同的类装载器装入，那便有可能存在多个单例类的实例。假定不是远端存取，例如一些servlet容器对每个servlet使用完全不同的类装载器，这样的话如果有两个servlet访问一个单例类，它们就都会有各自的实例。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">private static Class getClass(String classname) throws ClassNotFoundException &#123;     </div><div class="line">      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();     </div><div class="line"></div><div class="line">      if(classLoader == null)     </div><div class="line">         classLoader = Singleton.class.getClassLoader();     </div><div class="line"></div><div class="line">      return (classLoader.loadClass(classname));     </div><div class="line">   &#125;     </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果Singleton实现了java.io.Serializable接口，那么这个类的实例就可能被序列化和复原。不管怎样，如果你序列化一个单例类的对象，接下来复原多个那个对象，那你就会有多个单例类的实例。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class Singleton implements java.io.Serializable &#123;     </div><div class="line">   public static Singleton INSTANCE = new Singleton();     </div><div class="line"></div><div class="line">   protected Singleton() &#123;     </div><div class="line"></div><div class="line">   &#125;     </div><div class="line">   private Object readResolve() &#123;     </div><div class="line">            return INSTANCE;     </div><div class="line">      &#125;    </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://peng2035.me/2017/09/20/SQL一些使用技巧与总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1152,7 +1358,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
