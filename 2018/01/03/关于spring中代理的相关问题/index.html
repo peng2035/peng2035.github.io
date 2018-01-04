@@ -88,20 +88,23 @@
 
 
 <meta name="description" content="spring代理问题问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。
-疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再回到代理类的，所以 @Transactional">
+以下的场景都基于method1调用method2
+疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于spring中代理的相关问题">
 <meta property="og:url" content="http://peng2035.me/2018/01/03/关于spring中代理的相关问题/index.html">
 <meta property="og:site_name" content="peng2035's blog">
 <meta property="og:description" content="spring代理问题问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。
-疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再回到代理类的，所以 @Transactional">
+以下的场景都基于method1调用method2
+疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/java-dynamic-proxy-in-method-stack.png">
-<meta property="og:updated_time" content="2018-01-04T10:19:19.624Z">
+<meta property="og:updated_time" content="2018-01-04T13:38:06.496Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于spring中代理的相关问题">
 <meta name="twitter:description" content="spring代理问题问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。
-疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再回到代理类的，所以 @Transactional">
+以下的场景都基于method1调用method2
+疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再">
 <meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png">
 
 
@@ -372,6 +375,7 @@
 
       
         <h1 id="spring代理问题"><a href="#spring代理问题" class="headerlink" title="spring代理问题"></a>spring代理问题</h1><p>问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。<br>以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。</p>
+<p>以下的场景都基于method1调用method2</p>
 <h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><p>对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再回到代理类的，所以 @Transactional 在同类调用之间无效。</p>
 <p>但是cglib生成的是目标类的子类，猜想的结构大概是这样的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//猜想的cglib生成类简易写法</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GuessedCglibProxy</span> <span class="keyword">extends</span> <span class="title">SimpleCglibService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"GuessedCglibProxy in method1"</span>);</div><div class="line">        <span class="keyword">super</span>.method1();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"GuessedCglibProxy in method2"</span>);</div><div class="line">        <span class="keyword">super</span>.method2();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleCglibService</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"SimpleCglibService in method1"</span>);</div><div class="line">        method2();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</div><div class="line">        System.out.println(<span class="string">"SimpleCglibService in method2"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        GuessedCglibProxy guessedCglibProxy = <span class="keyword">new</span> GuessedCglibProxy();</div><div class="line">        guessedCglibProxy.method1();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p><img src="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png" alt="猜想cglib代理的调用栈"><br>这样理论上应该是能够调用到代理类的。<br>但是事实是并不能调用成功。<br>找了一下<a href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations" target="_blank" rel="external">Spring文档</a>也发现了相关的结论。</p>
