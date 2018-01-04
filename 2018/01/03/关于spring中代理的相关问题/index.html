@@ -97,7 +97,7 @@
 疑问对于jdk动态代理，其实问题一直很明白，因为jdk动态代理生成的proxy是继承自java.lang.reflect.Proxy，反射到目标类去执行，而在目标类的内部调用中是无法再回到代理类的，所以 @Transactional">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/java-dynamic-proxy-in-method-stack.png">
-<meta property="og:updated_time" content="2018-01-04T10:17:32.982Z">
+<meta property="og:updated_time" content="2018-01-04T10:19:19.624Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于spring中代理的相关问题">
 <meta name="twitter:description" content="spring代理问题问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。
@@ -377,8 +377,9 @@
 <p><img src="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png" alt="猜想cglib代理的调用栈"><br>这样理论上应该是能够调用到代理类的。<br>但是事实是并不能调用成功。<br>找了一下<a href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations" target="_blank" rel="external">Spring文档</a>也发现了相关的结论。</p>
 <blockquote>
 <p>Note: In proxy mode (which is the default), only ‘external’ method calls coming in through the proxy will be intercepted. This means that ‘self-invocation’, i.e. a method within the target object calling some other method of the target object, won’t lead to an actual transaction at runtime even if the invoked method is marked with @Transactional!</p>
-<p>Consider the use of AspectJ mode (see below) if you expect self-invocations to be wrapped with transactions as well. In this case, there won’t be a proxy in the first place; instead, the target class will be ‘weaved’ (i.e. its byte code will be modified) in order to turn @Transactional into runtime behavior on any kind of method.<br><a id="more"></a></p>
+<p>Consider the use of AspectJ mode (see below) if you expect self-invocations to be wrapped with transactions as well. In this case, there won’t be a proxy in the first place; instead, the target class will be ‘weaved’ (i.e. its byte code will be modified) in order to turn @Transactional into runtime behavior on any kind of method.</p>
 </blockquote>
+<a id="more"></a>
 <p>重新梳理一下知识点。那么究竟问题在哪。</p>
 <h2 id="jdk动态代理"><a href="#jdk动态代理" class="headerlink" title="jdk动态代理"></a>jdk动态代理</h2><h3 id="jdk动态代理调用栈"><a href="#jdk动态代理调用栈" class="headerlink" title="jdk动态代理调用栈"></a>jdk动态代理调用栈</h3><p><img src="http://onk9rv30p.bkt.clouddn.com/java-dynamic-proxy-in-method-stack.png" alt="jdk动态代理的调用栈"></p>
 <h3 id="jdk动态代理demo代码"><a href="#jdk动态代理demo代码" class="headerlink" title="jdk动态代理demo代码"></a>jdk动态代理demo代码</h3><p><a href="https://github.com/peng2035/learning/tree/master/learning-java/src/main/java/com/bobby/peng/learning/java/proxy/javadynamicproxy" target="_blank" rel="external">测试代码地址</a></p>

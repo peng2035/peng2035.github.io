@@ -376,7 +376,8 @@
 <p><img src="http://onk9rv30p.bkt.clouddn.com/cglib-dynamic-in-method-stack.png" alt="猜想cglib代理的调用栈"><br>这样理论上应该是能够调用到代理类的。<br>但是事实是并不能调用成功。<br>找了一下<a href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html#transaction-declarative-annotations">Spring文档</a>也发现了相关的结论。</p>
 <blockquote>
 <p>Note: In proxy mode (which is the default), only ‘external’ method calls coming in through the proxy will be intercepted. This means that ‘self-invocation’, i.e. a method within the target object calling some other method of the target object, won’t lead to an actual transaction at runtime even if the invoked method is marked with @Transactional!</p>
-<p>Consider the use of AspectJ mode (see below) if you expect self-invocations to be wrapped with transactions as well. In this case, there won’t be a proxy in the first place; instead, the target class will be ‘weaved’ (i.e. its byte code will be modified) in order to turn @Transactional into runtime behavior on any kind of method.<br>
+<p>Consider the use of AspectJ mode (see below) if you expect self-invocations to be wrapped with transactions as well. In this case, there won’t be a proxy in the first place; instead, the target class will be ‘weaved’ (i.e. its byte code will be modified) in order to turn @Transactional into runtime behavior on any kind of method.</p>
+</blockquote>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/01/03/关于spring中代理的相关问题/#more" rel="contents">
