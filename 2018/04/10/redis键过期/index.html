@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="redis," />
 
 
 
@@ -87,16 +87,69 @@
 
 
 
-<meta name="description" content="自娱自乐">
+<meta name="description" content="redis键过期过期数据结构
+expires 指向一个dict， dict内部存放每个键的过期时间。
+过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
+
+优点
+键会尽可能快速的被回收，节省内存
+
+
+缺点
+对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
+
+
+优点
+对cpu友好，不会花费额外的时间去处理过期键
+
+
+缺点
+对内存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis键过期">
 <meta property="og:url" content="http://peng2035.me/2018/04/10/redis键过期/index.html">
 <meta property="og:site_name" content="peng2035's blog">
-<meta property="og:description" content="自娱自乐">
-<meta property="og:updated_time" content="2018-04-10T11:45:51.608Z">
+<meta property="og:description" content="redis键过期过期数据结构
+expires 指向一个dict， dict内部存放每个键的过期时间。
+过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
+
+优点
+键会尽可能快速的被回收，节省内存
+
+
+缺点
+对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
+
+
+优点
+对cpu友好，不会花费额外的时间去处理过期键
+
+
+缺点
+对内存">
+<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
+<meta property="og:updated_time" content="2018-04-10T11:59:59.034Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis键过期">
-<meta name="twitter:description" content="自娱自乐">
+<meta name="twitter:description" content="redis键过期过期数据结构
+expires 指向一个dict， dict内部存放每个键的过期时间。
+过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
+
+优点
+键会尽可能快速的被回收，节省内存
+
+
+缺点
+对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
+
+
+优点
+对cpu友好，不会花费额外的时间去处理过期键
+
+
+缺点
+对内存">
+<meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
 
 
 
@@ -365,7 +418,40 @@
       
 
       
-        
+        <h1 id="redis键过期"><a href="#redis键过期" class="headerlink" title="redis键过期"></a>redis键过期</h1><h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
+"></p>
+<p>expires 指向一个dict， dict内部存放每个键的过期时间。</p>
+<h2 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h2><h3 id="定时删除"><a href="#定时删除" class="headerlink" title="定时删除"></a>定时删除</h3><p>每次 expire的时候创建一个定时器，通过定时器来删除</p>
+<ul>
+<li>优点<ul>
+<li>键会尽可能快速的被回收，节省内存</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受<h3 id="惰性删除"><a href="#惰性删除" class="headerlink" title="惰性删除"></a>惰性删除</h3>等到使用时采取检查是否过期</li>
+</ul>
+</li>
+<li>优点<ul>
+<li>对cpu友好，不会花费额外的时间去处理过期键</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>对内存不友好，如果不被访问永远不会删除</li>
+</ul>
+</li>
+</ul>
+<h3 id="定期删除"><a href="#定期删除" class="headerlink" title="定期删除"></a>定期删除</h3><p>每过一段时间就对数据做一次删除，控制删除的量。<br>中和策略。但是不能准确的过期。</p>
+<h2 id="redis过期策略"><a href="#redis过期策略" class="headerlink" title="redis过期策略"></a>redis过期策略</h2><p>惰性删除和定期删除</p>
+<ul>
+<li>定时删除是由一个timer来执行<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">aeMain</span><span class="params">(aeEventLoop *eventLoop)</span> </span>&#123;</div><div class="line">    eventLoop-&gt;stop = <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> (!eventLoop-&gt;stop) &#123;</div><div class="line">        <span class="keyword">if</span> (eventLoop-&gt;beforesleep != <span class="literal">NULL</span>)</div><div class="line">            eventLoop-&gt;beforesleep(eventLoop);</div><div class="line">        aeProcessEvents(eventLoop, AE_ALL_EVENTS);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="aof-amp-rdb-复制功能对过期键的处理"><a href="#aof-amp-rdb-复制功能对过期键的处理" class="headerlink" title="aof &amp; rdb 复制功能对过期键的处理"></a>aof &amp; rdb 复制功能对过期键的处理</h2><ul>
+<li>从服务器一律不处理，主一律处理</li>
+<li>从服务器不处理惰性过期，等待主服务器的过期信息(expiredIfNeeded 中的源代码)<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* If we are running in the context of a slave, return ASAP:</span></div><div class="line"> * the slave key expiration is controlled by the master that will</div><div class="line"> * send us synthesized DEL operations for expired keys.</div><div class="line"> *</div><div class="line"> * Still we try to return the right information to the caller,</div><div class="line"> * that is, 0 if we think the key should be still valid, 1 if</div><div class="line"> * we think the key is expired at this time. */</div><div class="line"><span class="keyword">if</span> (server.masterhost != <span class="literal">NULL</span>) <span class="keyword">return</span> now &gt; when;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+
       
     </div>
 
@@ -392,6 +478,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
 
       
         
@@ -411,8 +503,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/04/10/复制/" rel="prev" title="复制">
-                复制 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/10/redis复制/" rel="prev" title="redis复制">
+                redis复制 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -468,8 +560,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG"
@@ -484,7 +585,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -522,6 +623,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#redis键过期"><span class="nav-number">1.</span> <span class="nav-text">redis键过期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#过期数据结构"><span class="nav-number">1.1.</span> <span class="nav-text">过期数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过期键删除策略"><span class="nav-number">1.2.</span> <span class="nav-text">过期键删除策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定时删除"><span class="nav-number">1.2.1.</span> <span class="nav-text">定时删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惰性删除"><span class="nav-number">1.2.2.</span> <span class="nav-text">惰性删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定期删除"><span class="nav-number">1.2.3.</span> <span class="nav-text">定期删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis过期策略"><span class="nav-number">1.3.</span> <span class="nav-text">redis过期策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#aof-amp-rdb-复制功能对过期键的处理"><span class="nav-number">1.4.</span> <span class="nav-text">aof & rdb 复制功能对过期键的处理</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
