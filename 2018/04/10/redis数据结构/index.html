@@ -1,0 +1,1045 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/druid2.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="redis数据结构字符串demo
+set msg demo
+
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
+实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis数据结构">
+<meta property="og:url" content="http://peng2035.me/2018/04/10/redis数据结构/index.html">
+<meta property="og:site_name" content="peng2035's blog">
+<meta property="og:description" content="redis数据结构字符串demo
+set msg demo
+
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
+实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+<meta property="og:image" content="http://zhangtielei.com/assets/photos_redis/redis_quicklist_structure.png">
+<meta property="og:updated_time" content="2018-04-10T11:32:41.765Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis数据结构">
+<meta name="twitter:description" content="redis数据结构字符串demo
+set msg demo
+
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
+实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+<meta name="twitter:image" content="http://zhangtielei.com/assets/photos_redis/redis_quicklist_structure.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://peng2035.me/2018/04/10/redis数据结构/"/>
+
+
+
+
+
+  <title> redis数据结构 | peng2035's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">peng2035's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://peng2035.me/2018/04/10/redis数据结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobby peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="peng2035's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                redis数据结构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-10T19:32:13+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="redis数据结构"><a href="#redis数据结构" class="headerlink" title="redis数据结构"></a>redis数据结构</h1><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>set msg demo</p>
+</blockquote>
+<p>demo 在底层创建的就是一个sds（simple dynamic string）字符串。<br>sds 除了存储字符串之外，还会被用作各类缓冲区。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>最新版本的sdshdr的代码如下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></div><div class="line"> * However is here to document the layout of type 5 SDS strings. */</div><div class="line"></div><div class="line"><span class="comment">//将 char定义成 sds</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> *sds;</div><div class="line"></div><div class="line"><span class="comment">// sds header</span></div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr5 &#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr8 &#123;</div><div class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="comment">// 申请空间， free = alloc - len，初始化时 alloc = len</span></div><div class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="comment">// 通过type来判断使用哪种sds，进一步节省空间，sdshdr8 sdshdr16 sdshdr32 sdshdr64</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr16 &#123;</div><div class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr32 &#123;</div><div class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr64 &#123;</div><div class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line">sd</div></pre></td></tr></table></figure></p>
+<p>redis设计与实现的代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sdshdr &#123;</div><div class="line">    <span class="keyword">int</span> len;</div><div class="line">    <span class="comment">//源码中没有 替代的是alloc</span></div><div class="line">    <span class="comment">//todo 为什么要改动</span></div><div class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</div><div class="line">    <span class="keyword">char</span>[] buf;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="与c语言字符串的区别"><a href="#与c语言字符串的区别" class="headerlink" title="与c语言字符串的区别"></a>与c语言字符串的区别</h4><ul>
+<li>与c字符串相同用’\0’来做字符串的结尾。也就是说整个字符串的长度为 alloc + 1 (len + free + 1)</li>
+<li>c字符串没有len字段，每次获取len需要对整个的字符串遍历，是O(N)的时间复杂度。</li>
+<li>c strcat(char <em>dest,char </em>src)，需要预分配内存，如果内存不够会引起报错，默认不会检查。sds因为知道字符串长度，会预检查，不会引发缓冲区溢出的问题。</li>
+<li>字符串增减引起的问题<ul>
+<li>c字符串在拼接和缩短的时候需要重新分配内存，否则会产生内存溢出或者内存泄露的相关问题。</li>
+<li>而重新分配空间涉及到系统调用，是个相对耗时的操作。</li>
+<li>普通程序字符串不太可能频繁更改长度。所以重新分配内存是可以接受的。</li>
+<li>redis数据库value会被相当频繁的修改，会产生性能问题。</li>
+</ul>
+</li>
+<li>字符串增减解决方案（其实就是空间换时间）<ul>
+<li>空间预分配<ul>
+<li>预分配sds所需要的额外的空间</li>
+<li>当sds的长度小于1m，在扩展时会将free和len设置成等长（即字符串长度若为10，则free也为10，整个所占用空间为10+10+1（末尾的标志位））。</li>
+<li>若大于1m，则free=1m,总长度为原始长度+1m+1</li>
+</ul>
+</li>
+<li>惰性空间释放<ul>
+<li>若缩短长度，则缩短的长度将会加入free之中</li>
+<li>sds会在必要时刻真正释放未使用空间（书中没讲，代码找不到，可能是类似gc的机制？），调用的sdsfree方法。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>sds二进制安全<ul>
+<li>c字符串用’\0’来标识字符串的结尾，所以字符串中如果含有’\0’就会出问题了。</li>
+<li>sds 是一个buf来保存，不依赖’\0’，所以是二进制安全的。</li>
+</ul>
+</li>
+<li>兼容部分c字符串函数（’\0’结尾的目的）</li>
+</ul>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="demo-1"><a href="#demo-1" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>lpush list_demo 1 2 3 4<br>llen list_demo</p>
+</blockquote>
+<h3 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> listNode &#123;</div><div class="line">    <span class="keyword">struct</span> listNode *prev;</div><div class="line">    <span class="keyword">struct</span> listNode *next;</div><div class="line">    <span class="keyword">void</span> *value;</div><div class="line">&#125; listNode;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> listIter &#123;</div><div class="line">    listNode *next;</div><div class="line">    <span class="keyword">int</span> direction;</div><div class="line">&#125; listIter;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="built_in">list</span> &#123;</div><div class="line">    listNode *head;</div><div class="line">    listNode *tail;</div><div class="line">    <span class="comment">//节点复制函数</span></div><div class="line">    <span class="keyword">void</span> *(*dup)(<span class="keyword">void</span> *ptr);</div><div class="line">    <span class="comment">//节点释放函数</span></div><div class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>)(<span class="keyword">void</span> *ptr);</div><div class="line">    <span class="comment">//节点对比函数</span></div><div class="line">    <span class="keyword">int</span> (*match)(<span class="keyword">void</span> *ptr, <span class="keyword">void</span> *key);</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</div><div class="line">&#125; <span class="built_in">list</span>;</div></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>带头尾指针，为了满足lpush &amp; rpush</li>
+<li>双向链表，无环</li>
+</ul>
+<h2 id="字典（dict）"><a href="#字典（dict）" class="headerlink" title="字典（dict）"></a>字典（dict）</h2><h3 id="demo-2"><a href="#demo-2" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>set msg “hello world”<br>hmset hash field1 value1 field2 value2 field3 value3</p>
+</blockquote>
+<p>dict是一个用于维护key和value映射关系的数据结构</p>
+<h3 id="源代码-1"><a href="#源代码-1" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictEntry &#123;</div><div class="line">    <span class="keyword">void</span> *key;</div><div class="line">    <span class="comment">// 结构体只占一份数据空间</span></div><div class="line">    <span class="keyword">union</span> &#123;</div><div class="line">        <span class="keyword">void</span> *val;</div><div class="line">        <span class="keyword">uint64_t</span> u64;</div><div class="line">        <span class="keyword">int64_t</span> s64;</div><div class="line">        <span class="keyword">double</span> d;</div><div class="line">    &#125; v;</div><div class="line">    <span class="keyword">struct</span> dictEntry *next;</div><div class="line">&#125; dictEntry;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictType &#123;</div><div class="line">    <span class="keyword">uint64_t</span> (*hashFunction)(<span class="keyword">const</span> <span class="keyword">void</span> *key);</div><div class="line">    <span class="keyword">void</span> *(*keyDup)(<span class="keyword">void</span> *privdata, <span class="keyword">const</span> <span class="keyword">void</span> *key);</div><div class="line">    <span class="keyword">void</span> *(*valDup)(<span class="keyword">void</span> *privdata, <span class="keyword">const</span> <span class="keyword">void</span> *obj);</div><div class="line">    <span class="keyword">int</span> (*keyCompare)(<span class="keyword">void</span> *privdata, <span class="keyword">const</span> <span class="keyword">void</span> *key1, <span class="keyword">const</span> <span class="keyword">void</span> *key2);</div><div class="line">    <span class="keyword">void</span> (*keyDestructor)(<span class="keyword">void</span> *privdata, <span class="keyword">void</span> *key);</div><div class="line">    <span class="keyword">void</span> (*valDestructor)(<span class="keyword">void</span> *privdata, <span class="keyword">void</span> *obj);</div><div class="line">&#125; dictType;</div><div class="line"></div><div class="line"><span class="comment">/* This is our hash table structure. Every dictionary has two of this as we</span></div><div class="line"> * implement incremental rehashing, for the old to the new table. */</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictht &#123;</div><div class="line">    dictEntry **table;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> size;</div><div class="line">    <span class="comment">//用于将哈希值映射到table的位置索引。它的值等于(size-1)，比如7, 15, 31, 63，等等，也就是用二进制表示的各个bit全1的数字。每个key先经过hashFunction计算得到一个哈希值，然后计算(哈希值 &amp; sizemask)得到在table上的位置。相当于计算取余(哈希值 % size)。</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask;</div><div class="line">    <span class="comment">//记录dict中现有的数据个数。它与size的比值就是装载因子（load factor）。这个比值越大，哈希值冲突概率越高。</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;</div><div class="line">&#125; dictht;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dict &#123;</div><div class="line">    dictType *type;</div><div class="line">    <span class="keyword">void</span> *privdata;</div><div class="line">    <span class="comment">/* 两个哈希表（ht[2]）。只有在重哈希的过程中，ht[0]和ht[1]才都有效。而在平常情况下，只有ht[0]有效，ht[1]里面没有任何数据。上图表示的就是重哈希进行到中间某一步时的情况。*/</span></div><div class="line">    dictht ht[<span class="number">2</span>];</div><div class="line">    <span class="keyword">long</span> rehashidx; <span class="comment">/* rehashing not in progress if rehashidx == -1 */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> iterators; <span class="comment">/* number of iterators currently running */</span></div><div class="line">&#125; dict;</div><div class="line"></div><div class="line"><span class="comment">/* If safe is set to 1 this is a safe iterator, that means, you can call</span></div><div class="line"> * dictAdd, dictFind, and other functions against the dictionary even while</div><div class="line"> * iterating. Otherwise it is a non safe iterator, and only dictNext()</div><div class="line"> * should be called while iterating. */</div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> dictIterator &#123;</div><div class="line">    dict *d;</div><div class="line">    <span class="keyword">long</span> index;</div><div class="line">    <span class="keyword">int</span> table, safe;</div><div class="line">    dictEntry *entry, *nextEntry;</div><div class="line">    <span class="comment">/* unsafe iterator fingerprint for misuse detection. */</span></div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> fingerprint;</div><div class="line">&#125; dictIterator;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Performs N steps of incremental rehashing. Returns 1 if there are still</span></div><div class="line"> * keys to move from the old to the new hash table, otherwise 0 is returned.</div><div class="line"> *</div><div class="line"> * Note that a rehashing step consists in moving a bucket (that may have more</div><div class="line"> * than one key as we use chaining) from the old to the new hash table, however</div><div class="line"> * since part of the hash table may be composed of empty spaces, it is not</div><div class="line"> * guaranteed that this function will rehash even a single bucket, since it</div><div class="line"> * will visit at max N*10 empty buckets in total, otherwise the amount of</div><div class="line"> * work it does would be unbound and the function may block for a long time. */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">dictRehash</span><span class="params">(dict *d, <span class="keyword">int</span> n)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> empty_visits = n*<span class="number">10</span>; <span class="comment">/* Max number of empty buckets to visit. */</span></div><div class="line">    <span class="keyword">if</span> (!dictIsRehashing(d)) <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">// n &gt; 0 &amp;&amp; ht[0]不为空</span></div><div class="line">    <span class="keyword">while</span>(n-- &amp;&amp; d-&gt;ht[<span class="number">0</span>].used != <span class="number">0</span>) &#123;</div><div class="line">        dictEntry *de, *nextde;</div><div class="line"></div><div class="line">        <span class="comment">/* Note that rehashidx can't overflow as we are sure there are more</span></div><div class="line">         * elements because ht[0].used != 0 */</div><div class="line">        assert(d-&gt;ht[<span class="number">0</span>].size &gt; (<span class="keyword">unsigned</span> <span class="keyword">long</span>)d-&gt;rehashidx);</div><div class="line">        <span class="comment">//遍历每个hash桶</span></div><div class="line">        <span class="keyword">while</span>(d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] == <span class="literal">NULL</span>) &#123;</div><div class="line">            d-&gt;rehashidx++;</div><div class="line">            <span class="comment">// 倘若本次rehash 完成了 则 empty_visits == 0</span></div><div class="line">            <span class="keyword">if</span> (--empty_visits == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">        &#125;</div><div class="line">        de = d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx];</div><div class="line">        <span class="comment">/* Move all the keys in this bucket from the old to the new hash HT */</span></div><div class="line">        <span class="keyword">while</span>(de) &#123;</div><div class="line">            <span class="keyword">uint64_t</span> h;</div><div class="line"></div><div class="line">            nextde = de-&gt;next;</div><div class="line">            <span class="comment">/* Get the index in the new hash table */</span></div><div class="line">            h = dictHashKey(d, de-&gt;key) &amp; d-&gt;ht[<span class="number">1</span>].sizemask;</div><div class="line">            de-&gt;next = d-&gt;ht[<span class="number">1</span>].table[h];</div><div class="line">            d-&gt;ht[<span class="number">1</span>].table[h] = de;</div><div class="line">            d-&gt;ht[<span class="number">0</span>].used--;</div><div class="line">            d-&gt;ht[<span class="number">1</span>].used++;</div><div class="line">            de = nextde;</div><div class="line">        &#125;</div><div class="line">        d-&gt;ht[<span class="number">0</span>].table[d-&gt;rehashidx] = <span class="literal">NULL</span>;</div><div class="line">        d-&gt;rehashidx++;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Check if we already rehashed the whole table... */</span></div><div class="line">    <span class="keyword">if</span> (d-&gt;ht[<span class="number">0</span>].used == <span class="number">0</span>) &#123;</div><div class="line">        zfree(d-&gt;ht[<span class="number">0</span>].table);</div><div class="line">        d-&gt;ht[<span class="number">0</span>] = d-&gt;ht[<span class="number">1</span>];</div><div class="line">        _dictReset(&amp;d-&gt;ht[<span class="number">1</span>]);</div><div class="line">        d-&gt;rehashidx = <span class="number">-1</span>;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* More to rehash... */</span></div><div class="line">    <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>采用的是增量式rehash</p>
+<ul>
+<li>java使用的是一次性rehash</li>
+<li>redis为了单次插入的时间，决定将rehash分布到多个操作之中，每次只rehash10个，同时增删改查都会启动rehash操作</li>
+<li>rehash会导致数据分布在两个不同的table里，查询的时候也会轮训两个table，只有在table[0]找不到的情况下才回去找table[1]</li>
+<li>插入数据时候会直接插入到table[1]</li>
+</ul>
+<p>哈希表的扩展与收缩</p>
+<ul>
+<li>服务器没有执行BGSAVE OR BGREWRITEOF 命令，而且哈希表的负载因子大于等于1.</li>
+<li>服务器目前正在执行BGSAVE OR BGREWRITEOF 命令，且哈希表的负载因子大于等于5.（copy on write 的时候尽量避免扩展，节省内存）</li>
+<li>当负载因子小于0.1时，程序自动开始对哈希表进行收缩操作。</li>
+</ul>
+<h2 id="robj"><a href="#robj" class="headerlink" title="robj"></a>robj</h2><h3 id="demo-3"><a href="#demo-3" class="headerlink" title="demo"></a>demo</h3><p>redis 会根据不同的输入值选择不同的数据结构<br>key 和 value 都是使用的robj（reference count 最开始不明白value会在什么时候复用，后面发现blpop会复用key）</p>
+<blockquote>
+<p>set int_key 1<br>set str_key str</p>
+</blockquote>
+<p>底层是有robj来控制的数据结构类型</p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Object types */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_STRING 0</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_LIST 1</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_SET 2</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ZSET 3</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_HASH 4</span></div><div class="line"></div><div class="line"><span class="comment">/* Objects encoding. Some kind of objects like Strings and Hashes can be</span></div><div class="line"> * internally represented in multiple ways. The 'encoding' field of the object</div><div class="line"> * is set to one of this fields for this object. */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_RAW 0     <span class="comment">/* Raw representation */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INT 1     <span class="comment">/* Encoded as integer */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_HT 2      <span class="comment">/* Encoded as hash table */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPMAP 3  <span class="comment">/* Encoded as zipmap */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_LINKEDLIST 4 <span class="comment">/* Encoded as regular linked list */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPLIST 5 <span class="comment">/* Encoded as ziplist */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INTSET 6  <span class="comment">/* Encoded as intset */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_SKIPLIST 7  <span class="comment">/* Encoded as skiplist */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_EMBSTR 8  <span class="comment">/* Embedded sds string encoding */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_QUICKLIST 9 <span class="comment">/* Encoded as linked list of ziplists */</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> LRU_BITS 24</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> redisObject &#123;</div><div class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</div><div class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</div><div class="line">    <span class="keyword">unsigned</span> lru:LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></div><div class="line">    <span class="keyword">int</span> refcount;</div><div class="line">    <span class="keyword">void</span> *ptr;</div><div class="line">&#125; robj;</div></pre></td></tr></table></figure>
+<p>这段代码执行的操作比较复杂，我们有必要仔细看一下每一步的操作：</p>
+<ul>
+<li>第1步检查，检查type。确保只对string类型的对象进行操作。</li>
+<li>第2步检查，检查encoding。sdsEncodedObject是定义在server.h中的一个宏，确保只对OBJ_ENCODING_RAW和OBJ_ENCODING_EMBSTR编码的string对象进行操作。这两种编码的string都采用sds来存储，可以尝试进一步编码处理。<blockquote>
+<p>#define sdsEncodedObject(objptr) (objptr-&gt;encoding == OBJ_ENCODING_RAW || objptr-&gt;encoding == OBJ_ENCODING_EMBSTR)</p>
+</blockquote>
+</li>
+<li>第3步检查，检查refcount。引用计数大于1的共享对象，在多处被引用。由于编码过程结束后robj的对象指针可能会变化（我们在前一篇介绍sdscatlen函数的时候提到过类似这种接口使用模式），这样对于引用计数大于1的对象，就需要更新所有地方的引用，这不容易做到。因此，对于计数大于1的对象不做编码处理。<br>试图将字符串转成64位的long。64位的long所能表达的数据范围是-2^63到2^63-1，用十进制表达出来最长是20位数（包括负号）。这里判断小于等于21，似乎是写多了，实际判断小于等于20就够了（如果我算错了请一定告诉我哦）。string2l如果将字符串转成long转成功了，那么会返回1并且将转好的long存到value变量里。<br>在转成long成功时，又分为两种情况。<br>第一种情况：如果Redis的配置不要求运行LRU替换算法，且转成的long型数字的值又比较小（小于OBJ_SHARED_INTEGERS，在目前的实现中这个值是10000），那么会使用共享数字对象来表示。之所以这里的判断跟LRU有关，是因为LRU算法要求每个robj有不同的lru字段值，所以用了LRU就不能共享robj。shared.integers是一个长度为10000的数组，里面预存了10000个小的数字对象。这些小数字对象都是encoding = OBJ_ENCODING_INT的string robj对象。<br>第二种情况：如果前一步不能使用共享小对象来表示，那么将原来的robj编码成encoding = OBJ_ENCODING_INT，这时ptr字段直接存成这个long型的值。注意ptr字段本来是一个void *指针（即存储的是内存地址），因此在64位机器上有64位宽度，正好能存储一个64位的long型值。这样，除了robj本身之外，它就不再需要额外的内存空间来存储字符串值。<br>接下来是对于那些不能转成64位long的字符串进行处理。最后再做两步处理：<br>如果字符串长度足够小（小于等于OBJ_ENCODING_EMBSTR_SIZE_LIMIT，定义为44），那么调用createEmbeddedStringObject编码成encoding = OBJ_ENCODING_EMBSTR；<br>如果前面所有的编码尝试都没有成功（仍然是OBJ_ENCODING_RAW），且sds里空余字节过多，那么做最后一次努力，调用sds的sdsRemoveFreeSpace接口来释放空余字节。</li>
+</ul>
+<blockquote>
+<p>append和setbit命令的实现中，.c中的dbUnshareStringValue函数，将string对象的内部编码转成OBJ_ENCODING_RAW的（只有这种编码的robj对象，其内部的sds 才能在后面自由追加新的内容），并解除可能存在的对象共享状态。这里面调用了前面提到的getDecodedObject。</p>
+</blockquote>
+<h3 id="关于embstr"><a href="#关于embstr" class="headerlink" title="关于embstr"></a>关于embstr</h3><ul>
+<li>如果字符串长度小于39字节（<a href="https://www.zhihu.com/question/25624589/answer/31360829" target="_blank" rel="external">详细解释</a>）,则会使用embstr模式</li>
+<li>embstr和raw一样都会使用robj和sdshdr结构来表示字符串对象，但是raw会调用两次来创建robj和sdshdr结构，embstr则通过一次内存调用分配一块连续的空间。</li>
+</ul>
+<h2 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h2><h3 id="demo-4"><a href="#demo-4" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>zadd key 1 member1 2 member2</p>
+</blockquote>
+<ul>
+<li>当数据较少时，sorted set是由一个ziplist来实现的。</li>
+<li>当数据多的时候，sorted set是由一个dict + 一个skiplist来实现的。简单来讲，dict用来查询数据到分数的对应关系，而skiplist用来根据分数查询数据（可能是范围查找）。<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> zset &#123;</div><div class="line">    <span class="comment">// 用于score的o1操作</span></div><div class="line">    dict *dict;</div><div class="line">    zskiplist *zsl;</div><div class="line">&#125; zset;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">zsetScore</span><span class="params">(robj *zobj, sds member, <span class="keyword">double</span> *score)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (!zobj || !member) <span class="keyword">return</span> C_ERR;</div><div class="line"></div><div class="line">    <span class="comment">//从ziplist中获取</span></div><div class="line">    <span class="keyword">if</span> (zobj-&gt;encoding == OBJ_ENCODING_ZIPLIST) &#123;</div><div class="line">        <span class="keyword">if</span> (zzlFind(zobj-&gt;ptr, member, score) == <span class="literal">NULL</span>) <span class="keyword">return</span> C_ERR;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (zobj-&gt;encoding == OBJ_ENCODING_SKIPLIST) &#123;</div><div class="line">        zset *zs = zobj-&gt;ptr;</div><div class="line">        <span class="comment">//从dict中获取</span></div><div class="line">        dictEntry *de = dictFind(zs-&gt;dict, member);</div><div class="line">        <span class="keyword">if</span> (de == <span class="literal">NULL</span>) <span class="keyword">return</span> C_ERR;</div><div class="line">        *score = *(<span class="keyword">double</span>*)dictGetVal(de);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        serverPanic(<span class="string">"Unknown sorted set encoding"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> C_OK;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="源代码-2"><a href="#源代码-2" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> zskiplistNode &#123;</div><div class="line">    robj *obj;</div><div class="line">    <span class="comment">// 分值 ，被共享到dict中</span></div><div class="line">    <span class="keyword">double</span> score;</div><div class="line">    <span class="keyword">struct</span> zskiplistNode *backward;</div><div class="line">    <span class="keyword">struct</span> zskiplistLevel &#123;</div><div class="line">        <span class="keyword">struct</span> zskiplistNode *forward;</div><div class="line">        <span class="comment">//用于计算rank，表示当前指针跨越了多少个节点</span></div><div class="line">        <span class="keyword">unsigned</span> <span class="keyword">int</span> span;</div><div class="line">    &#125; level[];</div><div class="line">&#125; zskiplistNode;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> zskiplist &#123;</div><div class="line">    <span class="keyword">struct</span> zskiplistNode *header, *tail;</div><div class="line">    <span class="comment">// 节点长度</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> length;</div><div class="line">    <span class="keyword">int</span> level;</div><div class="line">&#125; zskiplist;</div></pre></td></tr></table></figure>
+<h3 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h3><p>关于span在更新的时候需要遍历整个数组去整个遍历span的值，这样会不会有损效率<br>update[i]是同一层的前驱节点<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (level &gt; zsl-&gt;level) &#123;</div><div class="line">    <span class="comment">//超过skiplist level</span></div><div class="line">    <span class="keyword">for</span> (i = zsl-&gt;level; i &lt; level; i++) &#123;</div><div class="line">        rank[i] = <span class="number">0</span>;</div><div class="line">        update[i] = zsl-&gt;header;</div><div class="line">        <span class="comment">//感觉像是简单的初始化，值不对</span></div><div class="line">        update[i]-&gt;level[i].span = zsl-&gt;length;</div><div class="line">    &#125;</div><div class="line">    zsl-&gt;level = level;</div><div class="line">&#125;</div><div class="line">x = zslCreateNode(level,score,obj);</div><div class="line"><span class="comment">// 小于当前插入level的</span></div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; level; i++) &#123;</div><div class="line">    x-&gt;level[i].forward = update[i]-&gt;level[i].forward;</div><div class="line">    update[i]-&gt;level[i].forward = x;</div><div class="line"></div><div class="line">    <span class="comment">/* update span covered by update[i] as x is inserted here */</span></div><div class="line">    <span class="comment">// 原有的span被分隔了</span></div><div class="line">    <span class="comment">// 当前节点</span></div><div class="line">    x-&gt;level[i].span = update[i]-&gt;level[i].span - (rank[<span class="number">0</span>] - rank[i]);</div><div class="line">    <span class="comment">// 上一个节点</span></div><div class="line">    update[i]-&gt;level[i].span = (rank[<span class="number">0</span>] - rank[i]) + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* increment span for untouched levels */</span></div><div class="line"><span class="comment">// 大于level</span></div><div class="line"><span class="keyword">for</span> (i = level; i &lt; zsl-&gt;level; i++) &#123;</div><div class="line">    <span class="comment">// 因为新节点高度不够，所以span+1即可</span></div><div class="line">    update[i]-&gt;level[i].span++;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h3><blockquote>
+<p>zset-max-ziplist-entries 128<br>zset-max-ziplist-value 64</p>
+</blockquote>
+<p>当sorted set中的元素个数，即(数据, score)对的数目超过128的时候，也就是ziplist数据项超过256的时候。<br>当sorted set中插入的任意一个数据的长度超过了64的时候。</p>
+<h2 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h2><h3 id="demo-5"><a href="#demo-5" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>sadd numbers 1 3 5 7<br>object encoding numbers</p>
+</blockquote>
+<p>intset ：整数集合</p>
+<h3 id="源代码-3"><a href="#源代码-3" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> intset &#123;</div><div class="line">    <span class="keyword">uint32_t</span> encoding;</div><div class="line">    <span class="keyword">uint32_t</span> length;</div><div class="line">    <span class="keyword">int8_t</span> contents[];</div><div class="line">&#125; intset;</div></pre></td></tr></table></figure>
+<ul>
+<li>encoding分为 8 16 32 64，目的用于节约内存</li>
+<li>假如原来的encoding不能容纳新的数据，将会进行一次升级，encoding会升级成新数据的大小，由于空间是2的指数倍扩展的，挪动相对容易</li>
+<li>整个数组不支持降级操作。</li>
+</ul>
+<h2 id="压缩列表（ziplist）"><a href="#压缩列表（ziplist）" class="headerlink" title="压缩列表（ziplist）"></a>压缩列表（ziplist）</h2><h3 id="demo-6"><a href="#demo-6" class="headerlink" title="demo"></a>demo</h3><blockquote>
+<p>rpush 1st 1 3 5 10086 “hello” “world”<br>object encoding 1st<br>quicklist</p>
+</blockquote>
+<p>默认配置下是quicklist（以上是redis的设计与实现的例子）</p>
+<blockquote>
+<p>127.0.0.1:6379&gt; hmset ziplist key1 value1 key2 value2<br>OK<br>127.0.0.1:6379&gt; object encoding ziplist<br>“ziplist”</p>
+</blockquote>
+<p>而hash的表现很正常</p>
+<h4 id="问题在哪"><a href="#问题在哪" class="headerlink" title="问题在哪"></a>问题在哪</h4><p>看了一下2.8的源代码<br>2.8版本<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushGenericCommand</span><span class="params">(redisClient *c, <span class="keyword">int</span> where)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> j, waiting = <span class="number">0</span>, pushed = <span class="number">0</span>;</div><div class="line">    robj *lobj = lookupKeyWrite(c-&gt;db,c-&gt;argv[<span class="number">1</span>]);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (lobj &amp;&amp; lobj-&gt;type != REDIS_LIST) &#123;</div><div class="line">        addReply(c,shared.wrongtypeerr);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (j = <span class="number">2</span>; j &lt; c-&gt;argc; j++) &#123;</div><div class="line">        c-&gt;argv[j] = tryObjectEncoding(c-&gt;argv[j]);</div><div class="line">        <span class="keyword">if</span> (!lobj) &#123;</div><div class="line">            <span class="comment">// 关键代码</span></div><div class="line">            lobj = createZiplistObject();</div><div class="line">            dbAdd(c-&gt;db,c-&gt;argv[<span class="number">1</span>],lobj);</div><div class="line">        &#125;</div><div class="line">        listTypePush(lobj,c-&gt;argv[j],where);</div><div class="line">        pushed++;</div><div class="line">    &#125;</div><div class="line">    addReplyLongLong(c, waiting + (lobj ? listTypeLength(lobj) : <span class="number">0</span>));</div><div class="line">    <span class="keyword">if</span> (pushed) &#123;</div><div class="line">        <span class="keyword">char</span> *event = (where == REDIS_HEAD) ? <span class="string">"lpush"</span> : <span class="string">"rpush"</span>;</div><div class="line"></div><div class="line">        signalModifiedKey(c-&gt;db,c-&gt;argv[<span class="number">1</span>]);</div><div class="line">        notifyKeyspaceEvent(REDIS_NOTIFY_LIST,event,c-&gt;argv[<span class="number">1</span>],c-&gt;db-&gt;id);</div><div class="line">    &#125;</div><div class="line">    server.dirty += pushed;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>3.2版本<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">pushGenericCommand</span><span class="params">(client *c, <span class="keyword">int</span> where)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> j, pushed = <span class="number">0</span>;</div><div class="line">    robj *lobj = lookupKeyWrite(c-&gt;db,c-&gt;argv[<span class="number">1</span>]);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (lobj &amp;&amp; lobj-&gt;type != OBJ_LIST) &#123;</div><div class="line">        addReply(c,shared.wrongtypeerr);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (j = <span class="number">2</span>; j &lt; c-&gt;argc; j++) &#123;</div><div class="line">        <span class="keyword">if</span> (!lobj) &#123;</div><div class="line">            <span class="comment">// 关键代码</span></div><div class="line">            lobj = createQuicklistObject();</div><div class="line">            quicklistSetOptions(lobj-&gt;ptr, server.list_max_ziplist_size,</div><div class="line">                                server.list_compress_depth);</div><div class="line">            dbAdd(c-&gt;db,c-&gt;argv[<span class="number">1</span>],lobj);</div><div class="line">        &#125;</div><div class="line">        listTypePush(lobj,c-&gt;argv[j],where);</div><div class="line">        pushed++;</div><div class="line">    &#125;</div><div class="line">    addReplyLongLong(c, (lobj ? listTypeLength(lobj) : <span class="number">0</span>));</div><div class="line">    <span class="keyword">if</span> (pushed) &#123;</div><div class="line">        <span class="keyword">char</span> *event = (where == LIST_HEAD) ? <span class="string">"lpush"</span> : <span class="string">"rpush"</span>;</div><div class="line"></div><div class="line">        signalModifiedKey(c-&gt;db,c-&gt;argv[<span class="number">1</span>]);</div><div class="line">        notifyKeyspaceEvent(NOTIFY_LIST,event,c-&gt;argv[<span class="number">1</span>],c-&gt;db-&gt;id);</div><div class="line">    &#125;</div><div class="line">    server.dirty += pushed;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>初始化的时候直接生成了quicklist，而直接去除了2.8的ziplist的设计。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># Lists are also encoded in a special way to save a lot of space.</div><div class="line"># The number of entries allowed per internal list node can be specified</div><div class="line"># as a fixed maximum size or a maximum number of elements.</div><div class="line"># For a fixed maximum size, use -5 through -1, meaning:</div><div class="line"># -5: max size: 64 Kb  &lt;-- not recommended for normal workloads</div><div class="line"># -4: max size: 32 Kb  &lt;-- not recommended</div><div class="line"># -3: max size: 16 Kb  &lt;-- probably not recommended</div><div class="line"># -2: max size: 8 Kb   &lt;-- good</div><div class="line"># -1: max size: 4 Kb   &lt;-- good</div><div class="line"># Positive numbers mean store up to _exactly_ that number of elements</div><div class="line"># per list node.</div><div class="line"># The highest performing option is usually -2 (8 Kb size) or -1 (4 Kb size),</div><div class="line"># but if your use case is unique, adjust the settings as necessary.</div><div class="line">list-max-ziplist-size -2</div></pre></td></tr></table></figure>
+<p>上述配置看起来是遗留问题（当时是那么认为的，后面发现了quicklist，2.8代码里统一用的ziplist，quicklist是优化方案）</p>
+<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>ziplist是一个经过特殊编码的双向链表，它的设计目标就是为了提高存储效率。ziplist可以用于存储字符串或整数，其中整数是按真正的二进制表示进行编码的，而不是编码成字符串序列。它能以O(1)的时间复杂度在表的两端提供push和pop操作。</p>
+<p>ziplist充分体现了Redis对于存储效率的追求。一个普通的双向链表，链表中每一项都占用独立的一块内存，各项之间用地址指针（或引用）连接起来。这种方式会带来大量的内存碎片，而且地址指针也会占用额外的内存。而ziplist却是将表中每一项存放在前后连续的地址空间内，一个ziplist整体占用一大块内存。它是一个表（list），但其实不是一个链表（linked list）。</p>
+<h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><blockquote>
+<p><zlbytes><zltail><zllen><entry>…<entry><zlend></zlend></entry></entry></zllen></zltail></zlbytes></p>
+</blockquote>
+<p>各个部分在内存上是前后相邻的，它们分别的含义如下：</p>
+<p><zlbytes>: 32bit，表示ziplist占用的字节总数（也包括<zlbytes>本身占用的4个字节）。</zlbytes></zlbytes></p>
+<p><zltail>: 32bit，表示ziplist表中最后一项（entry）在ziplist中的偏移字节数。<zltail>的存在，使得我们可以很方便地找到最后一项（不用遍历整个ziplist），从而可以在ziplist尾端快速地执行push或pop操作。</zltail></zltail></p>
+<p><zllen>: 16bit， 表示ziplist中数据项（entry）的个数。zllen字段因为只有16bit，所以可以表达的最大值为2^16-1。这里需要特别注意的是，如果ziplist中数据项个数超过了16bit能表达的最大值，ziplist仍然可以来表示。那怎么表示呢？这里做了这样的规定：如果<zllen>小于等于2^16-2（也就是不等于2^16-1），那么<zllen>就表示ziplist中数据项的个数；否则，也就是<zllen>等于16bit全为1的情况，那么<zllen>就不表示数据项个数了，这时候要想知道ziplist中数据项总数，那么必须对ziplist从头到尾遍历各个数据项，才能计数出来。</zllen></zllen></zllen></zllen></zllen></p>
+<p><entry>: 表示真正存放数据的数据项，长度不定。一个数据项（entry）也有它自己的内部结构，这个稍后再解释。</entry></p>
+<p><zlend>: ziplist最后1个字节，是一个结束标记，值固定等于255。</zlend></p>
+<h4 id="entry数据结构"><a href="#entry数据结构" class="headerlink" title="entry数据结构"></a>entry数据结构</h4><blockquote>
+<p><prevrawlen><len><data></data></len></prevrawlen></p>
+</blockquote>
+<p><prevrawlen>: 表示前一个数据项占用的总字节数。这个字段的用处是为了让ziplist能够从后向前遍历（从后一项的位置，只需向前偏移prevrawlen个字节，就找到了前一项）。这个字段采用变长编码。（类似与一个向前指针，标识长度可能是因为比指针更加节省内存）</prevrawlen></p>
+<p><len>: 表示当前数据项的数据长度（即<data>部分的长度）。也采用变长编码。</data></len></p>
+<h3 id="源代码-4"><a href="#源代码-4" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *__ziplistInsert(<span class="keyword">unsigned</span> <span class="keyword">char</span> *zl, <span class="keyword">unsigned</span> <span class="keyword">char</span> *p, <span class="keyword">unsigned</span> <span class="keyword">char</span> *s, <span class="keyword">unsigned</span> <span class="keyword">int</span> slen) &#123;</div><div class="line">    <span class="keyword">size_t</span> curlen = intrev32ifbe(ZIPLIST_BYTES(zl)), reqlen;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> prevlensize, prevlen = <span class="number">0</span>;</div><div class="line">    <span class="keyword">size_t</span> offset;</div><div class="line">    <span class="keyword">int</span> nextdiff = <span class="number">0</span>;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> encoding = <span class="number">0</span>;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> value = <span class="number">123456789</span>; <span class="comment">/* initialized to avoid warning. Using a value</span></div><div class="line">                                    that is easy to see if for some reason</div><div class="line">                                    we use it uninitialized. */</div><div class="line">    zlentry tail;</div><div class="line"></div><div class="line">    <span class="comment">/* Find out prevlen for the entry that is inserted. */</span></div><div class="line">    <span class="keyword">if</span> (p[<span class="number">0</span>] != ZIP_END) &#123;</div><div class="line">        ZIP_DECODE_PREVLEN(p, prevlensize, prevlen);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">unsigned</span> <span class="keyword">char</span> *ptail = ZIPLIST_ENTRY_TAIL(zl);</div><div class="line">        <span class="keyword">if</span> (ptail[<span class="number">0</span>] != ZIP_END) &#123;</div><div class="line">            prevlen = zipRawEntryLength(ptail);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* See if the entry can be encoded */</span></div><div class="line">    <span class="keyword">if</span> (zipTryEncoding(s,slen,&amp;value,&amp;encoding)) &#123;</div><div class="line">        <span class="comment">/* 'encoding' is set to the appropriate integer encoding */</span></div><div class="line">        reqlen = zipIntSize(encoding);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* 'encoding' is untouched, however zipEncodeLength will use the</span></div><div class="line">         * string length to figure out how to encode it. */</div><div class="line">        reqlen = slen;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/* We need space for both the length of the previous entry and</span></div><div class="line">     * the length of the payload. */</div><div class="line">    reqlen += zipPrevEncodeLength(<span class="literal">NULL</span>,prevlen);</div><div class="line">    reqlen += zipEncodeLength(<span class="literal">NULL</span>,encoding,slen);</div><div class="line"></div><div class="line">    <span class="comment">/* When the insert position is not equal to the tail, we need to</span></div><div class="line">     * make sure that the next entry can hold this entry's length in</div><div class="line">     * its prevlen field. */</div><div class="line">    nextdiff = (p[<span class="number">0</span>] != ZIP_END) ? zipPrevLenByteDiff(p,reqlen) : <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">/* Store offset because a realloc may change the address of zl. */</span></div><div class="line">    offset = p-zl;</div><div class="line">    zl = ziplistResize(zl,curlen+reqlen+nextdiff);</div><div class="line">    p = zl+offset;</div><div class="line"></div><div class="line">    <span class="comment">/* Apply memory move when necessary and update tail offset. */</span></div><div class="line">    <span class="keyword">if</span> (p[<span class="number">0</span>] != ZIP_END) &#123;</div><div class="line">        <span class="comment">/* Subtract one because of the ZIP_END bytes */</span></div><div class="line">        memmove(p+reqlen,p-nextdiff,curlen-offset<span class="number">-1</span>+nextdiff);</div><div class="line"></div><div class="line">        <span class="comment">/* Encode this entry's raw length in the next entry. */</span></div><div class="line">        zipPrevEncodeLength(p+reqlen,reqlen);</div><div class="line"></div><div class="line">        <span class="comment">/* Update offset for tail */</span></div><div class="line">        ZIPLIST_TAIL_OFFSET(zl) =</div><div class="line">            intrev32ifbe(intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl))+reqlen);</div><div class="line"></div><div class="line">        <span class="comment">/* When the tail contains more than one entry, we need to take</span></div><div class="line">         * "nextdiff" in account as well. Otherwise, a change in the</div><div class="line">         * size of prevlen doesn't have an effect on the *tail* offset. */</div><div class="line">        zipEntry(p+reqlen, &amp;tail);</div><div class="line">        <span class="keyword">if</span> (p[reqlen+tail.headersize+tail.len] != ZIP_END) &#123;</div><div class="line">            ZIPLIST_TAIL_OFFSET(zl) =</div><div class="line">                intrev32ifbe(intrev32ifbe(ZIPLIST_TAIL_OFFSET(zl))+nextdiff);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* This element will be the new tail. */</span></div><div class="line">        ZIPLIST_TAIL_OFFSET(zl) = intrev32ifbe(p-zl);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* When nextdiff != 0, the raw length of the next entry has changed, so</span></div><div class="line">     * we need to cascade the update throughout the ziplist */</div><div class="line">    <span class="keyword">if</span> (nextdiff != <span class="number">0</span>) &#123;</div><div class="line">        offset = p-zl;</div><div class="line">        zl = __ziplistCascadeUpdate(zl,p+reqlen);</div><div class="line">        p = zl+offset;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Write the entry */</span></div><div class="line">    p += zipPrevEncodeLength(p,prevlen);</div><div class="line">    p += zipEncodeLength(p,encoding,slen);</div><div class="line">    <span class="keyword">if</span> (ZIP_IS_STR(encoding)) &#123;</div><div class="line">        <span class="built_in">memcpy</span>(p,s,slen);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        zipSaveInteger(p,value,encoding);</div><div class="line">    &#125;</div><div class="line">    ZIPLIST_INCR_LENGTH(zl,<span class="number">1</span>);</div><div class="line">    <span class="keyword">return</span> zl;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个函数是在指定的位置p插入一段新的数据，待插入数据的地址指针是s，长度为slen。插入后形成一个新的数据项，占据原来p的配置，原来位于p位置的数据项以及后面的所有数据项，需要统一向后移动，给新插入的数据项留出空间。参数p指向的是ziplist中某一个数据项的起始位置，或者在向尾端插入的时候，它指向ziplist的结束标记<br>每次插入需要计算数据长度，如果超过长度可能会引发拷贝,重新调用内存的分配。</p>
+<h3 id="运用"><a href="#运用" class="headerlink" title="运用"></a>运用</h3><blockquote>
+<p>hash-max-ziplist-entries 512<br>hash-max-ziplist-value 64</p>
+</blockquote>
+<p>随着数据的变大，ziplist会转换成dict（hash结构）</p>
+<ul>
+<li>每次插入或者修改可能会引发内存拷贝性能很差。</li>
+<li>一旦发生内存拷贝，内存拷贝的成本也相应增加，因为要拷贝更大的一块数据。</li>
+<li>当ziplist数据项过多的时候，在它上面查找指定的数据项就会性能变得很低，因为ziplist上的查找需要进行遍历。</li>
+</ul>
+<h2 id="quicklist（为了更好的支持list，优化版本的ziplist）"><a href="#quicklist（为了更好的支持list，优化版本的ziplist）" class="headerlink" title="quicklist（为了更好的支持list，优化版本的ziplist）"></a>quicklist（为了更好的支持list，优化版本的ziplist）</h2><h3 id="demo-7"><a href="#demo-7" class="headerlink" title="demo"></a>demo</h3><p>demo 和 配置 在ziplist中有</p>
+<h3 id="理解-1"><a href="#理解-1" class="headerlink" title="理解"></a>理解</h3><p>list具有这样的一些特点：它是一个能维持数据项先后顺序的列表（各个数据项的先后顺序由插入位置决定），便于在表的两端追加和删除数据，而对于中间位置的存取具有O(N)的时间复杂度。</p>
+<p><img src="http://zhangtielei.com/assets/photos_redis/redis_quicklist_structure.png" alt="结构图"></p>
+<p>为了解决</p>
+<h3 id="源代码-5"><a href="#源代码-5" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> quicklistNode &#123;</div><div class="line">    <span class="keyword">struct</span> quicklistNode *prev;</div><div class="line">    <span class="keyword">struct</span> quicklistNode *next;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> *zl;          <span class="comment">//和ziplist的结构一样，指向一个ziplist</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> sz;             <span class="comment">/* ziplist size in bytes */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> count : <span class="number">16</span>;     <span class="comment">/* count of items in ziplist */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> encoding : <span class="number">2</span>;   <span class="comment">/* RAW==1 or LZF==2 */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> container : <span class="number">2</span>;  <span class="comment">/* NONE==1 or ZIPLIST==2 */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> recompress : <span class="number">1</span>; <span class="comment">/* was this node previous compressed? */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> attempted_compress : <span class="number">1</span>; <span class="comment">/* node can't compress; too small */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> extra : <span class="number">10</span>; <span class="comment">/* more bits to steal for future usage */</span></div><div class="line">&#125; quicklistNode;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> quicklistLZF &#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> sz; <span class="comment">/* LZF size in bytes*/</span></div><div class="line">    <span class="keyword">char</span> compressed[];</div><div class="line">&#125; quicklistLZF;</div><div class="line"><span class="comment">//这其实就是一个很简单的头尾的链表结构</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> quicklist &#123;</div><div class="line">    quicklistNode *head;</div><div class="line">    quicklistNode *tail;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> count;        <span class="comment">/* total count of all entries in all ziplists */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> len;           <span class="comment">/* number of quicklistNodes */</span></div><div class="line">    <span class="keyword">int</span> fill : <span class="number">16</span>;              <span class="comment">/* fill factor for individual nodes */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> compress : <span class="number">16</span>; <span class="comment">/* depth of end nodes not to compress;0=off */</span></div><div class="line">&#125; quicklist;</div></pre></td></tr></table></figure>
+<h3 id="解决的问题"><a href="#解决的问题" class="headerlink" title="解决的问题"></a>解决的问题</h3><ul>
+<li>双向链表便于在表的两端进行push和pop操作，但是它的内存开销比较大。首先，它在每个节点上除了要保存数据之外，还要额外保存两个指针；其次，双向链表的各个节点是单独的内存块，地址不连续，节点多了容易产生内存碎片。</li>
+<li>ziplist由于是一整块连续内存，所以存储效率很高。但是，它不利于修改操作，每次数据变动都会引发一次内存的realloc。特别是当ziplist长度很长的时候，一次realloc可能会导致大批量的数据拷贝，进一步降低性能。</li>
+</ul>
+<h3 id="存储结构的优化"><a href="#存储结构的优化" class="headerlink" title="存储结构的优化"></a>存储结构的优化</h3><ul>
+<li>每个quicklist节点上的ziplist越短，则内存碎片越多。内存碎片多了，有可能在内存中产生很多无法被利用的小碎片，从而降低存储效率。这种情况的极端是每个quicklist节点上的ziplist只包含一个数据项，这就蜕化成一个普通的双向链表了。</li>
+<li>每个quicklist节点上的ziplist越长，则为ziplist分配大块连续内存空间的难度就越大。有可能出现内存里有很多小块的空闲空间（它们加起来很多），但却找不到一块足够大的空闲空间分配给ziplist的情况。这同样会降低存储效率。这种情况的极端是整个quicklist只有一个节点，所有的数据项都分配在这仅有的一个节点的ziplist里面。这其实蜕化成一个ziplist了。</li>
+</ul>
+<h3 id="push逻辑"><a href="#push逻辑" class="headerlink" title="push逻辑"></a>push逻辑</h3><ul>
+<li>当插入位置所在的ziplist大小没有超过限制时，直接插入到ziplist中就好了；</li>
+<li>当插入位置所在的ziplist大小超过了限制，但插入的位置位于ziplist两端，并且相邻的quicklist链表节点的ziplist大小没有超过限制，那么就转而插入到相邻的那个quicklist链表节点的ziplist中；</li>
+<li>当插入位置所在的ziplist大小超过了限制，但插入的位置位于ziplist两端，并且相邻的quicklist链表节点的ziplist大小也超过限制，这时需要新创建一个quicklist链表节点插入。</li>
+<li>对于插入位置所在的ziplist大小超过了限制的其它情况（主要对应于在ziplist中间插入数据的情况），则需要把当前ziplist分裂为两个节点，然后再其中一个节点上插入数据。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/03/关于spring中代理的相关问题/" rel="next" title="关于spring中代理的相关问题">
+                <i class="fa fa-chevron-left"></i> 关于spring中代理的相关问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/redis持久化机制/" rel="prev" title="redis持久化机制">
+                redis持久化机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTM5NC81OTYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG"
+               alt="bobby peng" />
+          <p class="site-author-name" itemprop="name">bobby peng</p>
+           
+              <p class="site-description motion-element" itemprop="description">自娱自乐</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#redis数据结构"><span class="nav-number">1.</span> <span class="nav-text">redis数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">1.1.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo"><span class="nav-number">1.1.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.1.2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#与c语言字符串的区别"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">与c语言字符串的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链表"><span class="nav-number">1.2.</span> <span class="nav-text">链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码"><span class="nav-number">1.2.2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字典（dict）"><span class="nav-number">1.3.</span> <span class="nav-text">字典（dict）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">源代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#robj"><span class="nav-number">1.4.</span> <span class="nav-text">robj</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码"><span class="nav-number">1.4.2.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于embstr"><span class="nav-number">1.4.3.</span> <span class="nav-text">关于embstr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳跃表"><span class="nav-number">1.5.</span> <span class="nav-text">跳跃表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-4"><span class="nav-number">1.5.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-2"><span class="nav-number">1.5.2.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#疑问"><span class="nav-number">1.5.3.</span> <span class="nav-text">疑问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转换"><span class="nav-number">1.5.4.</span> <span class="nav-text">转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整数集合"><span class="nav-number">1.6.</span> <span class="nav-text">整数集合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-5"><span class="nav-number">1.6.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-3"><span class="nav-number">1.6.2.</span> <span class="nav-text">源代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩列表（ziplist）"><span class="nav-number">1.7.</span> <span class="nav-text">压缩列表（ziplist）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-6"><span class="nav-number">1.7.1.</span> <span class="nav-text">demo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题在哪"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">问题在哪</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解"><span class="nav-number">1.7.2.</span> <span class="nav-text">理解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#entry数据结构"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">entry数据结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-4"><span class="nav-number">1.7.3.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运用"><span class="nav-number">1.7.4.</span> <span class="nav-text">运用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quicklist（为了更好的支持list，优化版本的ziplist）"><span class="nav-number">1.8.</span> <span class="nav-text">quicklist（为了更好的支持list，优化版本的ziplist）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-7"><span class="nav-number">1.8.1.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解-1"><span class="nav-number">1.8.2.</span> <span class="nav-text">理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-5"><span class="nav-number">1.8.3.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决的问题"><span class="nav-number">1.8.4.</span> <span class="nav-text">解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储结构的优化"><span class="nav-number">1.8.5.</span> <span class="nav-text">存储结构的优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push逻辑"><span class="nav-number">1.8.6.</span> <span class="nav-text">push逻辑</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bobby peng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

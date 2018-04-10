@@ -1,0 +1,884 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/druid2.png?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="redis持久化机制rdb持久化成一个二进制的快照文件，可以用于还原redis的数据。但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。
+save源代码同进程创建rdb文件。server端阻塞。123456789101112131415161718192021222324252627282930313233343">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis持久化机制">
+<meta property="og:url" content="http://peng2035.me/2018/04/10/redis持久化机制/index.html">
+<meta property="og:site_name" content="peng2035's blog">
+<meta property="og:description" content="redis持久化机制rdb持久化成一个二进制的快照文件，可以用于还原redis的数据。但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。
+save源代码同进程创建rdb文件。server端阻塞。123456789101112131415161718192021222324252627282930313233343">
+<meta property="og:updated_time" content="2018-04-10T11:43:47.760Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis持久化机制">
+<meta name="twitter:description" content="redis持久化机制rdb持久化成一个二进制的快照文件，可以用于还原redis的数据。但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。
+save源代码同进程创建rdb文件。server端阻塞。123456789101112131415161718192021222324252627282930313233343">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://peng2035.me/2018/04/10/redis持久化机制/"/>
+
+
+
+
+
+  <title> redis持久化机制 | peng2035's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">peng2035's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://peng2035.me/2018/04/10/redis持久化机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="bobby peng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="peng2035's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                redis持久化机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-10T19:43:21+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="redis持久化机制"><a href="#redis持久化机制" class="headerlink" title="redis持久化机制"></a>redis持久化机制</h1><h2 id="rdb"><a href="#rdb" class="headerlink" title="rdb"></a>rdb</h2><p>持久化成一个二进制的快照文件，可以用于还原redis的数据。<br>但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。</p>
+<h3 id="save"><a href="#save" class="headerlink" title="save"></a>save</h3><h4 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h4><p>同进程创建rdb文件。server端阻塞。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Save the DB on disk. Return C_ERR on error, C_OK on success. */</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rdbSave</span><span class="params">(<span class="keyword">char</span> *filename)</span> </span>&#123;</div><div class="line">    <span class="keyword">char</span> tmpfile[<span class="number">256</span>];</div><div class="line">    <span class="keyword">char</span> cwd[MAXPATHLEN]; <span class="comment">/* Current working dir path for error messages. */</span></div><div class="line">    FILE *fp;</div><div class="line">    rio rdb;</div><div class="line">    <span class="keyword">int</span> error = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 创建文件</span></div><div class="line">    <span class="built_in">snprintf</span>(tmpfile,<span class="number">256</span>,<span class="string">"temp-%d.rdb"</span>, (<span class="keyword">int</span>) getpid());</div><div class="line">    fp = fopen(tmpfile,<span class="string">"w"</span>);</div><div class="line">    <span class="keyword">if</span> (!fp) &#123;</div><div class="line">        <span class="keyword">char</span> *cwdp = getcwd(cwd,MAXPATHLEN);</div><div class="line">        serverLog(LL_WARNING,</div><div class="line">            <span class="string">"Failed opening the RDB file %s (in server root dir %s) "</span></div><div class="line">            <span class="string">"for saving: %s"</span>,</div><div class="line">            filename,</div><div class="line">            cwdp ? cwdp : <span class="string">"unknown"</span>,</div><div class="line">            strerror(errno));</div><div class="line">        <span class="keyword">return</span> C_ERR;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 初始化io</span></div><div class="line">    rioInitWithFile(&amp;rdb,fp);</div><div class="line"></div><div class="line">    <span class="comment">//真正存储的逻辑</span></div><div class="line">    <span class="keyword">if</span> (rdbSaveRio(&amp;rdb,&amp;error) == C_ERR) &#123;</div><div class="line">        errno = error;</div><div class="line">        <span class="keyword">goto</span> werr;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Make sure data will not remain on the OS's output buffers */</span></div><div class="line">    <span class="keyword">if</span> (fflush(fp) == EOF) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">if</span> (fsync(fileno(fp)) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">if</span> (fclose(fp) == EOF) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">    <span class="comment">/* Use RENAME to make sure the DB file is changed atomically only</span></div><div class="line">     * if the generate DB file is ok. */</div><div class="line">    <span class="keyword">if</span> (rename(tmpfile,filename) == <span class="number">-1</span>) &#123;</div><div class="line">        <span class="keyword">char</span> *cwdp = getcwd(cwd,MAXPATHLEN);</div><div class="line">        serverLog(LL_WARNING,</div><div class="line">            <span class="string">"Error moving temp DB file %s on the final "</span></div><div class="line">            <span class="string">"destination %s (in server root dir %s): %s"</span>,</div><div class="line">            tmpfile,</div><div class="line">            filename,</div><div class="line">            cwdp ? cwdp : <span class="string">"unknown"</span>,</div><div class="line">            strerror(errno));</div><div class="line">        unlink(tmpfile);</div><div class="line">        <span class="keyword">return</span> C_ERR;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    serverLog(LL_NOTICE,<span class="string">"DB saved on disk"</span>);</div><div class="line">    server.dirty = <span class="number">0</span>;</div><div class="line">    server.lastsave = time(<span class="literal">NULL</span>);</div><div class="line">    server.lastbgsave_status = C_OK;</div><div class="line">    <span class="keyword">return</span> C_OK;</div><div class="line"></div><div class="line">werr:</div><div class="line">    serverLog(LL_WARNING,<span class="string">"Write error saving DB on disk: %s"</span>, strerror(errno));</div><div class="line">    fclose(fp);</div><div class="line">    unlink(tmpfile);</div><div class="line">    <span class="keyword">return</span> C_ERR;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/* Produces a dump of the database in RDB format sending it to the specified</span></div><div class="line"> * Redis I/O channel. On success C_OK is returned, otherwise C_ERR</div><div class="line"> * is returned and part of the output, or all the output, can be</div><div class="line"> * missing because of I/O errors.</div><div class="line"> *</div><div class="line"> * When the function returns C_ERR and if 'error' is not NULL, the</div><div class="line"> * integer pointed by 'error' is set to the value of errno just after the I/O</div><div class="line"> * error. */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rdbSaveRio</span><span class="params">(rio *rdb, <span class="keyword">int</span> *error)</span> </span>&#123;</div><div class="line">    dictIterator *di = <span class="literal">NULL</span>;</div><div class="line">    dictEntry *de;</div><div class="line">    <span class="keyword">char</span> magic[<span class="number">10</span>];</div><div class="line">    <span class="keyword">int</span> j;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> now = mstime();</div><div class="line">    <span class="keyword">uint64_t</span> cksum;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (server.rdb_checksum)</div><div class="line">        rdb-&gt;update_cksum = rioGenericUpdateChecksum;</div><div class="line">    <span class="comment">// 给当前的rdb加上版本号    </span></div><div class="line">    <span class="built_in">snprintf</span>(magic,<span class="keyword">sizeof</span>(magic),<span class="string">"REDIS%04d"</span>,RDB_VERSION);</div><div class="line">    <span class="keyword">if</span> (rdbWriteRaw(rdb,magic,<span class="number">9</span>) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">if</span> (rdbSaveInfoAuxFields(rdb) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">    <span class="comment">// 遍历整个redis的db</span></div><div class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; server.dbnum; j++) &#123;</div><div class="line">        redisDb *db = server.db+j;</div><div class="line">        dict *d = db-&gt;dict;</div><div class="line">        <span class="keyword">if</span> (dictSize(d) == <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line">        di = dictGetSafeIterator(d);</div><div class="line">        <span class="keyword">if</span> (!di) <span class="keyword">return</span> C_ERR;</div><div class="line"></div><div class="line">        <span class="comment">/* Write the SELECT DB opcode */</span></div><div class="line">        <span class="keyword">if</span> (rdbSaveType(rdb,RDB_OPCODE_SELECTDB) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">        <span class="keyword">if</span> (rdbSaveLen(rdb,j) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">        <span class="comment">/* Write the RESIZE DB opcode. We trim the size to UINT32_MAX, which</span></div><div class="line">         * is currently the largest type we are able to represent in RDB sizes.</div><div class="line">         * However this does not limit the actual size of the DB to load since</div><div class="line">         * these sizes are just hints to resize the hash tables. */</div><div class="line">        <span class="keyword">uint32_t</span> db_size, expires_size;</div><div class="line">        db_size = (dictSize(db-&gt;dict) &lt;= UINT32_MAX) ?</div><div class="line">                                dictSize(db-&gt;dict) :</div><div class="line">                                UINT32_MAX;</div><div class="line">        expires_size = (dictSize(db-&gt;expires) &lt;= UINT32_MAX) ?</div><div class="line">                                dictSize(db-&gt;expires) :</div><div class="line">                                UINT32_MAX;</div><div class="line">        <span class="keyword">if</span> (rdbSaveType(rdb,RDB_OPCODE_RESIZEDB) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">        <span class="keyword">if</span> (rdbSaveLen(rdb,db_size) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">        <span class="keyword">if</span> (rdbSaveLen(rdb,expires_size) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">        <span class="comment">/* Iterate this DB writing every entry */</span></div><div class="line">        <span class="keyword">while</span>((de = dictNext(di)) != <span class="literal">NULL</span>) &#123;</div><div class="line">            sds keystr = dictGetKey(de);</div><div class="line">            robj key, *o = dictGetVal(de);</div><div class="line">            <span class="keyword">long</span> <span class="keyword">long</span> expire;</div><div class="line"></div><div class="line">            initStaticStringObject(key,keystr);</div><div class="line">            expire = getExpire(db,&amp;key);</div><div class="line">            <span class="keyword">if</span> (rdbSaveKeyValuePair(rdb,&amp;key,o,expire,now) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">        &#125;</div><div class="line">        dictReleaseIterator(di);</div><div class="line">    &#125;</div><div class="line">    di = <span class="literal">NULL</span>; <span class="comment">/* So that we don't release it again on error. */</span></div><div class="line"></div><div class="line">    <span class="comment">/* EOF opcode */</span></div><div class="line">    <span class="keyword">if</span> (rdbSaveType(rdb,RDB_OPCODE_EOF) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">    <span class="comment">/* CRC64 checksum. It will be zero if checksum computation is disabled, the</span></div><div class="line">     * loading code skips the check in this case. */</div><div class="line">    cksum = rdb-&gt;cksum;</div><div class="line">    memrev64ifbe(&amp;cksum);</div><div class="line">    <span class="keyword">if</span> (rioWrite(rdb,&amp;cksum,<span class="number">8</span>) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">return</span> C_OK;</div><div class="line"></div><div class="line">werr:</div><div class="line">    <span class="keyword">if</span> (error) *error = errno;</div><div class="line">    <span class="keyword">if</span> (di) dictReleaseIterator(di);</div><div class="line">    <span class="keyword">return</span> C_ERR;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>创建一个文件做校验，然后轮训每个数据库对数据进行二进制编码以及落盘。</p>
+<h3 id="bgsave"><a href="#bgsave" class="headerlink" title="bgsave"></a>bgsave</h3><h4 id="源代码-1"><a href="#源代码-1" class="headerlink" title="源代码"></a>源代码</h4><p>创建一个子进程来创建rdb文件。server端不阻塞。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rdbSaveBackground</span><span class="params">(<span class="keyword">char</span> *filename)</span> </span>&#123;</div><div class="line">    <span class="keyword">pid_t</span> childpid;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> start;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (server.aof_child_pid != <span class="number">-1</span> || server.rdb_child_pid != <span class="number">-1</span>) <span class="keyword">return</span> C_ERR;</div><div class="line"></div><div class="line">    server.dirty_before_bgsave = server.dirty;</div><div class="line">    server.lastbgsave_try = time(<span class="literal">NULL</span>);</div><div class="line"></div><div class="line">    start = ustime();</div><div class="line">    <span class="keyword">if</span> ((childpid = fork()) == <span class="number">0</span>) &#123;</div><div class="line">        <span class="keyword">int</span> retval;</div><div class="line"></div><div class="line">        <span class="comment">/* Child */</span></div><div class="line">        closeListeningSockets(<span class="number">0</span>);</div><div class="line">        redisSetProcTitle(<span class="string">"redis-rdb-bgsave"</span>);</div><div class="line">        retval = rdbSave(filename);</div><div class="line">        <span class="keyword">if</span> (retval == C_OK) &#123;</div><div class="line">            <span class="keyword">size_t</span> private_dirty = zmalloc_get_private_dirty();</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (private_dirty) &#123;</div><div class="line">                serverLog(LL_NOTICE,</div><div class="line">                    <span class="string">"RDB: %zu MB of memory used by copy-on-write"</span>,</div><div class="line">                    private_dirty/(<span class="number">1024</span>*<span class="number">1024</span>));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        exitFromChild((retval == C_OK) ? <span class="number">0</span> : <span class="number">1</span>);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* Parent */</span></div><div class="line">        <span class="comment">// fork 的时间肯能会持续很久，bgsave fork 是阻塞的</span></div><div class="line">        server.stat_fork_time = ustime()-start;</div><div class="line">        server.stat_fork_rate = (<span class="keyword">double</span>) zmalloc_used_memory() * <span class="number">1000000</span> / server.stat_fork_time / (<span class="number">1024</span>*<span class="number">1024</span>*<span class="number">1024</span>); <span class="comment">/* GB per second. */</span></div><div class="line">        latencyAddSampleIfNeeded(<span class="string">"fork"</span>,server.stat_fork_time/<span class="number">1000</span>);</div><div class="line">        <span class="keyword">if</span> (childpid == <span class="number">-1</span>) &#123;</div><div class="line">            server.lastbgsave_status = C_ERR;</div><div class="line">            serverLog(LL_WARNING,<span class="string">"Can't save in background: fork: %s"</span>,</div><div class="line">                strerror(errno));</div><div class="line">            <span class="keyword">return</span> C_ERR;</div><div class="line">        &#125;</div><div class="line">        serverLog(LL_NOTICE,<span class="string">"Background saving started by pid %d"</span>,childpid);</div><div class="line">        server.rdb_save_time_start = time(<span class="literal">NULL</span>);</div><div class="line">        server.rdb_child_pid = childpid;</div><div class="line">        server.rdb_child_type = RDB_CHILD_TYPE_DISK;</div><div class="line">        updateDictResizePolicy();</div><div class="line">        <span class="keyword">return</span> C_OK;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> C_OK; <span class="comment">/* unreached */</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>核心代码就是fork了一个子进程。<br>但是如果是复制代码块内存需要两份，但是不复制代码的话是怎么保证快照呢。</p>
+<blockquote>
+<p>在Linux程序中，fork（）会产生一个和父进程完全相同的子进程，但子进程在此后多会exec系统调用，出于效率考虑，linux中引入了“写时复制“技术，也就是只有进程空间的各段的内容要发生变化时，才会将父进程的内容复制一份给子进程。</p>
+</blockquote>
+<p>写时拷贝（copy on write） 增量技术。</p>
+<p>关于(fork)[<a href="https://www.cnblogs.com/biyeymyhjob/archive/2012/07/20/2601655.html" target="_blank" rel="external">https://www.cnblogs.com/biyeymyhjob/archive/2012/07/20/2601655.html</a>]</p>
+<h2 id="AOF-append-only-file"><a href="#AOF-append-only-file" class="headerlink" title="AOF(append only file)"></a>AOF(append only file)</h2><p>通过保存Redis服务器所执行的写命令来记录数据库状态的。</p>
+<p>![AOF]实时调用栈</p>
+<h3 id="源代码-2"><a href="#源代码-2" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">feedAppendOnlyFile</span><span class="params">(<span class="keyword">struct</span> redisCommand *cmd, <span class="keyword">int</span> dictid, robj **argv, <span class="keyword">int</span> argc)</span> </span>&#123;</div><div class="line">    sds buf = sdsempty();</div><div class="line">    robj *tmpargv[<span class="number">3</span>];</div><div class="line"></div><div class="line">    <span class="comment">/* The DB this command was targeting is not the same as the last command</span></div><div class="line">     * we appendend. To issue a SELECT command is needed.</div><div class="line">     *</div><div class="line">     * 使用 SELECT 命令，显式设置数据库，确保之后的命令被设置到正确的数据库</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (dictid != server.aof_selected_db) &#123;</div><div class="line">        <span class="keyword">char</span> seldb[<span class="number">64</span>];</div><div class="line"></div><div class="line">        <span class="built_in">snprintf</span>(seldb,<span class="keyword">sizeof</span>(seldb),<span class="string">"%d"</span>,dictid);</div><div class="line">        buf = sdscatprintf(buf,<span class="string">"*2\r\n$6\r\nSELECT\r\n$%lu\r\n%s\r\n"</span>,</div><div class="line">            (<span class="keyword">unsigned</span> <span class="keyword">long</span>)<span class="built_in">strlen</span>(seldb),seldb);</div><div class="line"></div><div class="line">        server.aof_selected_db = dictid;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// EXPIRE 、 PEXPIRE 和 EXPIREAT 命令</span></div><div class="line">    <span class="keyword">if</span> (cmd-&gt;proc == expireCommand || cmd-&gt;proc == pexpireCommand ||</div><div class="line">        cmd-&gt;proc == expireatCommand) &#123;</div><div class="line">        <span class="comment">/* Translate EXPIRE/PEXPIRE/EXPIREAT into PEXPIREAT</span></div><div class="line">         *</div><div class="line">         * 将 EXPIRE 、 PEXPIRE 和 EXPIREAT 都翻译成 PEXPIREAT</div><div class="line">         */</div><div class="line">        buf = catAppendOnlyExpireAtCommand(buf,cmd,argv[<span class="number">1</span>],argv[<span class="number">2</span>]);</div><div class="line"></div><div class="line">    <span class="comment">// SETEX 和 PSETEX 命令</span></div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmd-&gt;proc == setexCommand || cmd-&gt;proc == psetexCommand) &#123;</div><div class="line">        <span class="comment">/* Translate SETEX/PSETEX to SET and PEXPIREAT</span></div><div class="line">         *</div><div class="line">         * 将两个命令都翻译成 SET 和 PEXPIREAT</div><div class="line">         */</div><div class="line"></div><div class="line">        <span class="comment">// SET</span></div><div class="line">        tmpargv[<span class="number">0</span>] = createStringObject(<span class="string">"SET"</span>,<span class="number">3</span>);</div><div class="line">        tmpargv[<span class="number">1</span>] = argv[<span class="number">1</span>];</div><div class="line">        tmpargv[<span class="number">2</span>] = argv[<span class="number">3</span>];</div><div class="line">        buf = catAppendOnlyGenericCommand(buf,<span class="number">3</span>,tmpargv);</div><div class="line"></div><div class="line">        <span class="comment">// PEXPIREAT</span></div><div class="line">        decrRefCount(tmpargv[<span class="number">0</span>]);</div><div class="line">        buf = catAppendOnlyExpireAtCommand(buf,cmd,argv[<span class="number">1</span>],argv[<span class="number">2</span>]);</div><div class="line"></div><div class="line">    <span class="comment">// 其他命令</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* All the other commands don't need translation or need the</span></div><div class="line">         * same translation already operated in the command vector</div><div class="line">         * for the replication itself. */</div><div class="line">        buf = catAppendOnlyGenericCommand(buf,argc,argv);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Append to the AOF buffer. This will be flushed on disk just before</span></div><div class="line">     * of re-entering the event loop, so before the client will get a</div><div class="line">     * positive reply about the operation performed.</div><div class="line">     *</div><div class="line">     * 将命令追加到 AOF 缓存中，</div><div class="line">     * 在重新进入事件循环之前，这些命令会被冲洗到磁盘上，</div><div class="line">     * 并向客户端返回一个回复。</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (server.aof_state == REDIS_AOF_ON)</div><div class="line">        server.aof_buf = sdscatlen(server.aof_buf,buf,sdslen(buf));</div><div class="line"></div><div class="line">    <span class="comment">/* If a background append only file rewriting is in progress we want to</span></div><div class="line">     * accumulate the differences between the child DB and the current one</div><div class="line">     * in a buffer, so that when the child process will do its work we</div><div class="line">     * can append the differences to the new append only file.</div><div class="line">     *</div><div class="line">     * 如果 BGREWRITEAOF 正在进行，</div><div class="line">     * 那么我们还需要将命令追加到重写缓存中，</div><div class="line">     * 从而记录当前正在重写的 AOF 文件和数据库当前状态的差异。</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (server.aof_child_pid != <span class="number">-1</span>)</div><div class="line">        aofRewriteBufferAppend((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)buf,sdslen(buf));</div><div class="line"></div><div class="line">    <span class="comment">// 释放</span></div><div class="line">    sdsfree(buf);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>server.aof_buf：aof缓冲，由于aof不是实时刷盘，记录只能先记录到内存中的一个sds中<br>写入需要等eventloops调用时间事件去运行flush方法才真正的写入文件之中</p>
+<h3 id="aof重写"><a href="#aof重写" class="headerlink" title="aof重写"></a>aof重写</h3><p>aof文件是记录命令，对同一个key的行为会记录多次，会造成空间的浪费，重写有助于减少空间。</p>
+<h3 id="源代码-3"><a href="#源代码-3" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Write a sequence of commands able to fully rebuild the dataset into</span></div><div class="line"> * "filename". Used both by REWRITEAOF and BGREWRITEAOF.</div><div class="line"> *</div><div class="line"> * 将一集足以还原当前数据集的命令写入到 filename 指定的文件中。</div><div class="line"> *</div><div class="line"> * 这个函数被 REWRITEAOF 和 BGREWRITEAOF 两个命令调用。</div><div class="line"> * （REWRITEAOF 似乎已经是一个废弃的命令）</div><div class="line"> *</div><div class="line"> * In order to minimize the number of commands needed in the rewritten</div><div class="line"> * log Redis uses variadic commands when possible, such as RPUSH, SADD</div><div class="line"> * and ZADD. However at max REDIS_AOF_REWRITE_ITEMS_PER_CMD items per time</div><div class="line"> * are inserted using a single command.</div><div class="line"> *</div><div class="line"> * 为了最小化重建数据集所需执行的命令数量，</div><div class="line"> * Redis 会尽可能地使用接受可变参数数量的命令，比如 RPUSH 、SADD 和 ZADD 等。</div><div class="line"> *</div><div class="line"> * 不过单个命令每次处理的元素数量不能超过 REDIS_AOF_REWRITE_ITEMS_PER_CMD 。</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">rewriteAppendOnlyFile</span><span class="params">(<span class="keyword">char</span> *filename)</span> </span>&#123;</div><div class="line">    dictIterator *di = <span class="literal">NULL</span>;</div><div class="line">    dictEntry *de;</div><div class="line">    rio aof;</div><div class="line">    FILE *fp;</div><div class="line">    <span class="keyword">char</span> tmpfile[<span class="number">256</span>];</div><div class="line">    <span class="keyword">int</span> j;</div><div class="line">    <span class="keyword">long</span> <span class="keyword">long</span> now = mstime();</div><div class="line"></div><div class="line">    <span class="comment">/* Note that we have to use a different temp name here compared to the</span></div><div class="line">     * one used by rewriteAppendOnlyFileBackground() function.</div><div class="line">     *</div><div class="line">     * 创建临时文件</div><div class="line">     *</div><div class="line">     * 注意这里创建的文件名和 rewriteAppendOnlyFileBackground() 创建的文件名稍有不同</div><div class="line">     */</div><div class="line">    <span class="built_in">snprintf</span>(tmpfile,<span class="number">256</span>,<span class="string">"temp-rewriteaof-%d.aof"</span>, (<span class="keyword">int</span>) getpid());</div><div class="line">    fp = fopen(tmpfile,<span class="string">"w"</span>);</div><div class="line">    <span class="keyword">if</span> (!fp) &#123;</div><div class="line">        redisLog(REDIS_WARNING, <span class="string">"Opening the temp file for AOF rewrite in rewriteAppendOnlyFile(): %s"</span>, strerror(errno));</div><div class="line">        <span class="keyword">return</span> REDIS_ERR;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 初始化文件 io</span></div><div class="line">    rioInitWithFile(&amp;aof,fp);</div><div class="line"></div><div class="line">    <span class="comment">// 设置每写入 REDIS_AOF_AUTOSYNC_BYTES 字节</span></div><div class="line">    <span class="comment">// 就执行一次 FSYNC</span></div><div class="line">    <span class="comment">// 防止缓存中积累太多命令内容，造成 I/O 阻塞时间过长</span></div><div class="line">    <span class="keyword">if</span> (server.aof_rewrite_incremental_fsync)</div><div class="line">        rioSetAutoSync(&amp;aof,REDIS_AOF_AUTOSYNC_BYTES);</div><div class="line"></div><div class="line">    <span class="comment">// 遍历所有数据库</span></div><div class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; server.dbnum; j++) &#123;</div><div class="line"></div><div class="line">        <span class="keyword">char</span> selectcmd[] = <span class="string">"*2\r\n$6\r\nSELECT\r\n"</span>;</div><div class="line"></div><div class="line">        redisDb *db = server.db+j;</div><div class="line"></div><div class="line">        <span class="comment">// 指向键空间</span></div><div class="line">        dict *d = db-&gt;dict;</div><div class="line">        <span class="keyword">if</span> (dictSize(d) == <span class="number">0</span>) <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">        <span class="comment">// 创建键空间迭代器</span></div><div class="line">        di = dictGetSafeIterator(d);</div><div class="line">        <span class="keyword">if</span> (!di) &#123;</div><div class="line">            fclose(fp);</div><div class="line">            <span class="keyword">return</span> REDIS_ERR;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">/* SELECT the new DB</span></div><div class="line">         *</div><div class="line">         * 首先写入 SELECT 命令，确保之后的数据会被插入到正确的数据库上</div><div class="line">         */</div><div class="line">        <span class="keyword">if</span> (rioWrite(&amp;aof,selectcmd,<span class="keyword">sizeof</span>(selectcmd)<span class="number">-1</span>) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">        <span class="keyword">if</span> (rioWriteBulkLongLong(&amp;aof,j) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">        <span class="comment">/* Iterate this DB writing every entry</span></div><div class="line">         *</div><div class="line">         * 遍历数据库所有键，并通过命令将它们的当前状态（值）记录到新 AOF 文件中</div><div class="line">         */</div><div class="line">        <span class="keyword">while</span>((de = dictNext(di)) != <span class="literal">NULL</span>) &#123;</div><div class="line">            sds keystr;</div><div class="line">            robj key, *o;</div><div class="line">            <span class="keyword">long</span> <span class="keyword">long</span> expiretime;</div><div class="line"></div><div class="line">            <span class="comment">// 取出键</span></div><div class="line">            keystr = dictGetKey(de);</div><div class="line"></div><div class="line">            <span class="comment">// 取出值</span></div><div class="line">            o = dictGetVal(de);</div><div class="line">            initStaticStringObject(key,keystr);</div><div class="line"></div><div class="line">            <span class="comment">// 取出过期时间</span></div><div class="line">            expiretime = getExpire(db,&amp;key);</div><div class="line"></div><div class="line">            <span class="comment">/* If this key is already expired skip it</span></div><div class="line">             *</div><div class="line">             * 如果键已经过期，那么跳过它，不保存</div><div class="line">             */</div><div class="line">            <span class="keyword">if</span> (expiretime != <span class="number">-1</span> &amp;&amp; expiretime &lt; now) <span class="keyword">continue</span>;</div><div class="line"></div><div class="line">            <span class="comment">/* Save the key and associated value</span></div><div class="line">             *</div><div class="line">             * 根据值的类型，选择适当的命令来保存值</div><div class="line">             */</div><div class="line">            <span class="keyword">if</span> (o-&gt;type == REDIS_STRING) &#123;</div><div class="line">                <span class="comment">/* Emit a SET command */</span></div><div class="line">                <span class="keyword">char</span> cmd[]=<span class="string">"*3\r\n$3\r\nSET\r\n"</span>;</div><div class="line">                <span class="keyword">if</span> (rioWrite(&amp;aof,cmd,<span class="keyword">sizeof</span>(cmd)<span class="number">-1</span>) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">                <span class="comment">/* Key and value */</span></div><div class="line">                <span class="keyword">if</span> (rioWriteBulkObject(&amp;aof,&amp;key) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">                <span class="keyword">if</span> (rioWriteBulkObject(&amp;aof,o) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o-&gt;type == REDIS_LIST) &#123;</div><div class="line">                <span class="keyword">if</span> (rewriteListObject(&amp;aof,&amp;key,o) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o-&gt;type == REDIS_SET) &#123;</div><div class="line">                <span class="keyword">if</span> (rewriteSetObject(&amp;aof,&amp;key,o) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o-&gt;type == REDIS_ZSET) &#123;</div><div class="line">                <span class="keyword">if</span> (rewriteSortedSetObject(&amp;aof,&amp;key,o) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (o-&gt;type == REDIS_HASH) &#123;</div><div class="line">                <span class="keyword">if</span> (rewriteHashObject(&amp;aof,&amp;key,o) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                redisPanic(<span class="string">"Unknown object type"</span>);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">/* Save the expire time</span></div><div class="line">             *</div><div class="line">             * 保存键的过期时间</div><div class="line">             */</div><div class="line">            <span class="keyword">if</span> (expiretime != <span class="number">-1</span>) &#123;</div><div class="line">                <span class="keyword">char</span> cmd[]=<span class="string">"*3\r\n$9\r\nPEXPIREAT\r\n"</span>;</div><div class="line"></div><div class="line">                <span class="comment">// 写入 PEXPIREAT expiretime 命令</span></div><div class="line">                <span class="keyword">if</span> (rioWrite(&amp;aof,cmd,<span class="keyword">sizeof</span>(cmd)<span class="number">-1</span>) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">                <span class="keyword">if</span> (rioWriteBulkObject(&amp;aof,&amp;key) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">                <span class="keyword">if</span> (rioWriteBulkLongLong(&amp;aof,expiretime) == <span class="number">0</span>) <span class="keyword">goto</span> werr;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 释放迭代器</span></div><div class="line">        dictReleaseIterator(di);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Make sure data will not remain on the OS's output buffers */</span></div><div class="line">    <span class="comment">// 冲洗并关闭新 AOF 文件</span></div><div class="line">    <span class="keyword">if</span> (fflush(fp) == EOF) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">if</span> (aof_fsync(fileno(fp)) == <span class="number">-1</span>) <span class="keyword">goto</span> werr;</div><div class="line">    <span class="keyword">if</span> (fclose(fp) == EOF) <span class="keyword">goto</span> werr;</div><div class="line"></div><div class="line">    <span class="comment">/* Use RENAME to make sure the DB file is changed atomically only</span></div><div class="line">     * if the generate DB file is ok.</div><div class="line">     *</div><div class="line">     * 原子地改名，用重写后的新 AOF 文件覆盖旧 AOF 文件</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (rename(tmpfile,filename) == <span class="number">-1</span>) &#123;</div><div class="line">        redisLog(REDIS_WARNING,<span class="string">"Error moving temp append only file on the final destination: %s"</span>, strerror(errno));</div><div class="line">        unlink(tmpfile);</div><div class="line">        <span class="keyword">return</span> REDIS_ERR;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    redisLog(REDIS_NOTICE,<span class="string">"SYNC append only file rewrite performed"</span>);</div><div class="line"></div><div class="line">    <span class="keyword">return</span> REDIS_OK;</div><div class="line"></div><div class="line">werr:</div><div class="line">    fclose(fp);</div><div class="line">    unlink(tmpfile);</div><div class="line">    redisLog(REDIS_WARNING,<span class="string">"Write error writing append only file on disk: %s"</span>, strerror(errno));</div><div class="line">    <span class="keyword">if</span> (di) dictReleaseIterator(di);</div><div class="line">    <span class="keyword">return</span> REDIS_ERR;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>同步函数会阻塞，逻辑和rdb差不多。<br>逻辑来说分析和解析当前的aof文件，对每个key的命令做合并是合理的方式，但是可能会有跨度太大等风险<br>重写是从key中直接读值的方式来完成。</p>
+<h3 id="aof-background"><a href="#aof-background" class="headerlink" title="aof background"></a>aof background</h3><p>aof background 也是fork一个进程去完成操作。<br>但是和rdb不同的是aof有个增量的不一致问题。rdb仅仅是记录快照。</p>
+<p>解决方案：<br>在执行命令的时候在aof缓冲区和rewrite aof 缓冲区都会写一份。(在aof调用的相同的地方。通过判定子进程id)<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Append data to the AOF rewrite buffer, allocating new blocks if needed. */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">aofRewriteBufferAppend</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *s, <span class="keyword">unsigned</span> <span class="keyword">long</span> len)</span> </span>&#123;</div><div class="line">    listNode *ln = listLast(server.aof_rewrite_buf_blocks);</div><div class="line">    aofrwblock *block = ln ? ln-&gt;value : <span class="literal">NULL</span>;</div><div class="line"></div><div class="line">    <span class="keyword">while</span>(len) &#123;</div><div class="line">        <span class="comment">/* If we already got at least an allocated block, try appending</span></div><div class="line">         * at least some piece into it. */</div><div class="line">        <span class="keyword">if</span> (block) &#123;</div><div class="line">            <span class="keyword">unsigned</span> <span class="keyword">long</span> thislen = (block-&gt;<span class="built_in">free</span> &lt; len) ? block-&gt;<span class="built_in">free</span> : len;</div><div class="line">            <span class="keyword">if</span> (thislen) &#123;  <span class="comment">/* The current block is not already full. */</span></div><div class="line">                <span class="built_in">memcpy</span>(block-&gt;buf+block-&gt;used, s, thislen);</div><div class="line">                block-&gt;used += thislen;</div><div class="line">                block-&gt;<span class="built_in">free</span> -= thislen;</div><div class="line">                s += thislen;</div><div class="line">                len -= thislen;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (len) &#123; <span class="comment">/* First block to allocate, or need another block. */</span></div><div class="line">            <span class="keyword">int</span> numblocks;</div><div class="line"></div><div class="line">            block = zmalloc(<span class="keyword">sizeof</span>(*block));</div><div class="line">            block-&gt;<span class="built_in">free</span> = AOF_RW_BUF_BLOCK_SIZE;</div><div class="line">            block-&gt;used = <span class="number">0</span>;</div><div class="line">            listAddNodeTail(server.aof_rewrite_buf_blocks,block);</div><div class="line"></div><div class="line">            <span class="comment">/* Log every time we cross more 10 or 100 blocks, respectively</span></div><div class="line">             * as a notice or warning. */</div><div class="line">            numblocks = listLength(server.aof_rewrite_buf_blocks);</div><div class="line">            <span class="keyword">if</span> (((numblocks+<span class="number">1</span>) % <span class="number">10</span>) == <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">int</span> level = ((numblocks+<span class="number">1</span>) % <span class="number">100</span>) == <span class="number">0</span> ? LL_WARNING :</div><div class="line">                                                         LL_NOTICE;</div><div class="line">                serverLog(level,<span class="string">"Background AOF buffer size: %lu MB"</span>,</div><div class="line">                    aofRewriteBufferSize()/(<span class="number">1024</span>*<span class="number">1024</span>));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Install a file event to send data to the rewrite child if there is</span></div><div class="line">     * not one already. */</div><div class="line">    <span class="keyword">if</span> (aeGetFileEvents(server.el,server.aof_pipe_write_data_to_child) == <span class="number">0</span>) &#123;</div><div class="line">        aeCreateFileEvent(server.el, server.aof_pipe_write_data_to_child,</div><div class="line">            AE_WRITABLE, aofChildWriteDiffData, <span class="literal">NULL</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>等待aof重写完成后，全都flush到aof文件中去。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 为何不用sds，担心buf溢出？</span></div><div class="line"><span class="keyword">ssize_t</span> aofRewriteBufferWrite(<span class="keyword">int</span> fd) &#123;</div><div class="line">    listNode *ln;</div><div class="line">    listIter li;</div><div class="line">    <span class="keyword">ssize_t</span> count = <span class="number">0</span>;</div><div class="line"></div><div class="line">    listRewind(server.aof_rewrite_buf_blocks,&amp;li);</div><div class="line">    <span class="comment">//遍历缓存块</span></div><div class="line">    <span class="keyword">while</span>((ln = listNext(&amp;li))) &#123;</div><div class="line">        aofrwblock *block = listNodeValue(ln);</div><div class="line">        <span class="keyword">ssize_t</span> nwritten;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (block-&gt;used) &#123;</div><div class="line">            nwritten = write(fd,block-&gt;buf,block-&gt;used);</div><div class="line">            <span class="keyword">if</span> (nwritten != (<span class="keyword">ssize_t</span>)block-&gt;used) &#123;</div><div class="line">                <span class="keyword">if</span> (nwritten == <span class="number">0</span>) errno = EIO;</div><div class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line">            &#125;</div><div class="line">            count += nwritten;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> count;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/10/redis数据结构/" rel="next" title="redis数据结构">
+                <i class="fa fa-chevron-left"></i> redis数据结构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/redis键过期/" rel="prev" title="redis键过期">
+                redis键过期 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTM5NC81OTYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://7xvy7h.com1.z0.glb.clouddn.com/76.JPG"
+               alt="bobby peng" />
+          <p class="site-author-name" itemprop="name">bobby peng</p>
+           
+              <p class="site-description motion-element" itemprop="description">自娱自乐</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#redis持久化机制"><span class="nav-number">1.</span> <span class="nav-text">redis持久化机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rdb"><span class="nav-number">1.1.</span> <span class="nav-text">rdb</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#save"><span class="nav-number">1.1.1.</span> <span class="nav-text">save</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#源代码"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">源代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bgsave"><span class="nav-number">1.1.2.</span> <span class="nav-text">bgsave</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#源代码-1"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">源代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOF-append-only-file"><span class="nav-number">1.2.</span> <span class="nav-text">AOF(append only file)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-2"><span class="nav-number">1.2.1.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof重写"><span class="nav-number">1.2.2.</span> <span class="nav-text">aof重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码-3"><span class="nav-number">1.2.3.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof-background"><span class="nav-number">1.2.4.</span> <span class="nav-text">aof background</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">bobby peng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
