@@ -88,67 +88,19 @@
 
 
 <meta name="description" content="redis键过期过期数据结构
-expires 指向一个dict， dict内部存放每个键的过期时间。
-过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
-
-优点
-键会尽可能快速的被回收，节省内存
-
-
-缺点
-对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
-
-
-优点
-对cpu友好，不会花费额外的时间去处理过期键
-
-
-缺点
-对内存">
+expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis键过期">
 <meta property="og:url" content="http://peng2035.me/2018/04/10/redis键过期/index.html">
 <meta property="og:site_name" content="peng2035's blog">
 <meta property="og:description" content="redis键过期过期数据结构
-expires 指向一个dict， dict内部存放每个键的过期时间。
-过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
-
-优点
-键会尽可能快速的被回收，节省内存
-
-
-缺点
-对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
-
-
-优点
-对cpu友好，不会花费额外的时间去处理过期键
-
-
-缺点
-对内存">
+expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
-<meta property="og:updated_time" content="2018-04-10T11:59:59.034Z">
+<meta property="og:updated_time" content="2018-04-10T12:29:44.803Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis键过期">
 <meta name="twitter:description" content="redis键过期过期数据结构
-expires 指向一个dict， dict内部存放每个键的过期时间。
-过期键删除策略定时删除每次 expire的时候创建一个定时器，通过定时器来删除
-
-优点
-键会尽可能快速的被回收，节省内存
-
-
-缺点
-对cpu非常不友好，对性能要求较高的缓存服务器来说不可接受惰性删除等到使用时采取检查是否过期
-
-
-优点
-对cpu友好，不会花费额外的时间去处理过期键
-
-
-缺点
-对内存">
+expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
 
 
@@ -250,6 +202,16 @@ expires 指向一个dict， dict内部存放每个键的过期时间。
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
           </a>
         </li>
       
@@ -393,6 +355,28 @@ expires 指向一个dict， dict内部存放每个键的过期时间。
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">tech</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -420,7 +404,7 @@ expires 指向一个dict， dict内部存放每个键的过期时间。
       
         <h1 id="redis键过期"><a href="#redis键过期" class="headerlink" title="redis键过期"></a>redis键过期</h1><h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
 "></p>
-<p>expires 指向一个dict， dict内部存放每个键的过期时间。</p>
+<p>expires 指向一个dict， dict内部存放每个键的过期时间。<br><a id="more"></a></p>
 <h2 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h2><h3 id="定时删除"><a href="#定时删除" class="headerlink" title="定时删除"></a>定时删除</h3><p>每次 expire的时候创建一个定时器，通过定时器来删除</p>
 <ul>
 <li>优点<ul>
@@ -592,13 +576,22 @@ expires 指向一个dict， dict内部存放每个键的过期时间。
           
 
           
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
 
           
             
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

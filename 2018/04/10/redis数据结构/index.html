@@ -90,8 +90,7 @@
 <meta name="description" content="redis数据结构字符串demo
 set msg demo
 
-demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
-实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis数据结构">
 <meta property="og:url" content="http://peng2035.me/2018/04/10/redis数据结构/index.html">
@@ -99,17 +98,15 @@ demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds
 <meta property="og:description" content="redis数据结构字符串demo
 set msg demo
 
-demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
-实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。">
 <meta property="og:image" content="http://zhangtielei.com/assets/photos_redis/redis_quicklist_structure.png">
-<meta property="og:updated_time" content="2018-04-10T11:32:41.765Z">
+<meta property="og:updated_time" content="2018-04-10T12:29:47.279Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis数据结构">
 <meta name="twitter:description" content="redis数据结构字符串demo
 set msg demo
 
-demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。
-实现最新版本的sdshdr的代码如下1234567891011121314151617181920212223242526272829303132333435363738/* Note: sdsh">
+demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds 除了存储字符串之外，还会被用作各类缓冲区。">
 <meta name="twitter:image" content="http://zhangtielei.com/assets/photos_redis/redis_quicklist_structure.png">
 
 
@@ -211,6 +208,16 @@ demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
           </a>
         </li>
       
@@ -354,6 +361,28 @@ demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">tech</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -383,6 +412,7 @@ demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds
 <p>set msg demo</p>
 </blockquote>
 <p>demo 在底层创建的就是一个sds（simple dynamic string）字符串。<br>sds 除了存储字符串之外，还会被用作各类缓冲区。</p>
+<a id="more"></a>
 <h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>最新版本的sdshdr的代码如下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Note: sdshdr5 is never used, we just access the flags byte directly.</span></div><div class="line"> * However is here to document the layout of type 5 SDS strings. */</div><div class="line"></div><div class="line"><span class="comment">//将 char定义成 sds</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> *sds;</div><div class="line"></div><div class="line"><span class="comment">// sds header</span></div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr5 &#123;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, and 5 msb of string length */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr8 &#123;</div><div class="line">    <span class="keyword">uint8_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="comment">// 申请空间， free = alloc - len，初始化时 alloc = len</span></div><div class="line">    <span class="keyword">uint8_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="comment">// 通过type来判断使用哪种sds，进一步节省空间，sdshdr8 sdshdr16 sdshdr32 sdshdr64</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr16 &#123;</div><div class="line">    <span class="keyword">uint16_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint16_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr32 &#123;</div><div class="line">    <span class="keyword">uint32_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint32_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line"><span class="keyword">struct</span> __attribute__ ((__packed__)) sdshdr64 &#123;</div><div class="line">    <span class="keyword">uint64_t</span> len; <span class="comment">/* used */</span></div><div class="line">    <span class="keyword">uint64_t</span> alloc; <span class="comment">/* excluding the header and null terminator */</span></div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags; <span class="comment">/* 3 lsb of type, 5 unused bits */</span></div><div class="line">    <span class="keyword">char</span> buf[];</div><div class="line">&#125;;</div><div class="line">sd</div></pre></td></tr></table></figure></p>
 <p>redis设计与实现的代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> sdshdr &#123;</div><div class="line">    <span class="keyword">int</span> len;</div><div class="line">    <span class="comment">//源码中没有 替代的是alloc</span></div><div class="line">    <span class="comment">//todo 为什么要改动</span></div><div class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</div><div class="line">    <span class="keyword">char</span>[] buf;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h4 id="与c语言字符串的区别"><a href="#与c语言字符串的区别" class="headerlink" title="与c语言字符串的区别"></a>与c语言字符串的区别</h4><ul>
@@ -691,13 +721,22 @@ demo 在底层创建的就是一个sds（simple dynamic string）字符串。sds
           
 
           
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
 
           
             
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

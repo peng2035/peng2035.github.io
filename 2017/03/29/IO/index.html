@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java,复习,io," />
+  <meta name="keywords" content="java,io,复习," />
 
 
 
@@ -101,7 +101,7 @@
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/selector.png">
-<meta property="og:updated_time" content="2018-01-23T14:15:56.685Z">
+<meta property="og:updated_time" content="2018-04-10T12:28:48.514Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
 <meta name="twitter:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
@@ -206,6 +206,16 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
           </a>
         </li>
       
@@ -349,6 +359,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">tech</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -375,6 +407,7 @@
 
       
         <h1 id="Linux-IO-模型（详见netty权威指南IO-模型部分）"><a href="#Linux-IO-模型（详见netty权威指南IO-模型部分）" class="headerlink" title="Linux IO 模型（详见netty权威指南IO 模型部分）"></a>Linux IO 模型（详见netty权威指南IO 模型部分）</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+<a id="more"></a>
 <h3 id="进程切换"><a href="#进程切换" class="headerlink" title="进程切换"></a>进程切换</h3><p>为了控制进程的执行，内核必须有能力挂起正在CPU上运行的进程，并恢复以前挂起的某个进程的执行。这种行为被称为进程切换。因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。<br><a href="http://guojing.me/linux-kernel-architecture/posts/process-switch/" target="_blank" rel="external">详解</a></p>
 <p>从一个进程的运行转到另一个进程上运行，这个过程中经过下面这些变化：</p>
 <ul>
@@ -387,7 +420,7 @@
 </ul>
 <h3 id="进程阻塞"><a href="#进程阻塞" class="headerlink" title="进程阻塞"></a>进程阻塞</h3><p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语(Block)，使自己由运行状态变为阻塞状态。可见，进程的阻塞是进程自身的一种主动行为，也因此只有处于运行态的进程（获得CPU），才可能将其转为阻塞状态。当进程进入阻塞状态，是不占用CPU资源的。（所以太多的cas会损耗cpu的太多性能？todo）</p>
 <h3 id="文件描述符（File-descriptor）"><a href="#文件描述符（File-descriptor）" class="headerlink" title="文件描述符（File descriptor）"></a>文件描述符（File descriptor）</h3><p>文件描述符是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。<br>文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
-<h3 id="缓存IO"><a href="#缓存IO" class="headerlink" title="缓存IO"></a>缓存IO</h3><p>缓存 IO 又被称作标准 IO，大多数文件系统的默认 IO 操作都是缓存 IO。在 Linux 的缓存 IO 机制中，操作系统会将 IO 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。<br>缺点：数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。<br><a id="more"></a></p>
+<h3 id="缓存IO"><a href="#缓存IO" class="headerlink" title="缓存IO"></a>缓存IO</h3><p>缓存 IO 又被称作标准 IO，大多数文件系统的默认 IO 操作都是缓存 IO。在 Linux 的缓存 IO 机制中，操作系统会将 IO 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。<br>缺点：数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。</p>
 <h2 id="IO模型"><a href="#IO模型" class="headerlink" title="IO模型"></a>IO模型</h2><p>Linux内核将所有外部设备都看作一个文件来操作，对一个文件的读写会调用 内核 提供的系统命令，返回一个文件描述符(file descriptor)，对一个socket读写也有对应的描述符，叫做socketfd，描述符就是一个数字，指向内核中的一个结构体(内核为各个进程维护的打开文件的记录表)</p>
 <p>一次IO操作会将数据先写入内核缓冲区 再将数据转移至进程缓冲区<br>ex: 发生一次read操作后，会发生两件事</p>
 <ul>
@@ -585,9 +618,9 @@
           
             <a href="/tags/java/" rel="tag"># java</a>
           
-            <a href="/tags/复习/" rel="tag"># 复习</a>
-          
             <a href="/tags/io/" rel="tag"># io</a>
+          
+            <a href="/tags/复习/" rel="tag"># 复习</a>
           
         </div>
       
@@ -699,13 +732,22 @@
           
 
           
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
 
           
             
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
