@@ -923,6 +923,91 @@
 
 
   
+    <article id="post-mvcc-可见性源代码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/11/mvcc-可见性源代码/">mvcc-可见性源代码</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/11/mvcc-可见性源代码/" class="archive-article-date">
+  	<time datetime="2017-04-11T07:41:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">class MVCC;</div><div class="line">/** Read view lists the trx ids of those transactions for which a consistent</div><div class="line">read should not see the modifications to the database. */</div><div class="line">...</div><div class="line">class ReadView &#123;</div><div class="line">    ...</div><div class="line">    private:</div><div class="line">        // Prevent copying</div><div class="line">        ids_t(const ids_t&amp;);</div><div class="line">        ids_t&amp; operator=(const ids_t&amp;);</div><div class="line">    private:</div><div class="line">        /** Memory for the array */</div><div class="line">        value_type* m_ptr;</div><div class="line">        /** Number of active elements in the array */</div><div class="line">        ulint       m_size;</div><div class="line">        /** Size of m_ptr in elements */</div><div class="line">        ulint       m_reserved;</div><div class="line">        friend class ReadView;</div><div class="line">    &#125;;</div><div class="line">public:</div><div class="line">    ReadView();</div><div class="line">    ~ReadView();</div><div class="line">    /** Check whether transaction id is valid.</div><div class="line">    @param[in]  id      transaction id to check</div><div class="line">    @param[in]  name        table name */</div><div class="line">    static void check_trx_id_sanity(</div><div class="line">        trx_id_t        id,</div><div class="line">        const table_name_t&amp; name);</div><div class="line">// 判断一个修改是否可见</div><div class="line">    /** Check whether the changes by id are visible.</div><div class="line">    @param[in]  id  transaction id to check against the view</div><div class="line">    @param[in]  name    table name</div><div class="line">    @return whether the view sees the modifications of id. */</div><div class="line">    bool changes_visible(</div><div class="line">        trx_id_t        id,</div><div class="line">        const table_name_t&amp; name) const</div><div class="line">        MY_ATTRIBUTE((warn_unused_result))</div><div class="line">    &#123;</div><div class="line">        ut_ad(id &gt; 0);</div><div class="line">        if (id &lt; m_up_limit_id || id == m_creator_trx_id) &#123;</div><div class="line">            return(true);</div><div class="line">        &#125;</div><div class="line">        check_trx_id_sanity(id, name);</div><div class="line">        if (id &gt;= m_low_limit_id) &#123;</div><div class="line">            return(false);</div><div class="line">        &#125; else if (m_ids.empty()) &#123;</div><div class="line">            return(true);</div><div class="line">        &#125;</div><div class="line">        const ids_t::value_type*    p = m_ids.data();</div><div class="line">        return(!std::binary_search(p, p + m_ids.size(), id));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">private:</div><div class="line">    // Disable copying</div><div class="line">    ReadView(const ReadView&amp;);</div><div class="line">    ReadView&amp; operator=(const ReadView&amp;);</div><div class="line">private:</div><div class="line">   // 活动事务中的id的最大</div><div class="line">    /** The read should not see any transaction with trx id &gt;= this</div><div class="line">    value. In other words, this is the "high water mark". */</div><div class="line">    trx_id_t    m_low_limit_id;</div><div class="line">    // 活动事务id的最小值</div><div class="line">    /** The read should see all trx ids which are strictly</div><div class="line">    smaller (&lt;) than this value.  In other words, this is the</div><div class="line">    low water mark". */</div><div class="line">    //</div><div class="line">    trx_id_t    m_up_limit_id;</div><div class="line">    /** trx id of creating transaction, set to TRX_ID_MAX for free</div><div class="line">    views. */</div><div class="line">    trx_id_t    m_creator_trx_id;</div><div class="line">    /** Set of RW transactions that was active when this snapshot</div><div class="line">    was taken */</div><div class="line">    ids_t       m_ids;</div><div class="line">    /** The view does not need to see the undo logs for transactions</div><div class="line">    whose transaction number is strictly smaller (&lt;) than this value:</div><div class="line">    they can be removed in purge if not needed by other views */</div><div class="line">    trx_id_t    m_low_limit_no;</div><div class="line">    /** AC-NL-RO transaction view that has been "closed". */</div><div class="line">    bool        m_closed;</div><div class="line">    typedef UT_LIST_NODE_T(ReadView) node_t;</div><div class="line">    /** List of read views in trx_sys */</div><div class="line">    byte        pad1[64 - sizeof(node_t)];</div><div class="line">    node_t      m_view_list;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/11/mvcc-可见性源代码/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-concurrent-常用类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -995,101 +1080,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/03/31/concurrent-常用类/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-IO" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/29/IO/">IO</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/29/IO/" class="archive-article-date">
-  	<time datetime="2017-03-29T14:59:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
-        
-          <a class="article-more-a" href="/2017/03/29/IO/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">io</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/29/IO/">展开全文 >></a>
         </p>
       
 
@@ -1216,6 +1206,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
@@ -1228,19 +1222,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
               </li>
              
               <li class="article-tag-list-item">
