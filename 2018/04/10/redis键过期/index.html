@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://pengtianhao.fun">
   <title>redis键过期 | peng2035&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="redis键过期过期数据结构
+  <meta name="description" content="过期数据结构
 expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis键过期">
 <meta property="og:url" content="http://pengtianhao.fun/2018/04/10/redis键过期/index.html">
 <meta property="og:site_name" content="peng2035's blog">
-<meta property="og:description" content="redis键过期过期数据结构
+<meta property="og:description" content="过期数据结构
 expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
-<meta property="og:updated_time" content="2018-04-10T12:29:44.803Z">
+<meta property="og:updated_time" content="2018-04-11T07:18:24.582Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis键过期">
-<meta name="twitter:description" content="redis键过期过期数据结构
+<meta name="twitter:description" content="过期数据结构
 expires 指向一个dict， dict内部存放每个键的过期时间。">
 <meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png">
   
@@ -182,7 +182,7 @@ expires 指向一个dict， dict内部存放每个键的过期时间。">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis键过期"><a href="#redis键过期" class="headerlink" title="redis键过期"></a>redis键过期</h1><h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
+        <h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
 "></p>
 <p>expires 指向一个dict， dict内部存放每个键的过期时间。<br><a id="more"></a></p>
 <h2 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h2><h3 id="定时删除"><a href="#定时删除" class="headerlink" title="定时删除"></a>定时删除</h3><p>每次 expire的时候创建一个定时器，通过定时器来删除</p>
@@ -474,15 +474,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -490,7 +486,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -498,7 +498,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
             
             <div class="clearfix"></div>

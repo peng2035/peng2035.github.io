@@ -178,7 +178,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis-复制"><a href="#redis-复制" class="headerlink" title="redis 复制"></a>redis 复制</h1><h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）<br>
+        <h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）<br>
         
           <a class="article-more-a" href="/2018/04/10/redis复制/#more">more >></a>
         
@@ -265,7 +265,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis键过期"><a href="#redis键过期" class="headerlink" title="redis键过期"></a>redis键过期</h1><h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
+        <h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
 "></p>
 <p>expires 指向一个dict， dict内部存放每个键的过期时间。<br>
         
@@ -354,7 +354,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis持久化机制"><a href="#redis持久化机制" class="headerlink" title="redis持久化机制"></a>redis持久化机制</h1><h2 id="rdb"><a href="#rdb" class="headerlink" title="rdb"></a>rdb</h2><p>持久化成一个二进制的快照文件，可以用于还原redis的数据。<br>但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。</p>
+        <h2 id="rdb"><a href="#rdb" class="headerlink" title="rdb"></a>rdb</h2><p>持久化成一个二进制的快照文件，可以用于还原redis的数据。<br>但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。</p>
         
           <a class="article-more-a" href="/2018/04/10/redis持久化机制/#more">more >></a>
         
@@ -441,7 +441,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis数据结构"><a href="#redis数据结构" class="headerlink" title="redis数据结构"></a>redis数据结构</h1><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><blockquote>
+        <h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><blockquote>
 <p>set msg demo</p>
 </blockquote>
 <p>demo 在底层创建的就是一个sds（simple dynamic string）字符串。<br>sds 除了存储字符串之外，还会被用作各类缓冲区。</p>
@@ -720,7 +720,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="关于mysql的一些建议"><a href="#关于mysql的一些建议" class="headerlink" title="关于mysql的一些建议"></a>关于mysql的一些建议</h3><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><ul>
+        <h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><ul>
 <li>更小的通常更好。<ul>
 <li>更小的数据类型通常更快，因为他们占用更少的磁盘，内存和CPU缓存，并且处理时需要的CPU周期也更少。</li>
 <li>确保没有低估需要存储的值的范围，因为在schema中的多个地方增加数据类型的范围是一个非常耗时和痛苦的操作。</li>
@@ -943,7 +943,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Concurrent-常用类-未完待续-（基于java-1-8）"><a href="#Concurrent-常用类-未完待续-（基于java-1-8）" class="headerlink" title="Concurrent 常用类(未完待续) （基于java 1.8）"></a>Concurrent 常用类(未完待续) （基于java 1.8）</h1><h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/WechatIMG13497.jpeg" alt="BlockingQueue 四种接口"></p>
+        <h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/WechatIMG13497.jpeg" alt="BlockingQueue 四种接口"></p>
 <p> 四种形式</p>
 <ul>
 <li>抛出异常</li>
@@ -1044,7 +1044,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Linux-IO-模型（详见netty权威指南IO-模型部分）"><a href="#Linux-IO-模型（详见netty权威指南IO-模型部分）" class="headerlink" title="Linux IO 模型（详见netty权威指南IO 模型部分）"></a>Linux IO 模型（详见netty权威指南IO 模型部分）</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
         
           <a class="article-more-a" href="/2017/03/29/IO/#more">more >></a>
         
@@ -1228,15 +1228,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1244,7 +1240,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1252,7 +1252,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
             
             <div class="clearfix"></div>

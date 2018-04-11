@@ -8,12 +8,12 @@
   <link rel="dns-prefetch" href="http://pengtianhao.fun">
   <title>IO | peng2035&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
+  <meta name="description" content="基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO">
 <meta property="og:url" content="http://pengtianhao.fun/2017/03/29/IO/index.html">
 <meta property="og:site_name" content="peng2035's blog">
-<meta property="og:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
+<meta property="og:description" content="基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%98%BB%E5%A1%9EIO.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%9D%9E%E9%98%BB%E5%A1%9EIO.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8IO.png">
@@ -22,10 +22,10 @@
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/io&nio%E7%B1%BB%E5%9B%BE.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/buffer.png">
 <meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/selector.png">
-<meta property="og:updated_time" content="2018-04-10T12:28:48.514Z">
+<meta property="og:updated_time" content="2018-04-11T07:18:34.036Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO">
-<meta name="twitter:description" content="Linux IO 模型（详见netty权威指南IO 模型部分）基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一">
+<meta name="twitter:description" content="基本概念用户空间和内核空间现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，">
 <meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/%E9%98%BB%E5%A1%9EIO.png">
   
   
@@ -186,7 +186,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Linux-IO-模型（详见netty权威指南IO-模型部分）"><a href="#Linux-IO-模型（详见netty权威指南IO-模型部分）" class="headerlink" title="Linux IO 模型（详见netty权威指南IO 模型部分）"></a>Linux IO 模型（详见netty权威指南IO 模型部分）</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
 <a id="more"></a>
 <h3 id="进程切换"><a href="#进程切换" class="headerlink" title="进程切换"></a>进程切换</h3><p>为了控制进程的执行，内核必须有能力挂起正在CPU上运行的进程，并恢复以前挂起的某个进程的执行。这种行为被称为进程切换。因此可以说，任何进程都是在操作系统内核的支持下运行的，是与内核紧密相关的。<br><a href="http://guojing.me/linux-kernel-architecture/posts/process-switch/" target="_blank" rel="external">详解</a></p>
 <p>从一个进程的运行转到另一个进程上运行，这个过程中经过下面这些变化：</p>
@@ -634,15 +634,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -650,7 +646,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,7 +658,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
             
             <div class="clearfix"></div>
