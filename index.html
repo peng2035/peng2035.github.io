@@ -532,27 +532,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>转载自 <a href="https://liuzhengyang.github.io/2017/08/13/debug-redis/" target="_blank" rel="external">https://liuzhengyang.github.io/2017/08/13/debug-redis/</a><br>感谢大佬，之后学习一下c</p>
-</blockquote>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>redis常用于作为缓存，用来缓存热点数据。一些数据例如视频网站的视频、评论等信息，这些信息有着比较明显的时间上的冷热区分，即最近发布的最有可能访问到，最热门的一些数据往往只占很小一部分，所以可以利用缓存减少响应时间和数据库的压力。</p>
-<p>学习使用redis，除了常用的基本命令、数据结构外，还需要了解其实现机制能够帮助更好的使用它，另外一些最佳实践和容易踩坑的地方也需要多注意。</p>
-<h1 id="下载、编译、运行、debug"><a href="#下载、编译、运行、debug" class="headerlink" title="下载、编译、运行、debug"></a>下载、编译、运行、debug</h1><p>基本上入门学习、了解一个新的框架、工具开始就是这些步骤，搭配上一些官方wiki、博客、文章、书籍更好了。但是从未入门到入门经常有一个小门槛，比较编译，可能因为平台、环境等因素遇到各种各样的问题，让我们感到气馁甚至放弃，所以本文期望能够给一些朋友减少入门的阻力。</p>
-<h2 id="Clion"><a href="#Clion" class="headerlink" title="Clion"></a>Clion</h2><p>熟悉IDEA的同学推荐使用CLion查看、debugC、C++代码，使用gdb、lldb等也可以。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/antirez/redis</div></pre></td></tr></table></figure>
-<p>Import redis project using CLion</p>
-<p>打开后，略微修改CMakeList.txt文件, 修改为<a href="https://github.com/liuzhengyang/redis-annotated/blob/annotate/CMakeLists.txt" target="_blank" rel="external">CMakeList.txt</a></p>
-<p>然后在redis文件夹下执行make进行编译</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">cd src</div><div class="line">sh mkreleasehdr.sh</div></pre></td></tr></table></figure>
-<p>然后Clion上会出现一个server的debug按钮，但是在我的环境下执行会出现错误，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ld: symbol(s) not found for architecture x86_64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure>
-<p>改为在命令行执行如下命令后就好了。注意路径要修改为自己的路径。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cmake --build ./cmake-build-debug --target redis -- -j 4 -stdlib=libstdc++</div></pre></td></tr></table></figure>
-<p>然后使用server debug就可以了。</p>
-<h2 id="VisualStudioCode"><a href="#VisualStudioCode" class="headerlink" title="VisualStudioCode"></a>VisualStudioCode</h2><p>最近发现VisualStudioCode也很好用，对C++的支持比Clion要好一些<br>下载好VisualStudioCode后，安装C++的插件。然后在debug里添加新的configuration。会出现一个配置文件<br>关键的program，这里填要debug的target，在redis里就是编译后的src/redis-server，然后点击debug就可以了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">        &quot;version&quot;: &quot;0.2.0&quot;,</div><div class="line">        &quot;configurations&quot;: [</div><div class="line"></div><div class="line">        &#123;</div><div class="line">            &quot;name&quot;: &quot;(lldb) Launch&quot;,</div><div class="line">            &quot;type&quot;: &quot;cppdbg&quot;,</div><div class="line">            &quot;request&quot;: &quot;launch&quot;,</div><div class="line">            &quot;program&quot;: &quot;$&#123;workspaceRoot&#125;/src/redis-server&quot;,</div><div class="line">            &quot;args&quot;: [],</div><div class="line">            &quot;stopAtEntry&quot;: false,</div><div class="line">            &quot;cwd&quot;: &quot;$&#123;workspaceRoot&#125;&quot;,</div><div class="line">            &quot;environment&quot;: [],</div><div class="line">            &quot;externalConsole&quot;: true,</div><div class="line">            &quot;MIMode&quot;: &quot;lldb&quot;</div><div class="line">        &#125;</div><div class="line">        ]</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
-<p><img src="https://liuzhengyang.github.io/images/debug-redis-vc.png" alt=""></p>
-
+<p>转载自 <a href="https://liuzhengyang.github.io/2017/08/13/debug-redis/">https://liuzhengyang.github.io/2017/08/13/debug-redis/</a><br>感谢大佬，之后学习一下c<br>
+        
+          <a class="article-more-a" href="/2018/01/11/转载-redis-debug/#more">more >></a>
+        
       
 
       
@@ -1222,6 +1205,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
@@ -1230,7 +1217,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1238,15 +1225,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1259,6 +1238,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">转载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
             
             <div class="clearfix"></div>
