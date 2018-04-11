@@ -58,6 +58,14 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[2017~2018赛季]]></title>
+    <url>%2F2018%2F01%2F27%2F2017-2018%E8%B5%9B%E5%AD%A3%2F</url>
+    <content type="text"><![CDATA[最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ringbuffer这个名词了。很多框架看了一半也就没有再看了，最多就是看了下博文了解了一下api，最多再看个大致流程，完事了。有人和我说是缺乏耐心，也可能是年纪大了，思维比不上从前了。我觉得更多的还是大脑缺乏锻炼了吧，沉迷于没有必要的扯淡和调侃，渐渐地有了一种比下有余的感觉，也可能是真的害怕去深入的学习一些东西，在深入讨论的时候露出马脚，用我还没来得及看源码这种借口来掩饰自己的恐惧。现在觉得没啥可恐惧的了，反正都不会，从头开始呗，放下包袱，重头开始好好整理一下。还有一个多月就要迈入26岁了，在这之前尽量做出一些改变吧，改变一下这种菜的可怕而又沾沾自喜的状态。静下心来去看一些东西，毕竟像我这样的菜鸡不翻开书，不拿起笔，感觉什么学都不会。Push自己一把总是没错的，专注一点，很多事情只会吹牛逼是不够的！]]></content>
+      <categories>
+        <category>杂谈</category>
+      </categories>
+  </entry>
+  <entry>
     <title><![CDATA[[转载]redis-debug]]></title>
     <url>%2F2018%2F01%2F11%2F%E8%BD%AC%E8%BD%BD-redis-debug%2F</url>
     <content type="text"><![CDATA[转载自 https://liuzhengyang.github.io/2017/08/13/debug-redis/感谢大佬，之后学习一下c 背景redis常用于作为缓存，用来缓存热点数据。一些数据例如视频网站的视频、评论等信息，这些信息有着比较明显的时间上的冷热区分，即最近发布的最有可能访问到，最热门的一些数据往往只占很小一部分，所以可以利用缓存减少响应时间和数据库的压力。 学习使用redis，除了常用的基本命令、数据结构外，还需要了解其实现机制能够帮助更好的使用它，另外一些最佳实践和容易踩坑的地方也需要多注意。 下载、编译、运行、debug基本上入门学习、了解一个新的框架、工具开始就是这些步骤，搭配上一些官方wiki、博客、文章、书籍更好了。但是从未入门到入门经常有一个小门槛，比较编译，可能因为平台、环境等因素遇到各种各样的问题，让我们感到气馁甚至放弃，所以本文期望能够给一些朋友减少入门的阻力。 Clion熟悉IDEA的同学推荐使用CLion查看、debugC、C++代码，使用gdb、lldb等也可以。 1git clone https://github.com/antirez/redis Import redis project using CLion 打开后，略微修改CMakeList.txt文件, 修改为CMakeList.txt 然后在redis文件夹下执行make进行编译 1make 12cd srcsh mkreleasehdr.sh 然后Clion上会出现一个server的debug按钮，但是在我的环境下执行会出现错误， 12ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation) 改为在命令行执行如下命令后就好了。注意路径要修改为自己的路径。 1cmake --build ./cmake-build-debug --target redis -- -j 4 -stdlib=libstdc++ 然后使用server debug就可以了。 VisualStudioCode最近发现VisualStudioCode也很好用，对C++的支持比Clion要好一些下载好VisualStudioCode后，安装C++的插件。然后在debug里添加新的configuration。会出现一个配置文件关键的program，这里填要debug的target，在redis里就是编译后的src/redis-server，然后点击debug就可以了。 123456789101112131415161718&#123; &quot;version&quot;: &quot;0.2.0&quot;, &quot;configurations&quot;: [ &#123; &quot;name&quot;: &quot;(lldb) Launch&quot;, &quot;type&quot;: &quot;cppdbg&quot;, &quot;request&quot;: &quot;launch&quot;, &quot;program&quot;: &quot;$&#123;workspaceRoot&#125;/src/redis-server&quot;, &quot;args&quot;: [], &quot;stopAtEntry&quot;: false, &quot;cwd&quot;: &quot;$&#123;workspaceRoot&#125;&quot;, &quot;environment&quot;: [], &quot;externalConsole&quot;: true, &quot;MIMode&quot;: &quot;lldb&quot; &#125; ] &#125;]]></content>
