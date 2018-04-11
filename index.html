@@ -178,24 +178,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="redis-复制"><a href="#redis-复制" class="headerlink" title="redis 复制"></a>redis 复制</h1><h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）</p>
-<h3 id="全量复制"><a href="#全量复制" class="headerlink" title="全量复制"></a>全量复制</h3><ul>
-<li>主服务器调用bgsave，生成rdb文件</li>
-<li>生成rdb文件的同时，将增量的命令写入缓冲区暂存</li>
-<li>rdb同步给从服务器</li>
-<li>缓冲区命令发送给从服务器</li>
-<li>达到一致的状态</li>
-</ul>
-<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>bgsave的成本很高，如果仅仅是短时间断线，全量的数据同步有点不靠谱</p>
-<h4 id="增量复制"><a href="#增量复制" class="headerlink" title="增量复制"></a>增量复制</h4><ul>
-<li>主服务器和从服务器同时维护一个偏移量，偏移量大小为同步的字节数</li>
-<li>当主从一致的时候，偏移量大小是一致的</li>
-<li>偏移量不一致的时候，主服务器会维护一个定长队列来存储最近一部分的命令，带有偏移量标识，用于同步</li>
-<li>如果需要同步的值超过了队列的大小，那么就要启用全量同步了</li>
-</ul>
-<p>之前有个问题一直没有想明白。由于所有的命令不一定都是幂等操作，命令+偏移量也不一定是一个原子操作，那么是先修改偏移量还是先执行命令，好像都有问题</p>
-<p>现在想明白了，增量复制仅适用于网络波动，而不适用于机器挂了的情况。如果机器挂了，偏移量也没了，毕竟不落地，全量很安全。</p>
-
+        <h1 id="redis-复制"><a href="#redis-复制" class="headerlink" title="redis 复制"></a>redis 复制</h1><h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）<br>
+        
+          <a class="article-more-a" href="/2018/04/10/redis复制/#more">more >></a>
+        
       
 
       
@@ -1238,10 +1224,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
@@ -1250,15 +1232,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
