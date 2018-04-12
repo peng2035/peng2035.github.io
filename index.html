@@ -1061,10 +1061,943 @@
 
 
   
+    <article id="post-SQL一些使用技巧与总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
-    </nav>
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/20/SQL一些使用技巧与总结/">SQL一些使用技巧与总结</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/20/SQL一些使用技巧与总结/" class="archive-article-date">
+  	<time datetime="2017-09-20T02:18:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h4><ul>
+<li>更小的通常更好。<ul>
+<li>更小的数据类型通常更快，因为他们占用更少的磁盘，内存和CPU缓存，并且处理时需要的CPU周期也更少。</li>
+<li>确保没有低估需要存储的值的范围，因为在schema中的多个地方增加数据类型的范围是一个非常耗时和痛苦的操作。</li>
+<li>例：类似status字段就可以使用 tinyint unsigned，id 字段可以使用 bigint unsigned</li>
+</ul>
+</li>
+<li>选择更加合适的数据类型<ul>
+<li>不同的数据类型可能会在使用时引起歧义（例：时间可以用bigint，可以用datetime，可以用字符串，但是使用datetime不会引起歧义）。</li>
+<li>字符串在排序规则和字符集上比整型时间等更加复杂。</li>
+</ul>
+</li>
+<li>char与varchar<ul>
+<li>varchar是变长的数据类型，仅使用必要的数据空间，同时需要额外的空间存储长度。在数据产生变更时，容易产生页分裂。</li>
+<li>varchar不预先分配存储空间，长度不要超过 5000，如果存储长 度大于此值，定义字段类型为 text，独立出来一张表，用主键来对应，避免影响其它字段索引效率</li>
+<li>char是定长的数据类型，占用的空间会更大，但是不易产生碎片。会截取字符串最后的空格。</li>
+<li>char适合存储非常短的字符串，或者长度几乎一致的字符串（md5）。而varchar则能满足大部分的要求。</li>
+</ul>
+</li>
+<li>引申：那么varchar(200)和varchar(5)区别在哪呢~<ul>
+<li>varchar在硬盘中是变长，而读取到内存则是定长，临时表同理，200的长度无疑更消耗性能。</li>
+</ul>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2017/09/20/SQL一些使用技巧与总结/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tips//" class="article-tag-list-link color5">tips</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/20/SQL一些使用技巧与总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-in-ximalaya" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/09/in-ximalaya/">in ximalaya</a>
+    </h1>
+  
+
+        
+        <a href="/2017/07/09/in-ximalaya/" class="archive-article-date">
+  	<time datetime="2017-07-09T06:04:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h1><ul>
+<li><p>感谢曾经帮助过我的喜马拉雅的小伙伴们。</p>
+</li>
+<li><p>感谢ted &amp; mandy领进门，两位的面试至今难忘，也促使我去学习了很多知识，非常感谢两位大神。</p>
+</li>
+<li><p>感谢rudy &amp; changming，虽然理念上可能是背道而驰，很多事情的处理上也不能苟同，但是还是指导我入门了分布式系统，DDD。</p>
+</li>
+<li><p>感谢曾大神 &amp; riven &amp; 峰哥，刚入职的好伙伴，感谢各位在业务和技术上方方面面的帮助，祝曾大神有越来越多的小姐姐，riven和峰哥更上一层楼吧~</p>
+</li>
+<li><p>感谢单大，zhiting，我知道我的bug还是挺多的，业务感谢还是很不熟的TAT，感谢两位的包容&amp;cola，祝两位节节高升，嘻嘻。</p>
+</li>
+<li><p>感谢磊大，磊大的工作总是那么的block，给我上班时间学习提供了可能。祝磊大有一个能为其安排工作的后端码农~</p>
+</li>
+<li><p>感谢金大，犹记得那次接口参数改了在hudson上导致的坑爹问题，感谢金大的包容，金大腿长1米8。</p>
+</li>
+<li><p>感谢兵大，每次和兵大对话感觉智商都被碾压，兵大都技术的理解和思考都非常深入，道标型人物~</p>
+</li>
+<li><p>感谢yuanwhy &amp; 琛总，基础服务组的两位大哥，组内栋梁，交流的也比较多，两位高升之后也请带上小弟~</p>
+</li>
+<li><p>感谢big ben，让我知道如何用手机逛gitlab，然后让我去修一下bug。</p>
+</li>
+<li><p>感谢rick，fred，鸿贵，陈杨，小宇，dylan 还有很多很多，感谢大家的帮助和支持。</p>
+</li>
+<li><p>感谢sunsun，至于为什么要谢，我完全不知道，巴特感觉还是要谢一下，巴结一下支付宝的总没错。（听说感谢一下会送我一个蚂蚁宝宝）</p>
+</li>
+</ul>
+<h1 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h1><p>从xima离职两个月了，感觉自己颓废了很多，感觉要被兵哥 金大 yuanwhy &amp; 琛总这些曾经的小伙伴远远的甩在后面了，期间也看了不少理论性的闲书，感觉是时候动一动手，整理一下，重新做一些有趣的东西了。</p>
+<p>作为一个全组最菜的咸鱼也是有梦想的~</p>
+<h1 id="finally"><a href="#finally" class="headerlink" title="finally"></a>finally</h1><p>August is coming ! welcome to hz ! ToB is the best~</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ximalaya</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/07/09/in-ximalaya/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-mvcc-可见性源代码" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/11/mvcc-可见性源代码/">mvcc-可见性源代码</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/11/mvcc-可见性源代码/" class="archive-article-date">
+  	<time datetime="2017-04-11T07:41:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">class MVCC;</div><div class="line">/** Read view lists the trx ids of those transactions for which a consistent</div><div class="line">read should not see the modifications to the database. */</div><div class="line">...</div><div class="line">class ReadView &#123;</div><div class="line">    ...</div><div class="line">    private:</div><div class="line">        // Prevent copying</div><div class="line">        ids_t(const ids_t&amp;);</div><div class="line">        ids_t&amp; operator=(const ids_t&amp;);</div><div class="line">    private:</div><div class="line">        /** Memory for the array */</div><div class="line">        value_type* m_ptr;</div><div class="line">        /** Number of active elements in the array */</div><div class="line">        ulint       m_size;</div><div class="line">        /** Size of m_ptr in elements */</div><div class="line">        ulint       m_reserved;</div><div class="line">        friend class ReadView;</div><div class="line">    &#125;;</div><div class="line">public:</div><div class="line">    ReadView();</div><div class="line">    ~ReadView();</div><div class="line">    /** Check whether transaction id is valid.</div><div class="line">    @param[in]  id      transaction id to check</div><div class="line">    @param[in]  name        table name */</div><div class="line">    static void check_trx_id_sanity(</div><div class="line">        trx_id_t        id,</div><div class="line">        const table_name_t&amp; name);</div><div class="line">// 判断一个修改是否可见</div><div class="line">    /** Check whether the changes by id are visible.</div><div class="line">    @param[in]  id  transaction id to check against the view</div><div class="line">    @param[in]  name    table name</div><div class="line">    @return whether the view sees the modifications of id. */</div><div class="line">    bool changes_visible(</div><div class="line">        trx_id_t        id,</div><div class="line">        const table_name_t&amp; name) const</div><div class="line">        MY_ATTRIBUTE((warn_unused_result))</div><div class="line">    &#123;</div><div class="line">        ut_ad(id &gt; 0);</div><div class="line">        if (id &lt; m_up_limit_id || id == m_creator_trx_id) &#123;</div><div class="line">            return(true);</div><div class="line">        &#125;</div><div class="line">        check_trx_id_sanity(id, name);</div><div class="line">        if (id &gt;= m_low_limit_id) &#123;</div><div class="line">            return(false);</div><div class="line">        &#125; else if (m_ids.empty()) &#123;</div><div class="line">            return(true);</div><div class="line">        &#125;</div><div class="line">        const ids_t::value_type*    p = m_ids.data();</div><div class="line">        return(!std::binary_search(p, p + m_ids.size(), id));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">private:</div><div class="line">    // Disable copying</div><div class="line">    ReadView(const ReadView&amp;);</div><div class="line">    ReadView&amp; operator=(const ReadView&amp;);</div><div class="line">private:</div><div class="line">   // 活动事务中的id的最大</div><div class="line">    /** The read should not see any transaction with trx id &gt;= this</div><div class="line">    value. In other words, this is the "high water mark". */</div><div class="line">    trx_id_t    m_low_limit_id;</div><div class="line">    // 活动事务id的最小值</div><div class="line">    /** The read should see all trx ids which are strictly</div><div class="line">    smaller (&lt;) than this value.  In other words, this is the</div><div class="line">    low water mark". */</div><div class="line">    //</div><div class="line">    trx_id_t    m_up_limit_id;</div><div class="line">    /** trx id of creating transaction, set to TRX_ID_MAX for free</div><div class="line">    views. */</div><div class="line">    trx_id_t    m_creator_trx_id;</div><div class="line">    /** Set of RW transactions that was active when this snapshot</div><div class="line">    was taken */</div><div class="line">    ids_t       m_ids;</div><div class="line">    /** The view does not need to see the undo logs for transactions</div><div class="line">    whose transaction number is strictly smaller (&lt;) than this value:</div><div class="line">    they can be removed in purge if not needed by other views */</div><div class="line">    trx_id_t    m_low_limit_no;</div><div class="line">    /** AC-NL-RO transaction view that has been "closed". */</div><div class="line">    bool        m_closed;</div><div class="line">    typedef UT_LIST_NODE_T(ReadView) node_t;</div><div class="line">    /** List of read views in trx_sys */</div><div class="line">    byte        pad1[64 - sizeof(node_t)];</div><div class="line">    node_t      m_view_list;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tips//" class="article-tag-list-link color5">tips</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/11/mvcc-可见性源代码/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-并发Queue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/31/并发Queue/">并发Queue</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/31/并发Queue/" class="archive-article-date">
+  	<time datetime="2017-03-31T09:41:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/WechatIMG13497.jpeg" alt="BlockingQueue 四种接口"></p>
+<p> 四种形式</p>
+<ul>
+<li>抛出异常</li>
+<li>返回一个特殊值(可能是null或者是false，取决于具体的操作)</li>
+<li>阻塞当前执行直到其可以继续</li>
+<li><p>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</p>
+        
+          <a class="article-more-a" href="/2017/03/31/并发Queue/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">concurrent</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/31/并发Queue/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-IO" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/29/IO/">IO</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/29/IO/" class="archive-article-date">
+  	<time datetime="2017-03-29T14:59:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="用户空间和内核空间"><a href="#用户空间和内核空间" class="headerlink" title="用户空间和内核空间"></a>用户空间和内核空间</h3><p>现在操作系统都是采用虚拟存储器，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次方）。操作系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操作系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。</p>
+        
+          <a class="article-more-a" href="/2017/03/29/IO/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">io</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/29/IO/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-wow的岁月" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/28/wow的岁月/">wow的岁月</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/28/wow的岁月/" class="archive-article-date">
+  	<time datetime="2017-03-28T02:40:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="离开艾泽拉斯很久了，暂时也不能回归，写个文章纪念一下在艾泽拉斯奋战的岁月"><a href="#离开艾泽拉斯很久了，暂时也不能回归，写个文章纪念一下在艾泽拉斯奋战的岁月" class="headerlink" title="离开艾泽拉斯很久了，暂时也不能回归，写个文章纪念一下在艾泽拉斯奋战的岁月"></a>离开艾泽拉斯很久了，暂时也不能回归，写个文章纪念一下在艾泽拉斯奋战的岁月</h4><h4 id="起"><a href="#起" class="headerlink" title="起"></a>起</h4><ul>
+<li>因为wow的第一部CG入坑，直到今天看来，这部CG依旧完爆大部分游戏的CG，当时年幼的我被深深的矮人猎开出的第一枪深深地震撼到了，随即入坑，选择了一个人类女法师，在艾尔文森林愉快地搓起了寒冰箭。</li>
+<li>从被霍格追杀，死亡矿井迷路，血色被狗男女灭的死去活来，为了收集荆棘谷的青山在综合频道喊话，东瘟疫之地的爱与家庭，到ZUG,MC,BWL。见到了AL之后再无兄弟，还有象征着主T的荣耀的雷霆之怒，逐风者祝福之剑。</li>
+<li>随后跟着朋友在战歌，阿拉希，和奥山疯狂刷荣誉。依稀记得1234冲石炉，56男人，78急救。看着别人穿着一身金光闪闪的大元帅战士羡慕不已。</li>
+<li>燃烧的远征开启，穿过黑暗之门来到外域，见到了纳格兰的美丽风景，为了哈兰羊到处刷念珠。永远卡成狗的沙塔斯城。还有屁大点事就能引起团战的奎岛。</li>
+<li>现在想来，甚至有点怀念曾经不组队杀不了精英的日子，联盟部落见面就开战，荆棘谷，南海镇，LM,BL野战各种high。</li>
+</ul>
+<h4 id="承"><a href="#承" class="headerlink" title="承"></a>承</h4><ul>
+<li>因为学习慢慢的远离了wow，错过了WLK还有CTM两个大版本。也是错过了wow最巅峰的时期。在熊猫人之谜前夕受室友感召回归，发现艾泽拉斯的大地已经发生了翻天覆地的变化，转而玩了WLK之前都没有的英雄职业兽人dk（结果发现是个杯具）。</li>
+<li>最开始学校网络非常不稳定，只能在杜隆塔尔门口决斗，被战猎焦作人，天神鲁莽震荡波，红人动物园准备就绪再来一套。最初大概只有100胜300负的胜率。随着战猎被砍，跨服决斗的开启，决斗套路越来越熟悉，大概最后到了7500胜1500负的战绩。</li>
+<li>在奥尔加隆门口决斗的时候遇见了法师队友阿黄，一个除了吹比啥都不会的亡灵女法师。奶骑“大神”-wcz。还有一个法师转战士的亡者断魂。慢慢的进入了竞技场和评级战场。</li>
+<li>评级战场：一个惩戒骑团长带我和麻子的法师遨游1600，随后进入了当时非常仰慕的太极龙带队的评级团，4战2dk最后大概定格在2800左右的评级吧。</li>
+<li>竞技场：和wcz，亡者断魂，三板一个下午2199，最后因为战士掉线三把，回到2000，因为排不到队伍，也没有队友，奶骑怒而afk。第一赛季3v3定格在了2199。</li>
+</ul>
+<h4 id="转"><a href="#转" class="headerlink" title="转"></a>转</h4><ul>
+<li>5.2开启，寝室一众人转去了19组安苏LM，恰逢鹦鹉贼+8800sp无比强势，捡起了TBC的骑士号，贼骑朝着2200飞奔而去，无奈法牧版本。贼骑最终止步2000。在此期间认识了面向大海（通信学院学弟），阿七（一个除了吹比啥都不会的ss），十月（军需官面前认识的万年cjq），买糖（国服最强的竞争者萨满），最终都成为了日后的队友。同时，看了hydra的视频，恰逢ms强势版本，转行玩ms，和阿黄开始了法牧生涯。</li>
+<li>5.3鹦鹉贼削弱，22贼牧再次起飞，止步2150，和兰服猎人无涯和兔子惩猎牧经过2小时的厮杀冲破2200，接近2400，随后兔子afk，借了个小号打起了毫无希望的贼猎牧，没想到一路横冲直撞冲上了2400，怒把自己的号退队一起打贼猎牧，队友全都获得了2400成就，然而我的分数最终定格2398，再也没有上分。55同时开打，贼法猎惩牧（麻子，阿黄，无涯，十月），4dd在21组横行，最高55 21组第二。22在此期间也成功通过法牧上了2200，获得竞技场大师成就，获得决斗者。</li>
+<li>LM 33贼法牧也逐渐成型，在暴虐结算当天的前一天开打，两个晚上接近70%胜率接近2400。打的同工会的3板悲伤的下线，死磕战法牧，最终因为网络原因定格2397。也算是一个遗憾吧，两个号都没有获得2400成就。</li>
+<li>5.4 一开始法术骑和贼法牧就同时获得了3v3 2700成就。55法三远（阿黄，阿七，天才高中生 张良，鸽王 味陌）也是一路高胜率2700。22 也在那个赛季打到了2700+，算是挺圆满的，就差一个斗士了。</li>
+<li>5.x版本是个充斥着刷分的版本，认识了很多新朋友，因为刷子很多人再也没有回到wow。<h4 id="合"><a href="#合" class="headerlink" title="合"></a>合</h4></li>
+<li>6.0开服之后顺利的拿到了斗士，也算是一种圆满吧。贼法德玩的很开心，惩戒骑也上过评级第一页，虽然没拿到英雄，但是好像已经不在意那些事情了，面临毕业，还有很多重要的事情需要去完成，慢慢地淡出了wow，感谢在艾泽拉斯的那段岁月。</li>
+<li>感谢很多没有提到的朋友，nga美少女–艾琳.冰冻丢墙上.纳斯，评级牧神–Slience，逗比奶僧–咸鱼，我吃个饭就回来–萌萌的喵喵.微娘。还有竹爷，羊哥，Smudgelol，Sinsin，EE，耗子，杀生 等等。</li>
+<li>最后，鲜血与荣耀，为了部落！Lok-tar ogar!</li>
+<li><p>电子设备换了一波又一波，没有图了。最后上个图吧~</p>
+<p><img src="http://7xvy7h.com1.z0.glb.clouddn.com/iphone" alt="感谢"></p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">wow</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/28/wow的岁月/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Tree-Traversal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/27/Tree-Traversal/">Tree Traversal</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/27/Tree-Traversal/" class="archive-article-date">
+  	<time datetime="2017-03-27T14:27:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png" alt="pre order"></p>
+<p>Pre-order: F, B, A, D, C, E, G, I, H.</p>
+<ol>
+<li>Check if the current node is empty / null</li>
+<li>Display the data part of the root (or current node).</li>
+<li>Traverse the left subtree by recursively calling the pre-order function.</li>
+<li><p>Traverse the right subtree by recursively calling the pre-order function.</p>
+        
+          <a class="article-more-a" href="/2017/03/27/Tree-Traversal/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">data-structure</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/27/Tree-Traversal/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-垃圾回收" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/11/垃圾回收/">垃圾回收</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/11/垃圾回收/" class="archive-article-date">
+  	<time datetime="2017-03-11T11:51:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="判定对象是否存活"><a href="#判定对象是否存活" class="headerlink" title="判定对象是否存活"></a>判定对象是否存活</h2><h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><ul>
+<li>优点<ul>
+<li>简单，容易实现</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>无法解决循环引用的问题，代码如下</li>
+<li>当r1 r2 的实例仅仅是互相引用的时候，如果有引用计数器他们不会被回收，而看gc日志，很明显会被回收。<br><a href="https://github.com/peng2035/learning/blob/master/learning-java/src/main/java/com/bobby/peng/learning/java/gc/ReferencingCountingGC.java" target="_blank" rel="external">存在的问题源码</a><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReferencingCountingGC</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> _1M = <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> Object instance = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] value = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1M];</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ReferencingCountingGC r1 = <span class="keyword">new</span> ReferencingCountingGC();</div><div class="line">        ReferencingCountingGC r2 = <span class="keyword">new</span> ReferencingCountingGC();</div><div class="line"></div><div class="line">        r1.instance = r2;</div><div class="line">        r2.instance = r1;</div><div class="line"></div><div class="line">        r1 = <span class="keyword">null</span>;</div><div class="line">        r2 = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        System.gc();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>[GC (System.gc()) [PSYoungGen: 11055K-&gt;1351K(38400K)] 11055K-&gt;1359K(125952K), 0.0025286 secs] [Times: user=0.01 sys=0.01, real=0.00 secs]<br>[Full GC (System.gc()) [PSYoungGen: 1351K-&gt;0K(38400K)] [ParOldGen: 8K-&gt;1241K(87552K)] 1359K-&gt;1241K(125952K), [Metaspace: 3370K-&gt;3370K(1056768K)], 0.0081339 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]</p>
+</blockquote>
+<h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><ul>
+<li>当一个对象到GC ROOTS 没有任何引用链相连时，则证明此对象不可用。</li>
+<li>即上文讲的r1 r2 互相关联，但是他们并没有被GC ROOTS关联，所以他们会被回收。<h4 id="GC-ROOTS的对象"><a href="#GC-ROOTS的对象" class="headerlink" title="GC ROOTS的对象"></a>GC ROOTS的对象</h4></li>
+<li>虚拟机栈中引用的对象。</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法去中常量引用的对象。</li>
+<li>本地方法栈中JNI（即一般说的native方法）引用的对象。<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4>上文的r1 r2 本身也是虚拟机栈中的引用，本身可以成为gc roots，那么对象为什么还会被回收呢。<h4 id="回答"><a href="#回答" class="headerlink" title="回答"></a>回答</h4>所谓“GC roots”，或者说tracing GC的“根集合”，就是一组必须活跃的引用。例如说，这些引用可能包括：</li>
+<li>所有Java线程当前活跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的参数/局部变量/临时值。</li>
+<li>VM的一些静态数据结构里指向GC堆里的对象的引用，例如说HotSpot VM里的Universe里有很多这样的引用。</li>
+<li>JNI handles，包括global handles和local handles</li>
+<li>（看情况）所有当前被加载的Java类</li>
+<li>（看情况）Java类的引用类型静态变量</li>
+<li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
+<li>（看情况）String常量池（StringTable）里的引用<br>注意，是一组必须活跃的引用，不是对象。</li>
+</ul>
+<p>活跃很重要，r1 r2 是非活跃的所以没有被划分为gc roots<br><a href="https://www.zhihu.com/question/53613423/answer/135743258" target="_blank" rel="external">gc roots 详细解释</a></p>
+<h2 id="关于引用"><a href="#关于引用" class="headerlink" title="关于引用"></a>关于引用</h2><ul>
+<li>强引用：只要强引用还存在就不会被回收</li>
+<li>软引用（SoftReference）：在内存即将溢出之时，对这些对象做二次回收，如果还没有足够内存才会内存溢出异常。</li>
+<li>弱引用（WeakReference）: 之前做jdk动态代理，weak cache的时候有接触，下一次gc之前被回收</li>
+<li>虚引用（PhantomReference）: 一个对象是否有虚引用的存在，不会对生存周期构成影响，也无法通过虚引用来取得一个对象实例。对一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</li>
+</ul>
+<h3 id="关于finalize"><a href="#关于finalize" class="headerlink" title="关于finalize"></a>关于finalize</h3><ul>
+<li>不可达的对象，要经历两次标记过程。</li>
+<li>实现finalize方法且没有被调用的对象，会被放置在一个F-Queue的队列（由虚拟机自动建立，低优先级的Finalizer线程去执行）之中，但是不保证会执行完成（可能会含有死循环等异常。）</li>
+<li>不推荐使用finalize方法</li>
+</ul>
+<h3 id="回收方法区"><a href="#回收方法区" class="headerlink" title="回收方法区"></a>回收方法区</h3><ul>
+<li>废弃常量<ul>
+<li>与堆类似</li>
+</ul>
+</li>
+<li>废弃类<ul>
+<li>所有实例已被回收。</li>
+<li>classloader已被回收。</li>
+<li>对应的Class没有任何地方被引用，无法再任何地方通过反射访问该类。（用spring这条基本都是不符合了吧。。。）</li>
+<li>满足上述条件，仅仅是可回收。</li>
+</ul>
+</li>
+</ul>
+<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><ul>
+<li>标记-清除算法（统一标记，统一删除）<ul>
+<li>效率不高。（GC ROOTS标记的是存活对象，查找死亡对象还需一次遍历？）</li>
+<li>容易产生内存碎片。</li>
+</ul>
+</li>
+<li>复制算法（将内存分为两部分，每次只使用其中的一块，gc时将存活的对象复制到另外一块上去，清空原来的内存空间）。<ul>
+<li>每次只能使用一半的内存</li>
+<li>虚拟机通过这个算法来回收新生代，分为eden : survivor1 : survivor2 = 8:1:1 （98%的对象在回收时都会被回收，每次将 eden + survivor 复制到 另一个survivor，如果超过了10%则需要老年代来做担保）。</li>
+</ul>
+</li>
+<li>标记-整理算法（存活的对象都向一端移动，避免碎片）<ul>
+<li>不需要额外的空间</li>
+</ul>
+</li>
+</ul>
+<h2 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h2><ul>
+<li>新生代 存活率低 适合复制算法</li>
+<li>老年代 存活率高 适合标记-整理 或者 标记-清理算法。</li>
+</ul>
+<h2 id="安全点-amp-安全区域"><a href="#安全点-amp-安全区域" class="headerlink" title="安全点 &amp; 安全区域"></a>安全点 &amp; 安全区域</h2><ul>
+<li>不能再所有地方</li>
+<li>程序运行到safe point才能进行gc</li>
+<li>为防止blocking等长时间没有分配cpu的情况</li>
+</ul>
+<blockquote>
+<p>在HotSpot中，对象的类型信息里有记录自己的OopMap，记录了在该类型的对象内什么偏移量上是什么类型的数据。所以从对象开始向外的扫描可以是准确的；这些数据是在类加载过程中计算得到的。</p>
+</blockquote>
+<p>可以把oopMap简单理解成是调试信息。 在源代码里面每个变量都是有类型的，但是编译之后的代码就只有变量在栈上的位置了。oopMap就是一个附加的信息，告诉你栈上哪个位置本来是个什么东西。 这个信息是在JIT编译时跟机器码一起产生的。因为只有编译器知道源代码跟产生的代码的对应关系。 每个方法可能会有好几个oopMap，就是根据safepoint把一个方法的代码分成几段，每一段代码一个oopMap，作用域自然也仅限于这一段代码。 循环中引用多个对象，肯定会有多个变量，编译后占据栈上的多个位置。那这段代码的oopMap就会包含多条记录。</p>
+<blockquote>
+<p>对Java线程中的JNI方法，它们既不是由JVM里的解释器执行的，也不是由JVM的JIT编译器生成的，所以会缺少OopMap信息。那么GC碰到这样的栈帧该如何维持准确性呢？<br>HotSpot的解决方法是：所有经过JNI调用边界（调用JNI方法传入的参数、从JNI方法传回的返回值）的引用都必须用“句柄”（handle）包装起来。JNI需要调用Java API的时候也必须自己用句柄包装指针。在这种实现中，JNI方法里写的“jobject”实际上不是直接指向对象的指针，而是先指向一个句柄，通过句柄才能间接访问到对象。这样在扫描到JNI方法的时候就不需要扫描它的栈帧了——只要扫描句柄表就可以得到所有从JNI方法能访问到的GC堆里的对象。<br>但这也就意味着调用JNI方法会有句柄的包装/拆包装的开销，是导致JNI方法的调用比较慢的原因之一。</p>
+</blockquote>
+<h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><h3 id="serial收集器"><a href="#serial收集器" class="headerlink" title="serial收集器"></a>serial收集器</h3><ul>
+<li>采用复制算法</li>
+<li>仅使用一个线程或者一个cpu区完成垃圾收集工作。</li>
+<li>垃圾收集时会暂停其他所有的工作线程。</li>
+<li>适用于client端（应该说是单CPU情况下），简单高效</li>
+</ul>
+<h3 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h3><ul>
+<li>采用复制算法</li>
+<li>多线程的Serial收集器</li>
+<li>除Serial之外仅有的能与CMS收集器配合工作的收集器</li>
+<li>随着cpu的增加性能会好于Serial收集器（垃圾收集可看做是计算密集型，线程切换会有开销）</li>
+</ul>
+<h3 id="Parallel-Scavenge"><a href="#Parallel-Scavenge" class="headerlink" title="Parallel Scavenge"></a>Parallel Scavenge</h3><ul>
+<li>采用复制算法</li>
+<li>多线程收集</li>
+<li>目的：达到可控制的吞吐量（吞吐量=用户运行时间/(用户运行时间+垃圾收集时间)），简而言之就是减少停顿</li>
+<li>参数可调：GCTimeRatio &amp; MAXGCPauseMillis ，可自适应（GC停顿时间是牺牲吞吐量和新生代空间换来的，新生代越小收集的越快，但是系统损耗的占比越高，其实收集效率越低）</li>
+</ul>
+<h3 id="SerialOld-收集器"><a href="#SerialOld-收集器" class="headerlink" title="SerialOld 收集器"></a>SerialOld 收集器</h3><ul>
+<li>Serial老年版</li>
+<li>与 Parallel Scavenge 可以一起使用</li>
+</ul>
+<h3 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h3><ul>
+<li>Parallel Scavenge 老年版</li>
+<li>标记整理算法</li>
+<li>在注重吞吐量和CPU资源敏感的场合可以考虑使用。</li>
+</ul>
+<h3 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h3><ul>
+<li>目标-减少停顿时间</li>
+<li>初始标记（仅遍历GC ROOTS，速度快）</li>
+<li>并发标记（GC ROOTS TRACING，速度慢）</li>
+<li>重新标记（修正并发标记产生变更的部分）</li>
+<li>并发清楚（清除数据，速度慢）</li>
+<li>并发标记和并发清楚可以与用户线程一起执行，停顿就会减少</li>
+<li>缺点：<ul>
+<li>CMS在并发标记和并发清楚的时候会占用cpu</li>
+<li>并发清理阶段产生的新垃圾无法及时清楚，可能会引起再一次的full gc(因为应用线程同时执行，所以要预留空间，cms触发要比其他收集器早)</li>
+<li>基于标记-清理的内存碎片的问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="G1"><a href="#G1" class="headerlink" title="G1"></a>G1</h3><ul>
+<li>TODO</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
+<li>对象优先在Eden分配</li>
+<li>大对象直接进入老年代</li>
+<li>长期存活的对象进入老年代（版本号，默认15）</li>
+<li>survivor空间中相同版本的所有对象大小总和大于Survivor控件的一半时，直接进入老年代</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">jvm</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/11/垃圾回收/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
 
 
@@ -1182,11 +2115,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1198,15 +2131,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">转载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
             
             <div class="clearfix"></div>
