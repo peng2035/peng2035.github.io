@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="pengtianhao's blog">
 <meta property="og:description" content="转载自 https://liuzhengyang.github.io/2017/08/13/debug-redis/感谢大佬，之后学习一下c">
 <meta property="og:image" content="https://liuzhengyang.github.io/images/debug-redis-vc.png">
-<meta property="og:updated_time" content="2018-04-12T02:33:10.497Z">
+<meta property="og:updated_time" content="2018-04-12T02:47:48.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[转载]redis-debug">
 <meta name="twitter:description" content="转载自 https://liuzhengyang.github.io/2017/08/13/debug-redis/感谢大佬，之后学习一下c">
@@ -208,7 +208,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cmake --build ./cmake-build-debug --target redis -- -j 4 -stdlib=libstdc++</div></pre></td></tr></table></figure>
 <p>然后使用server debug就可以了。</p>
 <h2 id="VisualStudioCode"><a href="#VisualStudioCode" class="headerlink" title="VisualStudioCode"></a>VisualStudioCode</h2><p>最近发现VisualStudioCode也很好用，对C++的支持比Clion要好一些<br>下载好VisualStudioCode后，安装C++的插件。然后在debug里添加新的configuration。会出现一个配置文件<br>关键的program，这里填要debug的target，在redis里就是编译后的src/redis-server，然后点击debug就可以了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">        &quot;version&quot;: &quot;0.2.0&quot;,</div><div class="line">        &quot;configurations&quot;: [</div><div class="line"></div><div class="line">        &#123;</div><div class="line">            &quot;name&quot;: &quot;(lldb) Launch&quot;,</div><div class="line">            &quot;type&quot;: &quot;cppdbg&quot;,</div><div class="line">            &quot;request&quot;: &quot;launch&quot;,</div><div class="line">            &quot;program&quot;: &quot;$&#123;workspaceRoot&#125;/src/redis-server&quot;,</div><div class="line">            &quot;args&quot;: [],</div><div class="line">            &quot;stopAtEntry&quot;: false,</div><div class="line">            &quot;cwd&quot;: &quot;$&#123;workspaceRoot&#125;&quot;,</div><div class="line">            &quot;environment&quot;: [],</div><div class="line">            &quot;externalConsole&quot;: true,</div><div class="line">            &quot;MIMode&quot;: &quot;lldb&quot;</div><div class="line">        &#125;</div><div class="line">        ]</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    &quot;version&quot;: &quot;0.2.0&quot;,</div><div class="line">    &quot;configurations&quot;: [</div><div class="line"></div><div class="line">    &#123;</div><div class="line">        &quot;name&quot;: &quot;(lldb) Launch&quot;,</div><div class="line">        &quot;type&quot;: &quot;cppdbg&quot;,</div><div class="line">        &quot;request&quot;: &quot;launch&quot;,</div><div class="line">        &quot;program&quot;: &quot;$&#123;workspaceRoot&#125;/src/redis-server&quot;,</div><div class="line">        &quot;args&quot;: [],</div><div class="line">        &quot;stopAtEntry&quot;: false,</div><div class="line">        &quot;cwd&quot;: &quot;$&#123;workspaceRoot&#125;&quot;,</div><div class="line">        &quot;environment&quot;: [],</div><div class="line">        &quot;externalConsole&quot;: true,</div><div class="line">        &quot;MIMode&quot;: &quot;lldb&quot;</div><div class="line">    &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p><img src="https://liuzhengyang.github.io/images/debug-redis-vc.png" alt=""></p>
 
       
@@ -473,6 +473,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
@@ -485,10 +489,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
               </li>
              
@@ -497,19 +497,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">转载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
             
             <div class="clearfix"></div>

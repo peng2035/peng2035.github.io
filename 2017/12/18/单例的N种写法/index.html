@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://pengtianhao.fun/2017/12/18/单例的N种写法/index.html">
 <meta property="og:site_name" content="pengtianhao's blog">
 <meta property="og:description" content="123456789101112public class Singleton1 &amp;#123;    private static Singleton1 singleton = null;    private Singleton1() &amp;#123;&amp;#125;    public static Singleton1 newInstance() &amp;#123;        if(singleton =">
-<meta property="og:updated_time" content="2018-04-11T07:18:20.697Z">
+<meta property="og:updated_time" content="2018-04-12T03:52:47.524Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="单例的N种写法">
 <meta name="twitter:description" content="123456789101112public class Singleton1 &amp;#123;    private static Singleton1 singleton = null;    private Singleton1() &amp;#123;&amp;#125;    public static Singleton1 newInstance() &amp;#123;        if(singleton =">
@@ -196,7 +196,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">public class Singleton4 &#123;</div><div class="line">    private static volatile Singleton4 singleton = null;</div><div class="line"></div><div class="line">    private Singleton4() &#123;&#125;</div><div class="line"></div><div class="line">    public Singleton4 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            sychonized(this.class) &#123;</div><div class="line">                if(singleton == null) &#123;</div><div class="line">                    return new Singleton4();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>优点：线程安全解决，性能可行，推荐<br>缺点：写起来麻烦。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public class Singleton5 &#123;</div><div class="line">    private static Singleton5 singleton = new Singleton5();</div><div class="line"></div><div class="line">    private Singleton5() &#123;&#125;</div><div class="line"></div><div class="line">    public static newInstance() &#123;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>优点：写起来简单，线程安全（classload）机制保证。<br>缺点：在Singleton5被加载时 实例就已经被初始化了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">private static Singleton5 singleton = null;</div><div class="line">static &#123;</div><div class="line">    singleton = new Singleton5():</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>优点：写起来简单，线程安全（classload）机制保证。<br>缺点：在Singleton5被加载时 实例就已经被初始化了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">private static Singleton5 singleton = null;</div><div class="line">static &#123;</div><div class="line">    singleton = new Singleton5();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>同理</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public enum Singleton6 &#123;</div><div class="line">    SINGLETON;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>优点：写法简单清晰，线程安全，effective java隆重推荐，不会因为序列化和反序列话新增对象<br>缺点：不能实现懒加载</p>
@@ -536,6 +536,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
@@ -548,10 +552,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ximalaya</a>
               </li>
              
@@ -560,19 +560,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">转载</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
             
             <div class="clearfix"></div>
