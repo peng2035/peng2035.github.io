@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[ReadWriteLock]]></title>
-    <url>%2F2018%2F04%2F12%2FReadWriteLock%2F</url>
+    <title><![CDATA[读写锁]]></title>
+    <url>%2F2018%2F04%2F12%2F%E8%AF%BB%E5%86%99%E9%94%81%2F</url>
     <content type="text"><![CDATA[123456789101112131415161718192021static final int SHARED_SHIFT = 16;static final int SHARED_UNIT = (1 &lt;&lt; SHARED_SHIFT);static final int MAX_COUNT = (1 &lt;&lt; SHARED_SHIFT) - 1;static final int EXCLUSIVE_MASK = (1 &lt;&lt; SHARED_SHIFT) - 1;// 高16位读锁，低16位写锁（总量）/** Returns the number of shared holds represented in count */static int sharedCount(int c) &#123; return c &gt;&gt;&gt; SHARED_SHIFT; &#125;/** Returns the number of exclusive holds represented in count */static int exclusiveCount(int c) &#123; return c &amp; EXCLUSIVE_MASK; &#125;/** * A counter for per-thread read hold counts. * Maintained as a ThreadLocal; cached in cachedHoldCounter */ //线程所拥有的锁static final class HoldCounter &#123; int count = 0; // Use id, not reference, to avoid garbage retention final long tid = getThreadId(Thread.currentThread());&#125;]]></content>
       <categories>
         <category>tech</category>
@@ -156,8 +156,8 @@
       </categories>
       <tags>
         <tag>java</tag>
-        <tag>复习</tag>
         <tag>concurrent</tag>
+        <tag>复习</tag>
       </tags>
   </entry>
   <entry>
