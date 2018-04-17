@@ -20,7 +20,7 @@
 
 读 写锁都可重入, 线程可同时具有读 写锁
 线程同时获取读写锁时, 必须先获取 writeLock, 再获">
-<meta property="og:updated_time" content="2018-04-17T06:37:18.609Z">
+<meta property="og:updated_time" content="2018-04-17T12:40:41.874Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读写锁">
 <meta name="twitter:description" content="ReentrantReadWriteLock 定义ReentrantReadWriteLock: Reentrant(重入) Read (读) Write(写) Lock(锁), 从字面意思我们了解到, 这是一个可重入的读写锁;ReentrantReadWriteLock 主要具有以下特点
@@ -200,7 +200,7 @@
 <ul>
 <li>读 写锁都可重入, 线程可同时具有读 写锁</li>
 <li>线程同时获取读写锁时, 必须先获取 writeLock, 再获取 readLock (也就是锁的降级), 反过来的直接导致死锁(这个问题下面会重点分析)</li>
-<li>ReentrantReadWriteLock支持公平与非公平机制, 主要依据是 AQS 类中的Sync Quhe’xeue 里面是否有节点 或 Sync Queue 里面的 head.next 是否是获取 writeLock 的线程节点; 公平模式就会依据获取的先后顺序在 SyncQueue 里面排队获取<br>读写锁互斥</li>
+<li>ReentrantReadWriteLock支持公平与非公平机制, 主要依据是 AQS 类中的Sync Queue 里面是否有节点 或 Sync Queue 里面的 head.next 是否是获取 writeLock 的线程节点; 公平模式就会依据获取的先后顺序在 SyncQueue 里面排队获取<br>读写锁互斥</li>
 <li>获取 readLock 的过程中, 若 此时有线程已获取写锁 或 AQS 的 Sync Queue 里面有 获取 writeLock 的线程, 则一定会等待获取writeLock成功并释放或放弃获取 后才能获取(PS: 这里有个例外, 在死锁时, 已获取 readLock 的线程还是能重复获取 readLock)</li>
 <li>获取 writeLock 时 一定是在没有线程获取 readLock 或 writeLock 时才获取成功 (PS: 一个典型的死锁场景就是 一个线程先获取readLock, 后又获取writeLock)</li>
 <li>锁的获取支持线程中断, 且writeLock 中支持 Condition (PS: condition 只支持排他的场景)</li>
@@ -481,11 +481,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -493,7 +493,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -501,15 +501,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">

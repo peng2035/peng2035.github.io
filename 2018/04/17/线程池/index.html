@@ -8,16 +8,16 @@
   <link rel="dns-prefetch" href="http://peng2035.github.io">
   <title>线程池 | pp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="zhendecai">
+  <meta name="description" content="execute123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869/** * Executes the given task sometime in the future.  The task">
 <meta property="og:type" content="article">
 <meta property="og:title" content="线程池">
 <meta property="og:url" content="http://peng2035.github.io/2018/04/17/线程池/index.html">
 <meta property="og:site_name" content="pp">
-<meta property="og:description" content="zhendecai">
-<meta property="og:updated_time" content="2018-04-17T06:07:57.816Z">
+<meta property="og:description" content="execute123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869/** * Executes the given task sometime in the future.  The task">
+<meta property="og:updated_time" content="2018-04-17T23:08:19.330Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线程池">
-<meta name="twitter:description" content="zhendecai">
+<meta name="twitter:description" content="execute123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869/** * Executes the given task sometime in the future.  The task">
   
   
     <link rel="icon" href="https://avatars0.githubusercontent.com/u/14294181?s=400&u=d29441b886863717e82c0ce70b98a426fa006acf&v=4">
@@ -187,7 +187,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h3 id="execute"><a href="#execute" class="headerlink" title="execute"></a>execute</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Executes the given task sometime in the future.  The task</div><div class="line"> * may execute in a new thread or in an existing pooled thread.</div><div class="line"> *</div><div class="line"> * If the task cannot be submitted for execution, either because this</div><div class="line"> * executor has been shutdown or because its capacity has been reached,</div><div class="line"> * the task is handled by the current &#123;<span class="doctag">@code</span> RejectedExecutionHandler&#125;.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> command the task to execute</div><div class="line"> * <span class="doctag">@throws</span> RejectedExecutionException at discretion of</div><div class="line"> *         &#123;<span class="doctag">@code</span> RejectedExecutionHandler&#125;, if the task</div><div class="line"> *         cannot be accepted for execution</div><div class="line"> * <span class="doctag">@throws</span> NullPointerException if &#123;<span class="doctag">@code</span> command&#125; is null</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (command == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">    <span class="comment">/*</span></div><div class="line">     * Proceed in 3 steps:</div><div class="line">     *</div><div class="line">     * 1. If fewer than corePoolSize threads are running, try to</div><div class="line">     * start a new thread with the given command as its first</div><div class="line">     * task.  The call to addWorker atomically checks runState and</div><div class="line">     * workerCount, and so prevents false alarms that would add</div><div class="line">     * threads when it shouldn't, by returning false.</div><div class="line">     *</div><div class="line">     * 2. If a task can be successfully queued, then we still need</div><div class="line">     * to double-check whether we should have added a thread</div><div class="line">     * (because existing ones died since last checking) or that</div><div class="line">     * the pool shut down since entry into this method. So we</div><div class="line">     * recheck state and if necessary roll back the enqueuing if</div><div class="line">     * stopped, or start a new thread if there are none.</div><div class="line">     *</div><div class="line">     * 3. If we cannot queue task, then we try to add a new</div><div class="line">     * thread.  If it fails, we know we are shut down or saturated</div><div class="line">     * and so reject the task.</div><div class="line">     */</div><div class="line">    <span class="keyword">int</span> c = ctl.get();</div><div class="line">    <span class="keyword">if</span> (workerCountOf(c) &lt; corePoolSize) &#123;</div><div class="line">        <span class="comment">// 小于核心线程池，无脑加线程</span></div><div class="line">        <span class="comment">// new worker 是当前线程池里的人物</span></div><div class="line">        <span class="keyword">if</span> (addWorker(command, <span class="keyword">true</span>))</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        c = ctl.get();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 核心线程不会销毁，那么此时一定是&gt;core pool size 的状态</span></div><div class="line">    <span class="comment">// offer方法在无界队列的时候不能返回false</span></div><div class="line">    <span class="comment">// 在有界队列的时候会返回false</span></div><div class="line">    <span class="keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command))</div><div class="line">        <span class="comment">// 假设有个线程在此时被释放了</span></div><div class="line">        <span class="comment">// 如果不check的话，isRunning的状态也不会改变应该，Running状态是通过高3位的状态来判断</span></div><div class="line">        <span class="comment">// recheck的目的是判断是否要新加一个线程</span></div><div class="line">        <span class="comment">// 但是 判断isRunning 的状态是为什么呢（感觉不加也不会出事）</span></div><div class="line">        <span class="comment">// todo</span></div><div class="line">        <span class="comment">// 在下面那个else if(isRunning(recheck) &amp;&amp; ...)会不会有问题</span></div><div class="line">        <span class="keyword">int</span> recheck = ctl.get();</div><div class="line">        <span class="keyword">if</span> (! isRunning(recheck) &amp;&amp; remove(command))</div><div class="line">            reject(command);</div><div class="line">            <span class="comment">// todo 还需想想是为什么</span></div><div class="line">            <span class="comment">// 可能的情况</span></div><div class="line">            <span class="comment">// 1.core pool size == 0 的情况下，比如new CachedThreadPool()</span></div><div class="line">            <span class="comment">// 在超过keepAliveTime的时候可能会有worker == 0 的情况发生</span></div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (workerCountOf(recheck) == <span class="number">0</span>)</div><div class="line">            addWorker(<span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// workQ 是个有界队列的情况下，无视core pool size 强行扩展到max pool size</span></div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!addWorker(command, <span class="keyword">false</span>))</div><div class="line">        reject(command);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
       
 
       
@@ -453,11 +454,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color5">data-structure</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -465,7 +466,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -473,15 +474,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jvm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
