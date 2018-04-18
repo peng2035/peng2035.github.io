@@ -168,6 +168,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-转载-redis-debug" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/11/转载-redis-debug/">[转载]redis-debug</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/11/转载-redis-debug/" class="archive-article-date">
+  	<time datetime="2018-01-11T13:57:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>转载自 <a href="https://liuzhengyang.github.io/2017/08/13/debug-redis/">https://liuzhengyang.github.io/2017/08/13/debug-redis/</a><br>感谢大佬，之后学习一下c<br>
+        
+          <a class="article-more-a" href="/2018/01/11/转载-redis-debug/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">转载</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/tips//" class="article-tag-list-link color5">tips</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/11/转载-redis-debug/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring代理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1069,234 +1161,9 @@
 
 
   
-    <article id="post-垃圾回收" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/03/11/垃圾回收/">垃圾回收</a>
-    </h1>
-  
-
-        
-        <a href="/2017/03/11/垃圾回收/" class="archive-article-date">
-  	<time datetime="2017-03-11T11:51:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="判定对象是否存活"><a href="#判定对象是否存活" class="headerlink" title="判定对象是否存活"></a>判定对象是否存活</h2><h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><ul>
-<li>优点<ul>
-<li>简单，容易实现</li>
-</ul>
-</li>
-<li>缺点<ul>
-<li>无法解决循环引用的问题，代码如下</li>
-<li>当r1 r2 的实例仅仅是互相引用的时候，如果有引用计数器他们不会被回收，而看gc日志，很明显会被回收。<br><a href="https://github.com/peng2035/learning/blob/master/learning-java/src/main/java/com/bobby/peng/learning/java/gc/ReferencingCountingGC.java" target="_blank" rel="external">存在的问题源码</a><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReferencingCountingGC</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> _1M = <span class="number">1024</span> * <span class="number">1024</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> Object instance = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] value = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">2</span> * _1M];</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        ReferencingCountingGC r1 = <span class="keyword">new</span> ReferencingCountingGC();</div><div class="line">        ReferencingCountingGC r2 = <span class="keyword">new</span> ReferencingCountingGC();</div><div class="line"></div><div class="line">        r1.instance = r2;</div><div class="line">        r2.instance = r1;</div><div class="line"></div><div class="line">        r1 = <span class="keyword">null</span>;</div><div class="line">        r2 = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        System.gc();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>[GC (System.gc()) [PSYoungGen: 11055K-&gt;1351K(38400K)] 11055K-&gt;1359K(125952K), 0.0025286 secs] [Times: user=0.01 sys=0.01, real=0.00 secs]<br>[Full GC (System.gc()) [PSYoungGen: 1351K-&gt;0K(38400K)] [ParOldGen: 8K-&gt;1241K(87552K)] 1359K-&gt;1241K(125952K), [Metaspace: 3370K-&gt;3370K(1056768K)], 0.0081339 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]</p>
-</blockquote>
-<h3 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><ul>
-<li>当一个对象到GC ROOTS 没有任何引用链相连时，则证明此对象不可用。</li>
-<li>即上文讲的r1 r2 互相关联，但是他们并没有被GC ROOTS关联，所以他们会被回收。<h4 id="GC-ROOTS的对象"><a href="#GC-ROOTS的对象" class="headerlink" title="GC ROOTS的对象"></a>GC ROOTS的对象</h4></li>
-<li>虚拟机栈中引用的对象。</li>
-<li>方法区中类静态属性引用的对象</li>
-<li>方法去中常量引用的对象。</li>
-<li>本地方法栈中JNI（即一般说的native方法）引用的对象。<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4>上文的r1 r2 本身也是虚拟机栈中的引用，本身可以成为gc roots，那么对象为什么还会被回收呢。<h4 id="回答"><a href="#回答" class="headerlink" title="回答"></a>回答</h4>所谓“GC roots”，或者说tracing GC的“根集合”，就是一组必须活跃的引用。例如说，这些引用可能包括：</li>
-<li>所有Java线程当前活跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的参数/局部变量/临时值。</li>
-<li>VM的一些静态数据结构里指向GC堆里的对象的引用，例如说HotSpot VM里的Universe里有很多这样的引用。</li>
-<li>JNI handles，包括global handles和local handles</li>
-<li>（看情况）所有当前被加载的Java类</li>
-<li>（看情况）Java类的引用类型静态变量</li>
-<li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
-<li>（看情况）String常量池（StringTable）里的引用<br>注意，是一组必须活跃的引用，不是对象。</li>
-</ul>
-<p>活跃很重要，r1 r2 是非活跃的所以没有被划分为gc roots<br><a href="https://www.zhihu.com/question/53613423/answer/135743258" target="_blank" rel="external">gc roots 详细解释</a></p>
-<h2 id="关于引用"><a href="#关于引用" class="headerlink" title="关于引用"></a>关于引用</h2><ul>
-<li>强引用：只要强引用还存在就不会被回收</li>
-<li>软引用（SoftReference）：在内存即将溢出之时，对这些对象做二次回收，如果还没有足够内存才会内存溢出异常。</li>
-<li>弱引用（WeakReference）: 之前做jdk动态代理，weak cache的时候有接触，下一次gc之前被回收</li>
-<li>虚引用（PhantomReference）: 一个对象是否有虚引用的存在，不会对生存周期构成影响，也无法通过虚引用来取得一个对象实例。对一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</li>
-</ul>
-<h3 id="关于finalize"><a href="#关于finalize" class="headerlink" title="关于finalize"></a>关于finalize</h3><ul>
-<li>不可达的对象，要经历两次标记过程。</li>
-<li>实现finalize方法且没有被调用的对象，会被放置在一个F-Queue的队列（由虚拟机自动建立，低优先级的Finalizer线程去执行）之中，但是不保证会执行完成（可能会含有死循环等异常。）</li>
-<li>不推荐使用finalize方法</li>
-</ul>
-<h3 id="回收方法区"><a href="#回收方法区" class="headerlink" title="回收方法区"></a>回收方法区</h3><ul>
-<li>废弃常量<ul>
-<li>与堆类似</li>
-</ul>
-</li>
-<li>废弃类<ul>
-<li>所有实例已被回收。</li>
-<li>classloader已被回收。</li>
-<li>对应的Class没有任何地方被引用，无法再任何地方通过反射访问该类。（用spring这条基本都是不符合了吧。。。）</li>
-<li>满足上述条件，仅仅是可回收。</li>
-</ul>
-</li>
-</ul>
-<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><ul>
-<li>标记-清除算法（统一标记，统一删除）<ul>
-<li>效率不高。（GC ROOTS标记的是存活对象，查找死亡对象还需一次遍历？）</li>
-<li>容易产生内存碎片。</li>
-</ul>
-</li>
-<li>复制算法（将内存分为两部分，每次只使用其中的一块，gc时将存活的对象复制到另外一块上去，清空原来的内存空间）。<ul>
-<li>每次只能使用一半的内存</li>
-<li>虚拟机通过这个算法来回收新生代，分为eden : survivor1 : survivor2 = 8:1:1 （98%的对象在回收时都会被回收，每次将 eden + survivor 复制到 另一个survivor，如果超过了10%则需要老年代来做担保）。</li>
-</ul>
-</li>
-<li>标记-整理算法（存活的对象都向一端移动，避免碎片）<ul>
-<li>不需要额外的空间</li>
-</ul>
-</li>
-</ul>
-<h2 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h2><ul>
-<li>新生代 存活率低 适合复制算法</li>
-<li>老年代 存活率高 适合标记-整理 或者 标记-清理算法。</li>
-</ul>
-<h2 id="安全点-amp-安全区域"><a href="#安全点-amp-安全区域" class="headerlink" title="安全点 &amp; 安全区域"></a>安全点 &amp; 安全区域</h2><ul>
-<li>不能再所有地方</li>
-<li>程序运行到safe point才能进行gc</li>
-<li>为防止blocking等长时间没有分配cpu的情况</li>
-</ul>
-<blockquote>
-<p>在HotSpot中，对象的类型信息里有记录自己的OopMap，记录了在该类型的对象内什么偏移量上是什么类型的数据。所以从对象开始向外的扫描可以是准确的；这些数据是在类加载过程中计算得到的。</p>
-</blockquote>
-<p>可以把oopMap简单理解成是调试信息。 在源代码里面每个变量都是有类型的，但是编译之后的代码就只有变量在栈上的位置了。oopMap就是一个附加的信息，告诉你栈上哪个位置本来是个什么东西。 这个信息是在JIT编译时跟机器码一起产生的。因为只有编译器知道源代码跟产生的代码的对应关系。 每个方法可能会有好几个oopMap，就是根据safepoint把一个方法的代码分成几段，每一段代码一个oopMap，作用域自然也仅限于这一段代码。 循环中引用多个对象，肯定会有多个变量，编译后占据栈上的多个位置。那这段代码的oopMap就会包含多条记录。</p>
-<blockquote>
-<p>对Java线程中的JNI方法，它们既不是由JVM里的解释器执行的，也不是由JVM的JIT编译器生成的，所以会缺少OopMap信息。那么GC碰到这样的栈帧该如何维持准确性呢？<br>HotSpot的解决方法是：所有经过JNI调用边界（调用JNI方法传入的参数、从JNI方法传回的返回值）的引用都必须用“句柄”（handle）包装起来。JNI需要调用Java API的时候也必须自己用句柄包装指针。在这种实现中，JNI方法里写的“jobject”实际上不是直接指向对象的指针，而是先指向一个句柄，通过句柄才能间接访问到对象。这样在扫描到JNI方法的时候就不需要扫描它的栈帧了——只要扫描句柄表就可以得到所有从JNI方法能访问到的GC堆里的对象。<br>但这也就意味着调用JNI方法会有句柄的包装/拆包装的开销，是导致JNI方法的调用比较慢的原因之一。</p>
-</blockquote>
-<h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><h3 id="serial收集器"><a href="#serial收集器" class="headerlink" title="serial收集器"></a>serial收集器</h3><ul>
-<li>采用复制算法</li>
-<li>仅使用一个线程或者一个cpu区完成垃圾收集工作。</li>
-<li>垃圾收集时会暂停其他所有的工作线程。</li>
-<li>适用于client端（应该说是单CPU情况下），简单高效</li>
-</ul>
-<h3 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h3><ul>
-<li>采用复制算法</li>
-<li>多线程的Serial收集器</li>
-<li>除Serial之外仅有的能与CMS收集器配合工作的收集器</li>
-<li>随着cpu的增加性能会好于Serial收集器（垃圾收集可看做是计算密集型，线程切换会有开销）</li>
-</ul>
-<h3 id="Parallel-Scavenge"><a href="#Parallel-Scavenge" class="headerlink" title="Parallel Scavenge"></a>Parallel Scavenge</h3><ul>
-<li>采用复制算法</li>
-<li>多线程收集</li>
-<li>目的：达到可控制的吞吐量（吞吐量=用户运行时间/(用户运行时间+垃圾收集时间)），简而言之就是减少停顿</li>
-<li>参数可调：GCTimeRatio &amp; MAXGCPauseMillis ，可自适应（GC停顿时间是牺牲吞吐量和新生代空间换来的，新生代越小收集的越快，但是系统损耗的占比越高，其实收集效率越低）</li>
-</ul>
-<h3 id="SerialOld-收集器"><a href="#SerialOld-收集器" class="headerlink" title="SerialOld 收集器"></a>SerialOld 收集器</h3><ul>
-<li>Serial老年版</li>
-<li>与 Parallel Scavenge 可以一起使用</li>
-</ul>
-<h3 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h3><ul>
-<li>Parallel Scavenge 老年版</li>
-<li>标记整理算法</li>
-<li>在注重吞吐量和CPU资源敏感的场合可以考虑使用。</li>
-</ul>
-<h3 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h3><ul>
-<li>目标-减少停顿时间</li>
-<li>初始标记（仅遍历GC ROOTS，速度快）</li>
-<li>并发标记（GC ROOTS TRACING，速度慢）</li>
-<li>重新标记（修正并发标记产生变更的部分）</li>
-<li>并发清楚（清除数据，速度慢）</li>
-<li>并发标记和并发清楚可以与用户线程一起执行，停顿就会减少</li>
-<li>缺点：<ul>
-<li>CMS在并发标记和并发清楚的时候会占用cpu</li>
-<li>并发清理阶段产生的新垃圾无法及时清楚，可能会引起再一次的full gc(因为应用线程同时执行，所以要预留空间，cms触发要比其他收集器早)</li>
-<li>基于标记-清理的内存碎片的问题。</li>
-</ul>
-</li>
-</ul>
-<h3 id="G1"><a href="#G1" class="headerlink" title="G1"></a>G1</h3><ul>
-<li>TODO</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ul>
-<li>对象优先在Eden分配</li>
-<li>大对象直接进入老年代</li>
-<li>长期存活的对象进入老年代（版本号，默认15）</li>
-<li>survivor空间中相同版本的所有对象大小总和大于Survivor控件的一半时，直接进入老年代</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">jvm</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/tech//" class="article-tag-list-link color5">tech</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/03/11/垃圾回收/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1391,6 +1258,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">tree</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
@@ -1411,7 +1282,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1419,7 +1290,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1439,11 +1310,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jvm</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
             
             <div class="clearfix"></div>
