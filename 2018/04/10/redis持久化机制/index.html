@@ -14,10 +14,12 @@
 <meta property="og:url" content="http://peng2035.github.io/2018/04/10/redis持久化机制/index.html">
 <meta property="og:site_name" content="zhendecai">
 <meta property="og:description" content="rdb持久化成一个二进制的快照文件，可以用于还原redis的数据。但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。">
-<meta property="og:updated_time" content="2018-04-11T07:18:26.572Z">
+<meta property="og:image" content="http://peng2035.github.io/2018/04/10/redis持久化机制/aof调用栈.png">
+<meta property="og:updated_time" content="2018-12-29T08:43:10.650Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis持久化机制">
 <meta name="twitter:description" content="rdb持久化成一个二进制的快照文件，可以用于还原redis的数据。但是在不同版本的redis中不兼容，在之前用unstable版本的redis启动过一次，再用3.2启动会报rdb的version有问题。">
+<meta name="twitter:image" content="http://peng2035.github.io/2018/04/10/redis持久化机制/aof调用栈.png">
   
   
     <link rel="icon" href="https://avatars0.githubusercontent.com/u/14294181?s=400&u=d29441b886863717e82c0ce70b98a426fa006acf&v=4">
@@ -200,7 +202,7 @@
 <p>写时拷贝（copy on write） 增量技术。</p>
 <p>关于(fork)[<a href="https://www.cnblogs.com/biyeymyhjob/archive/2012/07/20/2601655.html" target="_blank" rel="external">https://www.cnblogs.com/biyeymyhjob/archive/2012/07/20/2601655.html</a>]</p>
 <h2 id="AOF-append-only-file"><a href="#AOF-append-only-file" class="headerlink" title="AOF(append only file)"></a>AOF(append only file)</h2><p>通过保存Redis服务器所执行的写命令来记录数据库状态的。</p>
-<p>![AOF]实时调用栈</p>
+<p><img src="/2018/04/10/redis持久化机制/aof调用栈.png" alt="AOF"></p>
 <h3 id="源代码-2"><a href="#源代码-2" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">feedAppendOnlyFile</span><span class="params">(<span class="keyword">struct</span> redisCommand *cmd, <span class="keyword">int</span> dictid, robj **argv, <span class="keyword">int</span> argc)</span> </span>&#123;</div><div class="line">    sds buf = sdsempty();</div><div class="line">    robj *tmpargv[<span class="number">3</span>];</div><div class="line"></div><div class="line">    <span class="comment">/* The DB this command was targeting is not the same as the last command</span></div><div class="line">     * we appendend. To issue a SELECT command is needed.</div><div class="line">     *</div><div class="line">     * 使用 SELECT 命令，显式设置数据库，确保之后的命令被设置到正确的数据库</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (dictid != server.aof_selected_db) &#123;</div><div class="line">        <span class="keyword">char</span> seldb[<span class="number">64</span>];</div><div class="line"></div><div class="line">        <span class="built_in">snprintf</span>(seldb,<span class="keyword">sizeof</span>(seldb),<span class="string">"%d"</span>,dictid);</div><div class="line">        buf = sdscatprintf(buf,<span class="string">"*2\r\n$6\r\nSELECT\r\n$%lu\r\n%s\r\n"</span>,</div><div class="line">            (<span class="keyword">unsigned</span> <span class="keyword">long</span>)<span class="built_in">strlen</span>(seldb),seldb);</div><div class="line"></div><div class="line">        server.aof_selected_db = dictid;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// EXPIRE 、 PEXPIRE 和 EXPIREAT 命令</span></div><div class="line">    <span class="keyword">if</span> (cmd-&gt;proc == expireCommand || cmd-&gt;proc == pexpireCommand ||</div><div class="line">        cmd-&gt;proc == expireatCommand) &#123;</div><div class="line">        <span class="comment">/* Translate EXPIRE/PEXPIRE/EXPIREAT into PEXPIREAT</span></div><div class="line">         *</div><div class="line">         * 将 EXPIRE 、 PEXPIRE 和 EXPIREAT 都翻译成 PEXPIREAT</div><div class="line">         */</div><div class="line">        buf = catAppendOnlyExpireAtCommand(buf,cmd,argv[<span class="number">1</span>],argv[<span class="number">2</span>]);</div><div class="line"></div><div class="line">    <span class="comment">// SETEX 和 PSETEX 命令</span></div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (cmd-&gt;proc == setexCommand || cmd-&gt;proc == psetexCommand) &#123;</div><div class="line">        <span class="comment">/* Translate SETEX/PSETEX to SET and PEXPIREAT</span></div><div class="line">         *</div><div class="line">         * 将两个命令都翻译成 SET 和 PEXPIREAT</div><div class="line">         */</div><div class="line"></div><div class="line">        <span class="comment">// SET</span></div><div class="line">        tmpargv[<span class="number">0</span>] = createStringObject(<span class="string">"SET"</span>,<span class="number">3</span>);</div><div class="line">        tmpargv[<span class="number">1</span>] = argv[<span class="number">1</span>];</div><div class="line">        tmpargv[<span class="number">2</span>] = argv[<span class="number">3</span>];</div><div class="line">        buf = catAppendOnlyGenericCommand(buf,<span class="number">3</span>,tmpargv);</div><div class="line"></div><div class="line">        <span class="comment">// PEXPIREAT</span></div><div class="line">        decrRefCount(tmpargv[<span class="number">0</span>]);</div><div class="line">        buf = catAppendOnlyExpireAtCommand(buf,cmd,argv[<span class="number">1</span>],argv[<span class="number">2</span>]);</div><div class="line"></div><div class="line">    <span class="comment">// 其他命令</span></div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">/* All the other commands don't need translation or need the</span></div><div class="line">         * same translation already operated in the command vector</div><div class="line">         * for the replication itself. */</div><div class="line">        buf = catAppendOnlyGenericCommand(buf,argc,argv);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/* Append to the AOF buffer. This will be flushed on disk just before</span></div><div class="line">     * of re-entering the event loop, so before the client will get a</div><div class="line">     * positive reply about the operation performed.</div><div class="line">     *</div><div class="line">     * 将命令追加到 AOF 缓存中，</div><div class="line">     * 在重新进入事件循环之前，这些命令会被冲洗到磁盘上，</div><div class="line">     * 并向客户端返回一个回复。</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (server.aof_state == REDIS_AOF_ON)</div><div class="line">        server.aof_buf = sdscatlen(server.aof_buf,buf,sdslen(buf));</div><div class="line"></div><div class="line">    <span class="comment">/* If a background append only file rewriting is in progress we want to</span></div><div class="line">     * accumulate the differences between the child DB and the current one</div><div class="line">     * in a buffer, so that when the child process will do its work we</div><div class="line">     * can append the differences to the new append only file.</div><div class="line">     *</div><div class="line">     * 如果 BGREWRITEAOF 正在进行，</div><div class="line">     * 那么我们还需要将命令追加到重写缓存中，</div><div class="line">     * 从而记录当前正在重写的 AOF 文件和数据库当前状态的差异。</div><div class="line">     */</div><div class="line">    <span class="keyword">if</span> (server.aof_child_pid != <span class="number">-1</span>)</div><div class="line">        aofRewriteBufferAppend((<span class="keyword">unsigned</span> <span class="keyword">char</span>*)buf,sdslen(buf));</div><div class="line"></div><div class="line">    <span class="comment">// 释放</span></div><div class="line">    sdsfree(buf);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>server.aof_buf：aof缓冲，由于aof不是实时刷盘，记录只能先记录到内存中的一个sds中<br>写入需要等eventloops调用时间事件去运行flush方法才真正的写入文件之中</p>
 <h3 id="aof重写"><a href="#aof重写" class="headerlink" title="aof重写"></a>aof重写</h3><p>aof文件是记录命令，对同一个key的行为会记录多次，会造成空间的浪费，重写有助于减少空间。</p>
@@ -460,27 +462,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">cocurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复习</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color3">复习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -500,11 +490,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,7 +502,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
             
             <div class="clearfix"></div>

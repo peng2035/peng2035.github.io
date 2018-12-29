@@ -24,10 +24,10 @@ Pre-order: F, B, A, D, C, E, G, I, H.
 Check if the current node is empty / null
 Display the data part of the root (or current node).
 Traverse the left subtree by recursively calling the p">
-<meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png">
-<meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/in-order.png">
-<meta property="og:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/post-order.png">
-<meta property="og:updated_time" content="2018-04-10T12:30:03.657Z">
+<meta property="og:image" content="http://peng2035.github.io/2017/03/27/Tree-Traversal/pre-order.png">
+<meta property="og:image" content="http://peng2035.github.io/2017/03/27/Tree-Traversal/in-order.png">
+<meta property="og:image" content="http://peng2035.github.io/2017/03/27/Tree-Traversal/post-order.png">
+<meta property="og:updated_time" content="2018-12-29T08:33:14.128Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tree Traversal">
 <meta name="twitter:description" content="pre order  
@@ -36,7 +36,7 @@ Pre-order: F, B, A, D, C, E, G, I, H.
 Check if the current node is empty / null
 Display the data part of the root (or current node).
 Traverse the left subtree by recursively calling the p">
-<meta name="twitter:image" content="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png">
+<meta name="twitter:image" content="http://peng2035.github.io/2017/03/27/Tree-Traversal/pre-order.png">
   
   
     <link rel="icon" href="https://avatars0.githubusercontent.com/u/14294181?s=400&u=d29441b886863717e82c0ce70b98a426fa006acf&v=4">
@@ -206,7 +206,7 @@ Traverse the left subtree by recursively calling the p">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png" alt="pre order"></p>
+        <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="/2017/03/27/Tree-Traversal/pre-order.png" alt="pre order"></p>
 <p>Pre-order: F, B, A, D, C, E, G, I, H.</p>
 <ol>
 <li>Check if the current node is empty / null</li>
@@ -218,7 +218,7 @@ Traverse the left subtree by recursively calling the p">
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">preorderTraversal</span><span class="params">(TreeNode root)</span> </span>&#123;</div><div class="line">        Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;TreeNode&gt;();</div><div class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</div><div class="line">        <span class="keyword">if</span>(root!=<span class="keyword">null</span>) s.push(root);</div><div class="line">        <span class="keyword">while</span>(!s.isEmpty())&#123;</div><div class="line">            TreeNode curr = s.pop();</div><div class="line">            res.add(curr.val);</div><div class="line">            <span class="keyword">if</span>(curr.right!=<span class="keyword">null</span>) s.push(curr.right);</div><div class="line">            <span class="keyword">if</span>(curr.left!=<span class="keyword">null</span>) s.push(curr.left);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <!--more-->
-<h3 id="in-order"><a href="#in-order" class="headerlink" title="in order"></a>in order</h3><p><img src="http://7xvy7h.com1.z0.glb.clouddn.com/in-order.png" alt="in order"></p>
+<h3 id="in-order"><a href="#in-order" class="headerlink" title="in order"></a>in order</h3><p><img src="/2017/03/27/Tree-Traversal/in-order.png" alt="in order"></p>
 <p>In-order: A, B, C, D, E, F, G, H, I.</p>
 <ol>
 <li>Check if the current node is empty / null</li>
@@ -229,7 +229,7 @@ Traverse the left subtree by recursively calling the p">
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">inorderTraversal</span><span class="params">(TreeNode root)</span> </span>&#123;</div><div class="line">        List&lt;Integer&gt; res = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</div><div class="line">        Stack&lt;TreeNode&gt; s = <span class="keyword">new</span> Stack&lt;TreeNode&gt;();</div><div class="line">        <span class="comment">//先将最左边的节点都push进栈</span></div><div class="line">        <span class="keyword">if</span>(root!=<span class="keyword">null</span>)&#123;</div><div class="line">            pushAllTheLeft(s, root);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">while</span>(!s.isEmpty())&#123;</div><div class="line">            TreeNode curr = s.pop();</div><div class="line">            res.add(curr.val);</div><div class="line">            <span class="comment">//如果有右子树，将右节点和右子树的最左边的节点都push进栈</span></div><div class="line">            <span class="keyword">if</span>(curr.right != <span class="keyword">null</span>)&#123;</div><div class="line">                pushAllTheLeft(s, curr.right);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushAllTheLeft</span><span class="params">(Stack&lt;TreeNode&gt; s, TreeNode root)</span></span>&#123;</div><div class="line">        s.push(root);</div><div class="line">        <span class="keyword">while</span>(root.left!=<span class="keyword">null</span>)&#123;</div><div class="line">            root = root.left;</div><div class="line">            s.push(root);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ol>
-<h3 id="post-order"><a href="#post-order" class="headerlink" title="post order"></a>post order</h3><p><img src="http://7xvy7h.com1.z0.glb.clouddn.com/post-order.png" alt="post order"></p>
+<h3 id="post-order"><a href="#post-order" class="headerlink" title="post order"></a>post order</h3><p><img src="/2017/03/27/Tree-Traversal/post-order.png" alt="post order"></p>
 <p>Post-order: A, C, E, D, B, H, I, G, F.</p>
 <ol>
 <li>Check if the current node is empty / null</li>
@@ -497,27 +497,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">cocurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复习</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color3">复习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -537,11 +525,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,7 +537,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
             
             <div class="clearfix"></div>

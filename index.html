@@ -339,11 +339,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">concurrent</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">concurrent</a>
         		</li>
       		
 		</ul>
@@ -414,7 +414,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>获取锁后对应sync的wait &amp; notify（notifyAll）<br>
+        <h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>获取锁后对应sync的wait &amp; notify（notifyAll）<br></p>
         
           <a class="article-more-a" href="/2018/04/16/Condition/#more">more >></a>
         
@@ -430,11 +430,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">cocurrent</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">cocurrent</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -608,7 +608,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="独占锁"><a href="#独占锁" class="headerlink" title="独占锁"></a>独占锁</h2><h3 id="acquire"><a href="#acquire" class="headerlink" title="acquire"></a>acquire</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</div><div class="line"> * Acquires in exclusive mode, ignoring interrupts.  Implemented</div><div class="line"> * by invoking at least once &#123;<span class="doctag">@link</span> #tryAcquire&#125;,</div><div class="line"> * returning on success.  Otherwise the thread is queued, possibly</div><div class="line"> * repeatedly blocking and unblocking, invoking &#123;<span class="doctag">@link</span></div><div class="line"> * #tryAcquire&#125; until success.  This method can be used</div><div class="line"> * to implement method &#123;<span class="doctag">@link</span> Lock#lock&#125;.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> arg the acquire argument.  This value is conveyed to</div><div class="line"> *        &#123;<span class="doctag">@link</span> #tryAcquire&#125; but is otherwise uninterpreted and</div><div class="line"> *        can represent anything you like.</div><div class="line"> */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</div><div class="line">    <span class="comment">// tryAcquire用于确认是否能够获取到锁（根据status的状态来判定），默认需要继承类自己来实现</span></div><div class="line">    <span class="comment">// Node.EXCLUSIVE 独占锁标志</span></div><div class="line">    <span class="comment">// addWaiter是将该节点加入到后续节点之中</span></div><div class="line">    <span class="comment">// acquireQueued是将当前线程阻塞（其实LockSupport.park()是线程waiting，而不是blocking）</span></div><div class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</div><div class="line">        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</div><div class="line">        selfInterrupt();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        <h2 id="独占锁"><a href="#独占锁" class="headerlink" title="独占锁"></a>独占锁</h2><h3 id="acquire"><a href="#acquire" class="headerlink" title="acquire"></a>acquire</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Acquires in exclusive mode, ignoring interrupts.  Implemented</div><div class="line"> * by invoking at least once &#123;<span class="doctag">@link</span> #tryAcquire&#125;,</div><div class="line"> * returning on success.  Otherwise the thread is queued, possibly</div><div class="line"> * repeatedly blocking and unblocking, invoking &#123;<span class="doctag">@link</span></div><div class="line"> * #tryAcquire&#125; until success.  This method can be used</div><div class="line"> * to implement method &#123;<span class="doctag">@link</span> Lock#lock&#125;.</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> arg the acquire argument.  This value is conveyed to</div><div class="line"> *        &#123;<span class="doctag">@link</span> #tryAcquire&#125; but is otherwise uninterpreted and</div><div class="line"> *        can represent anything you like.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</div><div class="line">    <span class="comment">// tryAcquire用于确认是否能够获取到锁（根据status的状态来判定），默认需要继承类自己来实现</span></div><div class="line">    <span class="comment">// Node.EXCLUSIVE 独占锁标志</span></div><div class="line">    <span class="comment">// addWaiter是将该节点加入到后续节点之中</span></div><div class="line">    <span class="comment">// acquireQueued是将当前线程阻塞（其实LockSupport.park()是线程waiting，而不是blocking）</span></div><div class="line">    <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</div><div class="line">        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</div><div class="line">        selfInterrupt();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>是否可重入取决于tryAquire的实现，包括公正锁非公正锁实现等等</p>
         
           <a class="article-more-a" href="/2018/04/11/AQS(简要)/#more">more >></a>
@@ -704,7 +704,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）<br>
+        <h2 id="slaveof-命令"><a href="#slaveof-命令" class="headerlink" title="slaveof 命令"></a>slaveof 命令</h2><p>如果是通过配置文件配置的主从，主会广播，但是通过slaveof 命令返回ok的主从，只有第一次复制数据（todo 为什么）<br></p>
         
           <a class="article-more-a" href="/2018/04/10/redis复制/#more">more >></a>
         
@@ -791,9 +791,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/redis_server%E5%9B%BE%E4%BE%8B.png" alt="redis_server结构图例
+        <h2 id="过期数据结构"><a href="#过期数据结构" class="headerlink" title="过期数据结构"></a>过期数据结构</h2><p><img src="/2018/04/10/redis键过期/redis_server图例.png" alt="redis_server结构图例
 "></p>
-<p>expires 指向一个dict， dict内部存放每个键的过期时间。<br>
+<p>expires 指向一个dict， dict内部存放每个键的过期时间。<br></p>
         
           <a class="article-more-a" href="/2018/04/10/redis键过期/#more">more >></a>
         
@@ -1057,7 +1057,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。<br>细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。<br>回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ringbuffer这个名词了。<br>很多框架看了一半也就没有再看了，最多就是看了下博文了解了一下api，最多再看个大致流程，完事了。<br>有人和我说是缺乏耐心，也可能是年纪大了，思维比不上从前了。我觉得更多的还是大脑缺乏锻炼了吧，沉迷于没有必要的扯淡和调侃，渐渐地有了一种比下有余的感觉，也可能是真的害怕去深入的学习一些东西，在深入讨论的时候露出马脚，用我还没来得及看源码这种借口来掩饰自己的恐惧。<br>现在觉得没啥可恐惧的了，反正都不会，从头开始呗，放下包袱，重头开始好好整理一下。<br>还有一个多月就要迈入26岁了，在这之前尽量做出一些改变吧，改变一下这种菜的可怕而又沾沾自喜的状态。<br>静下心来去看一些东西，毕竟像我这样的菜鸡不翻开书，不拿起笔，感觉什么学都不会。<br>Push自己一把总是没错的，专注一点，很多事情只会吹牛逼是不够的！<br><img src="http://onk9rv30p.bkt.clouddn.com/IMG_3960.JPG" alt=""></p>
+        <p>最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。<br>细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。<br>回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ringbuffer这个名词了。<br>很多框架看了一半也就没有再看了，最多就是看了下博文了解了一下api，最多再看个大致流程，完事了。<br>有人和我说是缺乏耐心，也可能是年纪大了，思维比不上从前了。我觉得更多的还是大脑缺乏锻炼了吧，沉迷于没有必要的扯淡和调侃，渐渐地有了一种比下有余的感觉，也可能是真的害怕去深入的学习一些东西，在深入讨论的时候露出马脚，用我还没来得及看源码这种借口来掩饰自己的恐惧。<br>现在觉得没啥可恐惧的了，反正都不会，从头开始呗，放下包袱，重头开始好好整理一下。<br>还有一个多月就要迈入26岁了，在这之前尽量做出一些改变吧，改变一下这种菜的可怕而又沾沾自喜的状态。<br>静下心来去看一些东西，毕竟像我这样的菜鸡不翻开书，不拿起笔，感觉什么学都不会。<br>Push自己一把总是没错的，专注一点，很多事情只会吹牛逼是不够的！<br><img src="/2018/01/27/2017-2018赛季/IMG_1393.JPG" alt=""></p>
 
       
 
@@ -1212,27 +1212,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">cocurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复习</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color3">复习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1252,11 +1240,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1264,7 +1252,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
             
             <div class="clearfix"></div>

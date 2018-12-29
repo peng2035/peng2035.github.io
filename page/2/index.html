@@ -189,7 +189,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>转载自 <a href="https://liuzhengyang.github.io/2017/08/13/debug-redis/">https://liuzhengyang.github.io/2017/08/13/debug-redis/</a><br>感谢大佬，之后学习一下c<br>
+<p>转载自 <a href="https://liuzhengyang.github.io/2017/08/13/debug-redis/">https://liuzhengyang.github.io/2017/08/13/debug-redis/</a><br>感谢大佬，之后学习一下c<br></p></blockquote>
         
           <a class="article-more-a" href="/2018/01/11/转载-redis-debug/#more">more >></a>
         
@@ -282,7 +282,7 @@
       
         <h1 id="spring代理问题"><a href="#spring代理问题" class="headerlink" title="spring代理问题"></a>spring代理问题</h1><p>问题还是起于老掉牙的spring @Transactional 同类调用不生效的问题。<br>以下的场景都基于method1调用method2，@Transactional 是加载method2上，外部调用调用的是method1接口。<br>大致结构如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">()</span> </span>&#123;</div><div class="line">    System.out.println(<span class="string">"do in method 1"</span>);</div><div class="line">    method2();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Transactional</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method2</span><span class="params">()</span> </span>&#123;</div><div class="line">    System.out.println(<span class="string">"do in method 2"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。<br>
+<p>以前一直对于这个问题懵懵懂懂，现在彻底的来搞明白这个事情。<br></p>
         
           <a class="article-more-a" href="/2018/01/03/Spring代理/#more">more >></a>
         
@@ -378,7 +378,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Singleton1 &#123;</div><div class="line">    private static Singleton1 singleton = null;</div><div class="line"></div><div class="line">    private Singleton1() &#123;&#125;</div><div class="line"></div><div class="line">    public static Singleton1 newInstance() &#123;</div><div class="line">        if(singleton == null) &#123;</div><div class="line">            singleton = new Singleton1();</div><div class="line">        &#125;</div><div class="line">        return singleton;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>优点：惰性加载<br>缺点：多线程有问题<br>
+<p>优点：惰性加载<br>缺点：多线程有问题<br></p>
         
           <a class="article-more-a" href="/2017/12/18/单例的N种写法/#more">more >></a>
         
@@ -777,13 +777,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2><p><img src="http://onk9rv30p.bkt.clouddn.com/WechatIMG13497.jpeg" alt="BlockingQueue 四种接口"></p>
+        <h2 id="BlockQueue"><a href="#BlockQueue" class="headerlink" title="BlockQueue"></a>BlockQueue</h2><p><img src="/2017/03/31/并发Queue/blocking queue接口形式.jpeg" alt="BlockingQueue 四种接口"></p>
 <p> 四种形式</p>
 <ul>
 <li>抛出异常</li>
 <li>返回一个特殊值(可能是null或者是false，取决于具体的操作)</li>
 <li>阻塞当前执行直到其可以继续</li>
-<li><p>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</p>
+<li><p>当线程被挂起后，等待最大的时间，如果一旦超时，即使该操作依旧无法继续执行，线程也不会再继续等待下去。</p></li></ul>
         
           <a class="article-more-a" href="/2017/03/31/并发Queue/#more">more >></a>
         
@@ -803,11 +803,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">concurrent</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">复习</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">concurrent</a>
         		</li>
       		
 		</ul>
@@ -997,7 +997,7 @@
 <li>感谢很多没有提到的朋友，nga美少女–艾琳.冰冻丢墙上.纳斯，评级牧神–Slience，逗比奶僧–咸鱼，我吃个饭就回来–萌萌的喵喵.微娘。还有竹爷，羊哥，Smudgelol，Sinsin，EE，耗子，杀生 等等。</li>
 <li>最后，鲜血与荣耀，为了部落！Lok-tar ogar!</li>
 <li><p>电子设备换了一波又一波，没有图了。最后上个图吧~</p>
-<p><img src="http://7xvy7h.com1.z0.glb.clouddn.com/iphone" alt="感谢"></p>
+<p><img src="/2017/03/28/wow的岁月/IMG_1394.JPG" alt="感谢"></p>
 </li>
 </ul>
 
@@ -1084,13 +1084,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="http://7xvy7h.com1.z0.glb.clouddn.com/pre-order.png" alt="pre order"></p>
+        <h3 id="pre-order"><a href="#pre-order" class="headerlink" title="pre order"></a>pre order</h3><p>  <img src="/2017/03/27/Tree-Traversal/pre-order.png" alt="pre order"></p>
 <p>Pre-order: F, B, A, D, C, E, G, I, H.</p>
 <ol>
 <li>Check if the current node is empty / null</li>
 <li>Display the data part of the root (or current node).</li>
 <li>Traverse the left subtree by recursively calling the pre-order function.</li>
-<li><p>Traverse the right subtree by recursively calling the pre-order function.</p>
+<li><p>Traverse the right subtree by recursively calling the pre-order function.</p></li></ol>
         
           <a class="article-more-a" href="/2017/03/27/Tree-Traversal/#more">more >></a>
         
@@ -1262,27 +1262,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">cocurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复习</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color3">复习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1302,11 +1290,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1314,7 +1302,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
             
             <div class="clearfix"></div>

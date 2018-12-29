@@ -14,12 +14,12 @@
 <meta property="og:url" content="http://peng2035.github.io/2018/01/27/2017-2018赛季/index.html">
 <meta property="og:site_name" content="zhendecai">
 <meta property="og:description" content="最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ri">
-<meta property="og:image" content="http://onk9rv30p.bkt.clouddn.com/IMG_3960.JPG">
-<meta property="og:updated_time" content="2018-04-11T15:07:39.593Z">
+<meta property="og:image" content="http://peng2035.github.io/2018/01/27/2017-2018赛季/IMG_1393.JPG">
+<meta property="og:updated_time" content="2018-12-29T08:35:48.217Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="2017~2018赛季">
 <meta name="twitter:description" content="最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ri">
-<meta name="twitter:image" content="http://onk9rv30p.bkt.clouddn.com/IMG_3960.JPG">
+<meta name="twitter:image" content="http://peng2035.github.io/2018/01/27/2017-2018赛季/IMG_1393.JPG">
   
   
     <link rel="icon" href="https://avatars0.githubusercontent.com/u/14294181?s=400&u=d29441b886863717e82c0ce70b98a426fa006acf&v=4">
@@ -189,7 +189,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。<br>细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。<br>回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ringbuffer这个名词了。<br>很多框架看了一半也就没有再看了，最多就是看了下博文了解了一下api，最多再看个大致流程，完事了。<br>有人和我说是缺乏耐心，也可能是年纪大了，思维比不上从前了。我觉得更多的还是大脑缺乏锻炼了吧，沉迷于没有必要的扯淡和调侃，渐渐地有了一种比下有余的感觉，也可能是真的害怕去深入的学习一些东西，在深入讨论的时候露出马脚，用我还没来得及看源码这种借口来掩饰自己的恐惧。<br>现在觉得没啥可恐惧的了，反正都不会，从头开始呗，放下包袱，重头开始好好整理一下。<br>还有一个多月就要迈入26岁了，在这之前尽量做出一些改变吧，改变一下这种菜的可怕而又沾沾自喜的状态。<br>静下心来去看一些东西，毕竟像我这样的菜鸡不翻开书，不拿起笔，感觉什么学都不会。<br>Push自己一把总是没错的，专注一点，很多事情只会吹牛逼是不够的！<br><img src="http://onk9rv30p.bkt.clouddn.com/IMG_3960.JPG" alt=""></p>
+        <p>最近心血来潮阅读redis源码的时候才发现整个的知识结构还是零零散散，零散到连蒙带猜都没有办法串联起整个大致的流程。<br>细节方面更是一团糟，网络，内核操作，数据结构就和没学过一样，cpp的基础也忘得差不多了。<br>回想一年来确实在逻辑上有了很大的退步，看disruptor看了个一知半解，连worker这种重要的东西都直接忽略了，barrier看上去很复杂的东西了解个思路，也没有仔细钻研了。好像也就听说了ringbuffer这个名词了。<br>很多框架看了一半也就没有再看了，最多就是看了下博文了解了一下api，最多再看个大致流程，完事了。<br>有人和我说是缺乏耐心，也可能是年纪大了，思维比不上从前了。我觉得更多的还是大脑缺乏锻炼了吧，沉迷于没有必要的扯淡和调侃，渐渐地有了一种比下有余的感觉，也可能是真的害怕去深入的学习一些东西，在深入讨论的时候露出马脚，用我还没来得及看源码这种借口来掩饰自己的恐惧。<br>现在觉得没啥可恐惧的了，反正都不会，从头开始呗，放下包袱，重头开始好好整理一下。<br>还有一个多月就要迈入26岁了，在这之前尽量做出一些改变吧，改变一下这种菜的可怕而又沾沾自喜的状态。<br>静下心来去看一些东西，毕竟像我这样的菜鸡不翻开书，不拿起笔，感觉什么学都不会。<br>Push自己一把总是没错的，专注一点，很多事情只会吹牛逼是不够的！<br><img src="/2018/01/27/2017-2018赛季/IMG_1393.JPG" alt=""></p>
 
       
 
@@ -430,27 +430,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">cocurrent</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">复习</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">io</a>
+                <a href="javascript:void(0)" class="js-tag color3">复习</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -470,11 +458,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color4">wow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">wow</a>
+                <a href="javascript:void(0)" class="js-tag color3">转载</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -482,7 +470,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">转载</a>
+                <a href="javascript:void(0)" class="js-tag color1">concurrent</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">aqs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">io</a>
               </li>
             
             <div class="clearfix"></div>
